@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { createStage } from "./stage";
-import { glowTexture, seeded } from "./textures";
+import { fileIconTexture, glowTexture, seeded } from "./textures";
 
 const BLUE = new THREE.Color("#1f6fd1");
 const LINE = new THREE.Color("#8ea5c4");
@@ -131,8 +131,10 @@ function build(stage) {
   orb.add(core, shell, halo);
   scene.add(orb);
 
-  // Citation beams (pooled)
+  // Citation beams (pooled). Each beam reaches a building, then a file
+  // flies back along it into the orb: the cited document being retrieved.
   const tall = buildings.filter((b) => b.h > 1.4);
+  const icons = ["page", "folder", "decision"].map((kind) => fileIconTexture(kind));
   const beamMat = () =>
     new THREE.MeshBasicMaterial({ color: BLUE, transparent: true, opacity: 0, depthWrite: false });
   const beams = Array.from({ length: 4 }, () => {
@@ -145,12 +147,12 @@ function build(stage) {
     );
     const ripple = new THREE.Mesh(new THREE.RingGeometry(0.3, 0.34, 48), beamMat());
     ripple.rotation.x = -Math.PI / 2;
-    const spark = new THREE.Sprite(
-      new THREE.SpriteMaterial({ map: halo.material.map, transparent: true, opacity: 0, depthWrite: false })
+    const file = new THREE.Sprite(
+      new THREE.SpriteMaterial({ map: icons[0], transparent: true, opacity: 0, depthWrite: false, depthTest: false, fog: false })
     );
-    spark.scale.setScalar(0.5);
-    scene.add(mesh, mark, edge, ripple, spark);
-    return { mesh, mark, edge, ripple, spark, curve: null, age: Infinity, target: null };
+    file.renderOrder = 10;
+    scene.add(mesh, mark, edge, ripple, file);
+    return { mesh, mark, edge, ripple, file, curve: null, age: Infinity, tilt: 0 };
   });
 
   let nextFire = 0.6;
@@ -167,6 +169,8 @@ function build(stage) {
     beam.edge.scale.copy(beam.mark.scale);
     beam.edge.position.copy(beam.mark.position);
     beam.ripple.position.set(b.x, b.h + 0.02, b.z);
+    beam.file.material.map = icons[Math.floor(rand() * icons.length)];
+    beam.tilt = (rand() - 0.5) * 0.5;
     beam.age = 0;
   };
 
@@ -225,7 +229,7 @@ function build(stage) {
     beams.forEach((beam) => {
       if (beam.age > 2.6) {
         beam.mesh.material.opacity = beam.mark.material.opacity = beam.edge.material.opacity = 0;
-        beam.ripple.material.opacity = beam.spark.material.opacity = 0;
+        beam.ripple.material.opacity = beam.file.material.opacity = 0;
         return;
       }
       beam.age += dt;
@@ -236,8 +240,18 @@ function build(stage) {
       const fade = g < 1.8 ? 1 : Math.max(0, 1 - (g - 1.8) / 0.8);
       beam.mesh.material.opacity = 0.9 * fade;
 
-      beam.spark.material.opacity = grow < 1 ? 1 : 0;
-      beam.spark.position.copy(beam.curve.getPoint(grow));
+      // File travels building -> orb, swelling mid-flight and shrinking into the orb.
+      const u = (g - 0.65) / 1.0;
+      if (u > 0 && u < 1) {
+        const ease = u * u * (3 - 2 * u);
+        beam.file.position.copy(beam.curve.getPoint(1 - ease));
+        const size = 0.28 + 0.68 * Math.sin(Math.PI * Math.min(u * 1.25, 1)) ** 0.6 * (1 - ease * 0.35);
+        beam.file.scale.setScalar(size);
+        beam.file.material.rotation = beam.tilt + Math.sin(u * Math.PI * 2) * 0.15;
+        beam.file.material.opacity = Math.min(u * 6, 1, (1 - u) * 6);
+      } else {
+        beam.file.material.opacity = 0;
+      }
 
       const hit = g > 0.6 ? Math.min((g - 0.6) / 0.15, 1) * fade : 0;
       beam.mark.material.opacity = 0.12 * hit;
