@@ -142,9 +142,3 @@ button {
     transition-duration: 0.01ms !important;
   }
 }
-
-/* Thin national tricolour across the top of every page. */
-.tricolor {
-  height: 4px;
-  background: linear-gradient(90deg, var(--flag-blue) 0 33.33%, var(--flag-yellow) 33.33% 66.66%, var(--flag-red) 66.66% 100%);
-}

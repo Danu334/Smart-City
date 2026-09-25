@@ -10,7 +10,6 @@ export default function App({ Component, pageProps }) {
   return (
     <I18nProvider>
       <div className={`app ${inter.variable} ${onest.variable} ${mono.variable}`}>
-        <div className="tricolor" aria-hidden="true" />
         <Component {...pageProps} />
       </div>
     </I18nProvider>
