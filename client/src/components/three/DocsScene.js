@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { createStage } from "./stage";
 import { glowTexture, seeded } from "./textures";
 
-const TEAL = new THREE.Color("#3fd0c9");
+const BLUE = new THREE.Color("#1f6fd1");
 const W = 1.5;
 const H = 2.12; // A4 proportions
 const ROWS = 18;
@@ -18,16 +18,16 @@ function pageTexture(rand) {
   c.height = ch;
   const g = c.getContext("2d");
 
-  g.fillStyle = "rgba(20, 26, 38, 0.92)";
+  g.fillStyle = "#ffffff";
   g.fillRect(0, 0, cw, ch);
-  g.strokeStyle = "rgba(186, 215, 247, 0.35)";
+  g.strokeStyle = "rgba(11, 79, 156, 0.28)";
   g.lineWidth = 3;
   g.strokeRect(1.5, 1.5, cw - 3, ch - 3);
 
   const pad = 44;
-  g.fillStyle = "rgba(216, 236, 248, 0.75)";
+  g.fillStyle = "rgba(22, 32, 46, 0.8)";
   g.fillRect(pad, pad, cw * (0.35 + rand() * 0.25), 18);
-  g.fillStyle = "rgba(157, 167, 186, 0.5)";
+  g.fillStyle = "rgba(74, 85, 101, 0.45)";
   g.fillRect(pad, pad + 32, cw * 0.22, 10);
 
   const top = pad + 80;
@@ -38,7 +38,7 @@ function pageTexture(rand) {
     if (rand() < 0.12) continue;
     const y = top + r * step;
     const len = r % 5 === 4 ? 0.4 + rand() * 0.3 : 0.78 + rand() * 0.2;
-    g.fillStyle = r >= start && r < start + span ? "rgba(216, 236, 248, 0.8)" : "rgba(157, 167, 186, 0.32)";
+    g.fillStyle = r >= start && r < start + span ? "rgba(11, 79, 156, 0.85)" : "rgba(74, 85, 101, 0.25)";
     g.fillRect(pad, y, (cw - pad * 2) * len, 8);
   }
 
@@ -70,7 +70,7 @@ function build(stage) {
     );
     const highlight = new THREE.Mesh(
       new THREE.PlaneGeometry(W * 0.9, passage.h),
-      new THREE.MeshBasicMaterial({ color: TEAL, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false })
+      new THREE.MeshBasicMaterial({ color: BLUE, transparent: true, opacity: 0, depthWrite: false })
     );
     highlight.position.set(0, passage.y, 0.005);
     group.add(page, highlight);
@@ -83,13 +83,13 @@ function build(stage) {
   });
 
   const orb = new THREE.Group();
-  const core = new THREE.Mesh(new THREE.IcosahedronGeometry(0.12, 2), new THREE.MeshBasicMaterial({ color: 0xe6fffd }));
+  const core = new THREE.Mesh(new THREE.IcosahedronGeometry(0.12, 2), new THREE.MeshBasicMaterial({ color: BLUE }));
   const shell = new THREE.Mesh(
     new THREE.IcosahedronGeometry(0.26, 1),
-    new THREE.MeshBasicMaterial({ color: TEAL, wireframe: true, transparent: true, opacity: 0.6 })
+    new THREE.MeshBasicMaterial({ color: BLUE, wireframe: true, transparent: true, opacity: 0.45 })
   );
   const halo = new THREE.Sprite(
-    new THREE.SpriteMaterial({ map: glowTexture(), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })
+    new THREE.SpriteMaterial({ map: glowTexture(), transparent: true, depthWrite: false })
   );
   halo.scale.setScalar(1.6);
   orb.add(core, shell, halo);
@@ -98,7 +98,7 @@ function build(stage) {
 
   const link = new THREE.Line(
     new THREE.BufferGeometry().setFromPoints(Array.from({ length: 32 }, () => new THREE.Vector3())),
-    new THREE.LineBasicMaterial({ color: TEAL, transparent: true, opacity: 0, blending: THREE.AdditiveBlending })
+    new THREE.LineBasicMaterial({ color: BLUE, transparent: true, opacity: 0 })
   );
   scene.add(link);
 
@@ -113,7 +113,7 @@ function build(stage) {
   dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
   const dust = new THREE.Points(
     dustGeo,
-    new THREE.PointsMaterial({ color: 0xb6d9fc, size: 0.03, transparent: true, opacity: 0.5, depthWrite: false })
+    new THREE.PointsMaterial({ color: 0x8ea5c4, size: 0.03, transparent: true, opacity: 0.6, depthWrite: false })
   );
   scene.add(dust);
 
@@ -148,7 +148,7 @@ function build(stage) {
       // Pages loosely face the viewer, the active one squarely.
       s.group.rotation.y = -scene.rotation.y * s.focus + (1 - s.focus) * (-s.angle * 0.35 + Math.sin(t * 0.5 + s.phase) * 0.15);
       s.group.rotation.z = (1 - s.focus) * Math.sin(t * 0.4 + s.phase) * 0.08;
-      s.highlight.material.opacity = s.focus * (0.32 + Math.sin(t * 3) * 0.06);
+      s.highlight.material.opacity = s.focus * (0.16 + Math.sin(t * 3) * 0.04);
     });
 
     const a = sheets[active];
@@ -168,7 +168,7 @@ function build(stage) {
 
     shell.rotation.set(t * 0.4, t * 0.6, 0);
     orb.position.y = -1.9 + Math.sin(t * 1.3) * 0.06;
-    halo.material.opacity = 0.7 + Math.sin(t * 2.4) * 0.15;
+    halo.material.opacity = 0.35 + Math.sin(t * 2.4) * 0.1;
     dust.rotation.y = t * 0.02;
   };
 

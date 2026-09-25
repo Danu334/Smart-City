@@ -45,7 +45,7 @@
   text-underline-offset: 3px;
 }
 .col a:hover {
-  color: var(--teal);
+  color: var(--accent);
   text-decoration: underline;
 }
 

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-export function glowTexture(rgb = "63, 208, 201", size = 128) {
+export function glowTexture(rgb = "31, 111, 209", size = 128) {
   const c = document.createElement("canvas");
   c.width = c.height = size;
   const g = c.getContext("2d");

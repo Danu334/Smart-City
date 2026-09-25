@@ -3,8 +3,8 @@ import * as THREE from "three";
 import { createStage } from "./stage";
 import { glowTexture, seeded } from "./textures";
 
-const TEAL = new THREE.Color("#3fd0c9");
-const FROST = new THREE.Color("#b6d9fc");
+const BLUE = new THREE.Color("#1f6fd1");
+const LINE = new THREE.Color("#8ea5c4");
 const GRID = 13;
 const GAP = 1.15;
 const ORB = new THREE.Vector3(0, 3.4, 0);
@@ -16,22 +16,22 @@ function build(stage) {
   const { scene, camera } = stage;
   const rand = seeded(11);
 
-  scene.add(new THREE.HemisphereLight(0xc7d3ea, 0x05060f, 0.7));
-  const key = new THREE.DirectionalLight(0xd8ecf8, 1.4);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xd6e0ee, 1.6));
+  const key = new THREE.DirectionalLight(0xffffff, 1.2);
   key.position.set(-6, 12, 8);
   scene.add(key);
-  const orbLight = new THREE.PointLight(TEAL, 18, 16, 1.4);
+  const orbLight = new THREE.PointLight(BLUE, 6, 12, 1.4);
   orbLight.position.copy(ORB);
   scene.add(orbLight);
 
-  const grid = new THREE.GridHelper(44, 44, 0x3f4959, 0x3f4959);
+  const grid = new THREE.GridHelper(44, 44, 0xc9d4e3, 0xc9d4e3);
   grid.material.transparent = true;
-  grid.material.opacity = 0.28;
+  grid.material.opacity = 0.7;
   scene.add(grid);
 
   const pool = new THREE.Mesh(
     new THREE.PlaneGeometry(9, 9),
-    new THREE.MeshBasicMaterial({ map: glowTexture(), transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false })
+    new THREE.MeshBasicMaterial({ map: glowTexture(), transparent: true, opacity: 0.16, depthWrite: false })
   );
   pool.rotation.x = -Math.PI / 2;
   pool.position.y = 0.01;
@@ -57,7 +57,7 @@ function build(stage) {
   box.translate(0, 0.5, 0);
   const towers = new THREE.InstancedMesh(
     box,
-    new THREE.MeshStandardMaterial({ color: 0x151a26, roughness: 0.55, metalness: 0.35 }),
+    new THREE.MeshStandardMaterial({ color: 0xf6f8fb, roughness: 0.85, metalness: 0 }),
     buildings.length
   );
   const m = new THREE.Matrix4();
@@ -81,7 +81,7 @@ function build(stage) {
   const edgeGeo = new THREE.BufferGeometry();
   edgeGeo.setAttribute("position", new THREE.BufferAttribute(edgePos, 3));
   scene.add(
-    new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({ color: FROST, transparent: true, opacity: 0.2 }))
+    new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({ color: LINE, transparent: true, opacity: 0.6 }))
   );
 
   // "Text lines" on building faces: thin horizontal slats, like rows of a page.
@@ -97,7 +97,7 @@ function build(stage) {
   });
   const slatMesh = new THREE.InstancedMesh(
     slatGeo,
-    new THREE.MeshBasicMaterial({ color: FROST, transparent: true, opacity: 0.16, side: THREE.DoubleSide, depthWrite: false }),
+    new THREE.MeshBasicMaterial({ color: LINE, transparent: true, opacity: 0.45, side: THREE.DoubleSide, depthWrite: false }),
     slats.length
   );
   slats.forEach((s, k) => {
@@ -110,19 +110,19 @@ function build(stage) {
   // Query orb
   const orb = new THREE.Group();
   orb.position.copy(ORB);
-  const core = new THREE.Mesh(new THREE.IcosahedronGeometry(0.22, 2), new THREE.MeshBasicMaterial({ color: 0xe6fffd }));
+  const core = new THREE.Mesh(new THREE.IcosahedronGeometry(0.22, 2), new THREE.MeshBasicMaterial({ color: BLUE }));
   const shell = new THREE.Mesh(
     new THREE.IcosahedronGeometry(0.42, 1),
-    new THREE.MeshBasicMaterial({ color: TEAL, wireframe: true, transparent: true, opacity: 0.55 })
+    new THREE.MeshBasicMaterial({ color: BLUE, wireframe: true, transparent: true, opacity: 0.45 })
   );
   const halo = new THREE.Sprite(
-    new THREE.SpriteMaterial({ map: glowTexture(), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })
+    new THREE.SpriteMaterial({ map: glowTexture(), transparent: true, depthWrite: false })
   );
-  halo.scale.setScalar(2.6);
+  halo.scale.setScalar(2.2);
   const rings = [0.7, 0.95].map((r, i) => {
     const ring = new THREE.Mesh(
       new THREE.TorusGeometry(r, 0.006, 6, 96),
-      new THREE.MeshBasicMaterial({ color: i ? FROST : TEAL, transparent: true, opacity: 0.5 })
+      new THREE.MeshBasicMaterial({ color: i ? LINE : BLUE, transparent: true, opacity: 0.6 })
     );
     ring.rotation.x = Math.PI / 2 + (i ? 0.5 : -0.35);
     orb.add(ring);
@@ -134,19 +134,19 @@ function build(stage) {
   // Citation beams (pooled)
   const tall = buildings.filter((b) => b.h > 1.4);
   const beamMat = () =>
-    new THREE.MeshBasicMaterial({ color: TEAL, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+    new THREE.MeshBasicMaterial({ color: BLUE, transparent: true, opacity: 0, depthWrite: false });
   const beams = Array.from({ length: 4 }, () => {
     const mesh = new THREE.Mesh(new THREE.BufferGeometry(), beamMat());
     const mark = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), beamMat());
     mark.geometry.translate(0, 0.5, 0);
     const edge = new THREE.LineSegments(
       new THREE.EdgesGeometry(mark.geometry),
-      new THREE.LineBasicMaterial({ color: TEAL, transparent: true, opacity: 0 })
+      new THREE.LineBasicMaterial({ color: BLUE, transparent: true, opacity: 0 })
     );
     const ripple = new THREE.Mesh(new THREE.RingGeometry(0.3, 0.34, 48), beamMat());
     ripple.rotation.x = -Math.PI / 2;
     const spark = new THREE.Sprite(
-      new THREE.SpriteMaterial({ map: halo.material.map, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false })
+      new THREE.SpriteMaterial({ map: halo.material.map, transparent: true, opacity: 0, depthWrite: false })
     );
     spark.scale.setScalar(0.5);
     scene.add(mesh, mark, edge, ripple, spark);
@@ -182,7 +182,7 @@ function build(stage) {
   dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
   const dust = new THREE.Points(
     dustGeo,
-    new THREE.PointsMaterial({ color: FROST, size: 0.035, transparent: true, opacity: 0.55, depthWrite: false })
+    new THREE.PointsMaterial({ color: LINE, size: 0.035, transparent: true, opacity: 0.6, depthWrite: false })
   );
   scene.add(dust);
 
@@ -190,9 +190,10 @@ function build(stage) {
   const onResize = (w, h) => {
     const wide = w > 900;
     radius = w / h < 1 ? 20 : 14;
-    // On wide layouts, push the city right so the headline sits on open sky.
+    // Wide: push the city right so the headline sits on open sky.
+    // Narrow: lift it into the empty band above the stacked text.
     if (wide) camera.setViewOffset(w, h, -w * 0.2, 0, w, h);
-    else camera.clearViewOffset();
+    else camera.setViewOffset(w, h, 0, h * 0.3, w, h);
   };
 
   const tick = (dt, t, p) => {
@@ -204,7 +205,7 @@ function build(stage) {
     shell.rotation.set(t * 0.3, t * 0.45, 0);
     rings[0].rotation.z = t * 0.6;
     rings[1].rotation.z = -t * 0.4;
-    halo.material.opacity = 0.75 + Math.sin(t * 2.4) * 0.15;
+    halo.material.opacity = 0.35 + Math.sin(t * 2.4) * 0.1;
 
     const d = dust.geometry.attributes.position;
     for (let k = 0; k < dustCount; k++) {
@@ -239,7 +240,7 @@ function build(stage) {
       beam.spark.position.copy(beam.curve.getPoint(grow));
 
       const hit = g > 0.6 ? Math.min((g - 0.6) / 0.15, 1) * fade : 0;
-      beam.mark.material.opacity = 0.14 * hit;
+      beam.mark.material.opacity = 0.12 * hit;
       beam.edge.material.opacity = 0.9 * hit;
       const r = g > 0.6 ? (g - 0.6) * 1.8 : 0;
       beam.ripple.scale.setScalar(1 + r);
@@ -256,7 +257,7 @@ export default function CityScene({ className }) {
   useEffect(() => {
     const stage = createStage(ref.current, {
       fov: 38,
-      fog: { color: 0x05060f, density: 0.045 },
+      fog: { color: 0xf3f6fa, density: 0.035 },
     });
     const { tick, onResize } = build(stage);
     stage.start(tick, onResize);

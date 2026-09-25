@@ -151,7 +151,7 @@ export default function Home() {
         <title>Smart City · Chișinău</title>
         <meta name="description" content={t.hero.sub} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#faf8f5" />
+        <meta name="theme-color" content="#ffffff" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

@@ -65,8 +65,8 @@
   background: var(--paper-sunk);
 }
 .link[aria-current="page"] {
-  color: var(--teal);
-  background: var(--teal-wash);
+  color: var(--accent);
+  background: var(--accent-wash);
   font-weight: 500;
 }
 
@@ -122,11 +122,11 @@
   background: var(--paper-sunk);
 }
 .solid {
-  background: var(--teal);
-  color: var(--on-teal);
+  background: var(--accent);
+  color: var(--on-accent);
 }
 .solid:hover {
-  background: var(--teal-hover);
+  background: var(--accent-hover);
 }
 
 /* Mobile */

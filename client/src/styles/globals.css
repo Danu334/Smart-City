@@ -1,65 +1,37 @@
 :root {
-  /* Parchment surfaces */
-  --paper: #faf8f5;
-  --paper-raised: #fdfbfa;
-  --paper-sunk: #f2efe9;
-  --ink: #27251e;
-  --graphite: #62605a;
-  --ash: #85837d;
-  --hairline: #e2e0da;
-  --hairline-strong: #d1d1cd;
-  --teal: #016a71;
-  --teal-hover: #01565c;
-  --teal-wash: rgba(1, 106, 113, 0.08);
-  --on-teal: #ffffff;
+  /* White civic surfaces */
+  --paper: #ffffff;
+  --paper-raised: #ffffff;
+  --paper-sunk: #f4f6f9;
+  --tint: #eef3f9;
+  --ink: #16202e;
+  --graphite: #4a5565;
+  --ash: #6b7585;
+  --hairline: #e4e8ee;
+  --hairline-strong: #cfd6e0;
+
+  /* Government blue */
+  --accent: #0b4f9c;
+  --accent-hover: #083e7c;
+  --accent-wash: rgba(11, 79, 156, 0.07);
+  --accent-bright: #1f6fd1;
+  --on-accent: #ffffff;
+
   --amber: #9a5b00;
   --amber-wash: rgba(154, 91, 0, 0.09);
-  --rose: #a3313a;
-  --rose-wash: rgba(163, 49, 58, 0.08);
+  --rose: #b42332;
+  --rose-wash: rgba(180, 35, 50, 0.07);
 
-  /* Midnight glass panels (always dark) */
-  --night: #05060f;
-  --night-raised: #0c0f1a;
-  --ice: #d8ecf8;
-  --frost: #d1e4fa;
-  --moon: #c7d3ea;
-  --fog: #9da7ba;
-  --glass-edge: rgba(186, 215, 247, 0.12);
-  --glass-fill: rgba(186, 214, 247, 0.06);
-  --teal-glow: #3fd0c9;
-
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.06);
-  --radius-card: 16px;
-  --radius-input: 12px;
+  --shadow-card: 0 1px 2px rgba(16, 32, 56, 0.06);
+  --shadow-raised: 0 1px 2px rgba(16, 32, 56, 0.06), 0 12px 32px -12px rgba(16, 32, 56, 0.14);
+  --radius-card: 12px;
+  --radius-input: 10px;
   --max: 1200px;
   --gutter: clamp(16px, 4vw, 40px);
   --nav-h: 68px;
 
-
+  /* Light theme only, like a public-service site. */
   color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #111214;
-    --paper-raised: #17181b;
-    --paper-sunk: #0c0d0f;
-    --ink: #ecebe6;
-    --graphite: #aeaca5;
-    --ash: #8e8c86;
-    --hairline: #26272b;
-    --hairline-strong: #34353a;
-    --teal: #3fbfc0;
-    --teal-hover: #5ad0d0;
-    --teal-wash: rgba(63, 191, 192, 0.1);
-    --on-teal: #062426;
-    --amber: #e3a54a;
-    --amber-wash: rgba(227, 165, 74, 0.1);
-    --rose: #ec7f86;
-    --rose-wash: rgba(236, 127, 134, 0.1);
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
-    color-scheme: dark;
-  }
 }
 
 * {
@@ -117,14 +89,14 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid var(--teal);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 6px;
 }
 
 ::selection {
-  background: var(--teal);
-  color: var(--on-teal);
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 .visually-hidden {

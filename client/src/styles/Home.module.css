@@ -8,11 +8,11 @@
   font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--teal);
+  color: var(--accent);
   margin-bottom: 14px;
 }
 .eyebrowDark {
-  color: var(--moon);
+  color: var(--accent);
 }
 
 .h2 {
@@ -53,15 +53,13 @@
   overflow: hidden;
   max-width: 1440px;
   margin: 0 auto;
-  min-height: min(820px, calc(100svh - var(--nav-h) - 12px));
-  border-radius: 28px;
+  min-height: min(760px, calc(100svh - var(--nav-h) - 12px));
+  border-radius: 20px;
+  border: 1px solid var(--hairline);
   background:
-    radial-gradient(120% 70% at 70% 0%, rgba(124, 145, 182, 0.22), transparent 60%),
-    var(--night);
-  box-shadow:
-    inset 0 1px 1px rgba(216, 236, 248, 0.14),
-    0 24px 48px rgba(6, 6, 14, 0.18);
-  color: var(--frost);
+    radial-gradient(90% 70% at 75% 10%, #ffffff 0%, transparent 70%),
+    linear-gradient(180deg, var(--tint) 0%, #f8fafc 100%);
+  color: var(--ink);
   display: flex;
   align-items: center;
 }
@@ -81,8 +79,8 @@
   z-index: -1;
   pointer-events: none;
   background:
-    linear-gradient(90deg, rgba(5, 6, 15, 0.92) 0%, rgba(5, 6, 15, 0.7) 34%, rgba(5, 6, 15, 0) 62%),
-    linear-gradient(0deg, rgba(5, 6, 15, 0.7) 0%, rgba(5, 6, 15, 0) 30%);
+    linear-gradient(90deg, rgba(248, 250, 252, 0.97) 0%, rgba(248, 250, 252, 0.85) 36%, rgba(248, 250, 252, 0) 62%),
+    linear-gradient(0deg, rgba(248, 250, 252, 0.8) 0%, rgba(248, 250, 252, 0) 25%);
 }
 
 .heroContent {
@@ -99,42 +97,39 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--teal-glow);
-  box-shadow: 0 0 0 0 rgba(63, 208, 201, 0.6);
+  background: var(--accent-bright);
+  box-shadow: 0 0 0 0 rgba(31, 111, 209, 0.5);
   animation: pulse 2.4s infinite;
 }
 @keyframes pulse {
   70% {
-    box-shadow: 0 0 0 10px rgba(63, 208, 201, 0);
+    box-shadow: 0 0 0 10px rgba(31, 111, 209, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(63, 208, 201, 0);
+    box-shadow: 0 0 0 0 rgba(31, 111, 209, 0);
   }
 }
 
 .heroTitle {
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(36px, 5.4vw, 64px);
-  line-height: 1.06;
-  letter-spacing: -0.028em;
+  font-weight: 600;
+  font-size: clamp(36px, 5.2vw, 60px);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
   text-wrap: balance;
-  background: linear-gradient(180deg, #ffffff 0%, var(--ice) 45%, #98c0ef 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ink);
 }
 .heroSub {
   margin-top: 20px;
   font-size: clamp(16px, 1.5vw, 18px);
   line-height: 1.6;
-  color: var(--moon);
+  color: var(--graphite);
   max-width: 560px;
 }
 .heroNote {
   margin-top: 18px;
   font-size: 13px;
-  color: var(--fog);
+  color: var(--ash);
 }
 
 /* Ask box */
@@ -145,29 +140,21 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 8px 8px 18px;
+  padding: 7px 7px 7px 18px;
   border-radius: 999px;
-  background: rgba(12, 15, 26, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow:
-    inset 0 0 0 1px var(--glass-edge),
-    inset 0 1px 1px rgba(216, 236, 248, 0.18),
-    0 0 0 6px rgba(63, 208, 201, 0.05),
-    0 16px 32px rgba(0, 0, 0, 0.35);
-  transition: box-shadow 0.2s;
+  background: #ffffff;
+  border: 1px solid var(--hairline-strong);
+  box-shadow: var(--shadow-raised);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 .ask:focus-within {
-  box-shadow:
-    inset 0 0 0 1px rgba(63, 208, 201, 0.55),
-    inset 0 1px 1px rgba(216, 236, 248, 0.18),
-    0 0 0 6px rgba(63, 208, 201, 0.12),
-    0 16px 32px rgba(0, 0, 0, 0.35);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-raised), 0 0 0 4px var(--accent-wash);
 }
 .askIcon {
   width: 20px;
   height: 20px;
-  color: var(--fog);
+  color: var(--ash);
   flex-shrink: 0;
 }
 .ask input {
@@ -176,11 +163,11 @@
   height: 44px;
   border: 0;
   background: transparent;
-  color: #fff;
+  color: var(--ink);
   font-size: 16px;
 }
 .ask input::placeholder {
-  color: var(--fog);
+  color: var(--ash);
 }
 .ask input:focus {
   outline: none;
@@ -190,17 +177,17 @@
   align-items: center;
   gap: 8px;
   height: 44px;
-  padding: 0 20px;
+  padding: 0 22px;
   border-radius: 999px;
-  background: var(--teal-glow);
-  color: #04221f;
+  background: var(--accent);
+  color: var(--on-accent);
   font-weight: 600;
   font-size: 15px;
   flex-shrink: 0;
   transition: background-color 0.15s, transform 0.15s;
 }
 .askBtn:hover {
-  background: #6ae0da;
+  background: var(--accent-hover);
 }
 .askBtn:active {
   transform: scale(0.97);
@@ -208,12 +195,6 @@
 .askBtn svg {
   width: 16px;
   height: 16px;
-}
-.askBtn:focus-visible,
-.chip:focus-visible,
-.ctaPrimary:focus-visible,
-.ctaGhost:focus-visible {
-  outline-color: var(--teal-glow);
 }
 
 .chips {
@@ -227,14 +208,15 @@
   padding: 7px 14px;
   border-radius: 999px;
   font-size: 13.5px;
-  color: var(--frost);
-  background: var(--glass-fill);
-  box-shadow: inset 0 0 0 1px var(--glass-edge);
-  transition: background-color 0.15s, color 0.15s;
+  color: var(--ink);
+  background: #ffffff;
+  border: 1px solid var(--hairline-strong);
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
 }
 .chip:hover {
-  background: rgba(186, 214, 247, 0.14);
-  color: #fff;
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-wash);
 }
 
 /* ---------- Pillars ---------- */
@@ -301,7 +283,7 @@
 .stepNum {
   font-family: var(--font-mono);
   font-size: 12px;
-  color: var(--teal);
+  color: var(--accent);
   margin-bottom: 18px;
   display: flex;
   align-items: center;
@@ -368,8 +350,8 @@
   height: 14px;
 }
 .teal {
-  color: var(--teal);
-  background: var(--teal-wash);
+  color: var(--accent);
+  background: var(--accent-wash);
 }
 .amber {
   color: var(--amber);
@@ -390,7 +372,7 @@
   border-radius: 20px;
   background: var(--paper-raised);
   border: 1px solid var(--hairline);
-  box-shadow: var(--shadow-card), 0 24px 48px -24px rgba(39, 37, 30, 0.14);
+  box-shadow: var(--shadow-raised);
 }
 .anatomyHead {
   display: flex;
@@ -446,12 +428,12 @@
   display: grid;
   gap: 8px;
   padding: 12px 14px;
-  border-left: 3px solid var(--teal);
+  border-left: 3px solid var(--accent);
   border-radius: 0 10px 10px 0;
-  background: var(--teal-wash);
+  background: var(--accent-wash);
 }
 .quote .bar {
-  background: color-mix(in srgb, var(--teal) 30%, transparent);
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
 }
 .partRow {
   display: flex;
@@ -468,7 +450,7 @@
   gap: 6px;
   font-size: 13.5px;
   font-weight: 500;
-  color: var(--teal);
+  color: var(--accent);
 }
 .route svg {
   width: 16px;
@@ -520,7 +502,7 @@
 }
 .langLines path {
   fill: none;
-  stroke: var(--teal);
+  stroke: var(--accent);
   stroke-width: 1.4;
   stroke-dasharray: 4 4;
   vector-effect: non-scaling-stroke;
@@ -539,8 +521,8 @@
   gap: 8px;
   padding: 10px 18px;
   border-radius: 999px;
-  background: var(--teal);
-  color: var(--on-teal);
+  background: var(--accent);
+  color: var(--on-accent);
   font-weight: 500;
   font-size: 14.5px;
 }
@@ -572,8 +554,8 @@
   display: grid;
   place-items: center;
   margin-bottom: 10px;
-  color: var(--teal);
-  background: var(--teal-wash);
+  color: var(--accent);
+  background: var(--accent-wash);
 }
 .cardIcon svg {
   width: 24px;
@@ -590,21 +572,18 @@
   position: relative;
   overflow: hidden;
   text-align: center;
-  padding: clamp(40px, 7vw, 80px) 24px;
-  border-radius: 28px;
-  background:
-    radial-gradient(60% 90% at 50% 0%, rgba(63, 208, 201, 0.18), transparent 70%),
-    var(--night);
-  box-shadow: inset 0 1px 1px rgba(216, 236, 248, 0.16), inset 0 24px 48px rgba(168, 216, 245, 0.05);
-  color: var(--frost);
+  padding: clamp(40px, 7vw, 72px) 24px;
+  border-radius: 20px;
+  background: var(--accent);
+  color: #ffffff;
 }
 .cta::before {
   content: "";
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(var(--glass-edge) 1px, transparent 1px),
-    linear-gradient(90deg, var(--glass-edge) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
   background-size: 40px 40px;
   mask-image: radial-gradient(60% 80% at 50% 40%, #000, transparent);
   -webkit-mask-image: radial-gradient(60% 80% at 50% 40%, #000, transparent);
@@ -613,20 +592,16 @@
 .ctaTitle {
   position: relative;
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(30px, 4.4vw, 48px);
+  font-weight: 600;
+  font-size: clamp(30px, 4.4vw, 44px);
   letter-spacing: -0.02em;
   line-height: 1.1;
-  background: linear-gradient(180deg, #fff, #98c0ef);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 .ctaSub {
   position: relative;
   margin: 16px auto 0;
   max-width: 480px;
-  color: var(--moon);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 17px;
 }
 .ctaActions {
@@ -644,23 +619,26 @@
   height: 48px;
   padding: 0 26px;
   border-radius: 999px;
-  font-weight: 500;
+  font-weight: 600;
   transition: background-color 0.15s;
 }
 .ctaPrimary {
-  background: var(--teal-glow);
-  color: #04221f;
+  background: #ffffff;
+  color: var(--accent);
 }
 .ctaPrimary:hover {
-  background: #6ae0da;
+  background: #e8f0fb;
 }
 .ctaGhost {
-  color: #fff;
-  background: var(--glass-fill);
-  box-shadow: inset 0 0 0 1px var(--glass-edge);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.55);
 }
 .ctaGhost:hover {
-  background: rgba(186, 214, 247, 0.14);
+  background: rgba(255, 255, 255, 0.1);
+}
+.ctaPrimary:focus-visible,
+.ctaGhost:focus-visible {
+  outline-color: #ffffff;
 }
 
 /* ---------- Responsive ---------- */
@@ -679,7 +657,7 @@
 
 @media (max-width: 900px) {
   .scrim {
-    background: linear-gradient(0deg, rgba(5, 6, 15, 0.94) 0%, rgba(5, 6, 15, 0.82) 55%, rgba(5, 6, 15, 0.35) 100%);
+    background: linear-gradient(0deg, rgba(248, 250, 252, 0.98) 0%, rgba(248, 250, 252, 0.92) 50%, rgba(248, 250, 252, 0) 78%);
   }
   .hero {
     align-items: flex-end;
@@ -700,7 +678,7 @@
     padding: 8px 8px 0;
   }
   .hero {
-    border-radius: 22px;
+    border-radius: 16px;
   }
   .ask {
     flex-wrap: wrap;
