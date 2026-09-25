@@ -378,10 +378,11 @@
   color: var(--accent);
 }
 .panelEyebrow span {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  background: var(--accent-bright);
+  background: var(--flag-yellow);
+  border: 1.5px solid var(--highlight-edge);
 }
 .panelQuote {
   margin-top: 14px;
@@ -397,6 +398,12 @@
   margin-top: 12px;
   color: var(--graphite);
   font-size: 15px;
+}
+
+.panelSponsor {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--hairline);
 }
 
 /* ---------- Responsive ---------- */

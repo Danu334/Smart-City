@@ -123,15 +123,122 @@ export function fileIconTexture(kind, size = 128) {
       g.fillStyle = "#1f6fd1";
       g.fill();
     } else {
-      // highlighted passage
-      g.strokeStyle = "#1f6fd1";
-      g.lineWidth = 8;
+      // highlighted passage (yellow marker)
+      g.strokeStyle = "#ffd200";
+      g.lineWidth = 10;
       g.beginPath();
       g.moveTo(40, 70);
       g.lineTo(90, 70);
       g.stroke();
     }
   }
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 4;
+  return tex;
+}
+
+// Flag of the Republic of Moldova (1:2) with a simplified coat of arms:
+// an eagle holding a shield (red over blue) with the aurochs head. The
+// emblem matters: the plain tricolour would be Romania's flag.
+export function moldovaFlagTexture() {
+  const W = 512;
+  const H = 256;
+  const c = document.createElement("canvas");
+  c.width = W;
+  c.height = H;
+  const g = c.getContext("2d");
+  g.fillStyle = "#0046ae";
+  g.fillRect(0, 0, W / 3, H);
+  g.fillStyle = "#ffd200";
+  g.fillRect(W / 3, 0, W / 3, H);
+  g.fillStyle = "#cc092f";
+  g.fillRect((2 * W) / 3, 0, W / 3, H);
+
+  const cx = W / 2;
+  const cy = H / 2 + 4;
+  const brown = "#8a5a1c";
+  const dark = "#5c3a10";
+  g.lineJoin = "round";
+
+  // wings
+  g.fillStyle = brown;
+  for (const side of [-1, 1]) {
+    g.beginPath();
+    g.moveTo(cx + side * 10, cy - 30);
+    g.lineTo(cx + side * 58, cy - 62);
+    g.lineTo(cx + side * 62, cy - 30);
+    g.lineTo(cx + side * 52, cy - 8);
+    g.lineTo(cx + side * 56, cy + 12);
+    g.lineTo(cx + side * 30, cy + 20);
+    g.closePath();
+    g.fill();
+  }
+  // body, tail, head and beak
+  g.beginPath();
+  g.ellipse(cx, cy, 24, 42, 0, 0, Math.PI * 2);
+  g.fill();
+  g.beginPath();
+  g.moveTo(cx - 18, cy + 36);
+  g.lineTo(cx + 18, cy + 36);
+  g.lineTo(cx, cy + 62);
+  g.closePath();
+  g.fill();
+  g.beginPath();
+  g.arc(cx, cy - 50, 12, 0, Math.PI * 2);
+  g.fill();
+  g.fillStyle = "#e0a100";
+  g.beginPath();
+  g.moveTo(cx + 8, cy - 52);
+  g.lineTo(cx + 20, cy - 48);
+  g.lineTo(cx + 8, cy - 44);
+  g.closePath();
+  g.fill();
+  // cross held in the beak
+  g.strokeStyle = "#e0a100";
+  g.lineWidth = 3;
+  g.beginPath();
+  g.moveTo(cx + 22, cy - 66);
+  g.lineTo(cx + 22, cy - 42);
+  g.moveTo(cx + 16, cy - 60);
+  g.lineTo(cx + 28, cy - 60);
+  g.stroke();
+
+  // shield: red over blue, with a yellow aurochs head
+  const sw = 32;
+  const sh = 40;
+  const sx = cx - sw / 2;
+  const sy = cy - 16;
+  g.save();
+  g.beginPath();
+  g.moveTo(sx, sy);
+  g.lineTo(sx + sw, sy);
+  g.lineTo(sx + sw, sy + sh * 0.6);
+  g.quadraticCurveTo(sx + sw, sy + sh, cx, sy + sh);
+  g.quadraticCurveTo(sx, sy + sh, sx, sy + sh * 0.6);
+  g.closePath();
+  g.clip();
+  g.fillStyle = "#cc092f";
+  g.fillRect(sx, sy, sw, sh / 2);
+  g.fillStyle = "#0046ae";
+  g.fillRect(sx, sy + sh / 2, sw, sh / 2);
+  g.restore();
+  g.strokeStyle = dark;
+  g.lineWidth = 2;
+  g.stroke();
+  g.fillStyle = "#ffd200";
+  g.beginPath();
+  g.ellipse(cx, sy + 18, 6, 8, 0, 0, Math.PI * 2);
+  g.fill();
+  g.strokeStyle = "#ffd200";
+  g.lineWidth = 3;
+  g.beginPath();
+  g.moveTo(cx - 5, sy + 12);
+  g.quadraticCurveTo(cx - 12, sy + 6, cx - 10, sy + 2);
+  g.moveTo(cx + 5, sy + 12);
+  g.quadraticCurveTo(cx + 12, sy + 6, cx + 10, sy + 2);
+  g.stroke();
 
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;

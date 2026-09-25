@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useI18n } from "@/lib/i18n";
 import Logo from "@/components/Logo";
 import LanguageSwitch from "@/components/LanguageSwitch";
+import SponsorCredit from "@/components/SponsorCredit";
 import styles from "./Auth.module.css";
 
 const DocsScene = dynamic(() => import("@/components/three/DocsScene"), { ssr: false });
@@ -48,6 +49,7 @@ export default function AuthLayout({ title, children }) {
             </p>
             <p className={styles.panelQuote}>{t.auth.panelQuote}</p>
             <p className={styles.panelCaption}>{t.auth.panelCaption}</p>
+            <SponsorCredit className={styles.panelSponsor} />
           </div>
         </aside>
       </div>

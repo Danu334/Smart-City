@@ -36,7 +36,8 @@ function build(stage) {
   pool.position.y = 0.01;
   scene.add(pool);
 
-  const targets = buildChisinau(scene, rand, LINE);
+  const city = buildChisinau(scene, rand, LINE);
+  const { targets } = city;
 
   // Query orb
   const orb = new THREE.Group();
@@ -131,6 +132,7 @@ function build(stage) {
   };
 
   const tick = (dt, t, p) => {
+    city.update(t);
     const a = t * 0.045 + p.x * 0.25 + 0.6;
     camera.position.set(Math.sin(a) * radius, 5.6 + p.y * -0.6, Math.cos(a) * radius - 0.8);
     camera.lookAt(0, 0.8, -0.8);

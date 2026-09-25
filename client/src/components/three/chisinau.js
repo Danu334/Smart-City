@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { moldovaFlagTexture } from "./textures";
 
 // A stylised model of central Chișinău around Bulevardul Ștefan cel Mare:
 // low 2–5 floor neoclassical blocks with hip roofs along a tree-lined
@@ -303,5 +304,45 @@ export function buildChisinau(scene, rand, lineColor) {
   });
   scene.add(treeMesh);
 
-  return targets;
+  // ---------- Flags of Moldova (waving) ----------
+  const flagTex = moldovaFlagTexture();
+  // Seen from behind a real flag is mirrored; show blue-yellow-red on both
+  // sides so it never reads as a different flag.
+  const flagBackTex = flagTex.clone();
+  flagBackTex.wrapS = THREE.RepeatWrapping;
+  flagBackTex.repeat.x = -1;
+  flagBackTex.offset.x = 1;
+  const flagFront = new THREE.MeshBasicMaterial({ map: flagTex, side: THREE.FrontSide });
+  const flagBack = new THREE.MeshBasicMaterial({ map: flagBackTex, side: THREE.BackSide });
+  const flags = [];
+  const addFlag = (x, baseY, z, pole, size = 0.62) => {
+    part(new THREE.CylinderGeometry(0.012, 0.012, pole, 6), x, baseY + pole / 2, z, new THREE.MeshStandardMaterial({ color: 0x9aa5b5 }));
+    const geo = new THREE.PlaneGeometry(size, size / 2, 20, 6);
+    geo.translate(size / 2, 0, 0);
+    for (const mat of [flagFront, flagBack]) {
+      const flag = new THREE.Mesh(geo, mat);
+      flag.position.set(x, baseY + pole - size / 4 - 0.02, z);
+      flag.rotation.y = -0.5;
+      scene.add(flag);
+    }
+    flags.push({ geo, base: geo.attributes.position.array.slice(), size, phase: flags.length * 1.7 });
+  };
+  addFlag(0, 1.65, 2.75, 0.75); // Government House
+  addFlag(-6.8, 1.0, 2.1, 0.6, 0.5); // Primăria
+  addFlag(1.2, 0, -1.2, 1.35, 0.55); // flagpole on the square
+
+  const update = (t) => {
+    flags.forEach((f) => {
+      const p = f.geo.attributes.position;
+      for (let i = 0; i < p.count; i++) {
+        const x = f.base[i * 3];
+        const k = x / f.size; // 0 at the pole, 1 at the free edge
+        p.setZ(i, Math.sin(x * 9 - t * 3.2 + f.phase) * 0.045 * k);
+        p.setY(i, f.base[i * 3 + 1] - k * k * 0.03);
+      }
+      p.needsUpdate = true;
+    });
+  };
+
+  return { targets, update };
 }

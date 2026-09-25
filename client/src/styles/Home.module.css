@@ -94,19 +94,20 @@
 }
 
 .pulse {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  background: var(--accent-bright);
-  box-shadow: 0 0 0 0 rgba(31, 111, 209, 0.5);
+  background: var(--flag-yellow);
+  border: 1.5px solid var(--highlight-edge);
+  box-shadow: 0 0 0 0 rgba(255, 210, 0, 0.6);
   animation: pulse 2.4s infinite;
 }
 @keyframes pulse {
   70% {
-    box-shadow: 0 0 0 10px rgba(31, 111, 209, 0);
+    box-shadow: 0 0 0 10px rgba(255, 210, 0, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(31, 111, 209, 0);
+    box-shadow: 0 0 0 0 rgba(255, 210, 0, 0);
   }
 }
 
@@ -243,6 +244,20 @@
 .pillarVal {
   font-size: 14px;
   color: var(--graphite);
+}
+
+/* ---------- Sponsor credit ---------- */
+.sponsor {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 28px var(--gutter) 0;
+}
+.sponsor > div {
+  padding: 12px 18px 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--hairline);
+  border-left: 4px solid var(--flag-yellow);
+  background: #fffdf2;
 }
 
 /* ---------- Sections ---------- */
@@ -428,12 +443,15 @@
   display: grid;
   gap: 8px;
   padding: 12px 14px;
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid var(--highlight-edge);
   border-radius: 0 10px 10px 0;
-  background: var(--accent-wash);
+  background: #fffbe6;
 }
+/* Cited passage marked like a yellow highlighter. */
 .quote .bar {
-  background: color-mix(in srgb, var(--accent) 30%, transparent);
+  height: 12px;
+  background: var(--highlight);
+  border-radius: 3px;
 }
 .partRow {
   display: flex;
@@ -597,6 +615,16 @@
   letter-spacing: -0.02em;
   line-height: 1.1;
 }
+.ctaTitle::after {
+  content: "";
+  display: block;
+  width: 72px;
+  height: 4px;
+  margin: 18px auto 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--flag-blue) 0 33.33%, var(--flag-yellow) 33.33% 66.66%, var(--flag-red) 66.66% 100%);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
 .ctaSub {
   position: relative;
   margin: 16px auto 0;
@@ -623,11 +651,11 @@
   transition: background-color 0.15s;
 }
 .ctaPrimary {
-  background: #ffffff;
-  color: var(--accent);
+  background: var(--flag-yellow);
+  color: #16202e;
 }
 .ctaPrimary:hover {
-  background: #e8f0fb;
+  background: #ffe04d;
 }
 .ctaGhost {
   color: #ffffff;

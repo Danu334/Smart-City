@@ -46,6 +46,7 @@ const dictionaries = {
         ],
       },
     },
+    sponsor: { label: "Challenge by", name: "Chișinău City Hall" },
     brand: { name: "Smart City", tag: "Chișinău municipal assistant" },
     hero: {
       eyebrow: "Chișinău · municipal AI assistant",
@@ -205,6 +206,7 @@ const dictionaries = {
         ],
       },
     },
+    sponsor: { label: "Provocare lansată de", name: "Primăria Municipiului Chișinău" },
     brand: { name: "Smart City", tag: "Asistentul municipal Chișinău" },
     hero: {
       eyebrow: "Chișinău · asistent AI municipal",
@@ -364,6 +366,7 @@ const dictionaries = {
         ],
       },
     },
+    sponsor: { label: "Задача предложена", name: "Примэрия муниципия Кишинэу" },
     brand: { name: "Smart City", tag: "Муниципальный помощник Кишинёва" },
     hero: {
       eyebrow: "Кишинёв · муниципальный ИИ-помощник",

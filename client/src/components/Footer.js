@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 import Logo from "./Logo";
+import SponsorCredit from "./SponsorCredit";
 import styles from "./Footer.module.css";
 
 export default function Footer() {
@@ -10,6 +11,7 @@ export default function Footer() {
       <div className={styles.inner}>
         <div className={styles.about}>
           <Logo />
+          <SponsorCredit />
           <p className={styles.disclaimer}>{t.footer.disclaimer}</p>
         </div>
 

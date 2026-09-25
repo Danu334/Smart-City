@@ -17,6 +17,13 @@
   --accent-bright: #1f6fd1;
   --on-accent: #ffffff;
 
+  /* Moldovan national colours */
+  --flag-blue: #0046ae;
+  --flag-yellow: #ffd200;
+  --flag-red: #cc092f;
+  --highlight: rgba(255, 210, 0, 0.38);
+  --highlight-edge: #e0b400;
+
   --amber: #9a5b00;
   --amber-wash: rgba(154, 91, 0, 0.09);
   --rose: #b42332;
@@ -134,4 +141,10 @@ button {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Thin national tricolour across the top of every page. */
+.tricolor {
+  height: 4px;
+  background: linear-gradient(90deg, var(--flag-blue) 0 33.33%, var(--flag-yellow) 33.33% 66.66%, var(--flag-red) 66.66% 100%);
 }

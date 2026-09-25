@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Guide from "@/components/guide/Guide";
+import SponsorCredit from "@/components/SponsorCredit";
 import { useI18n } from "@/lib/i18n";
 import styles from "@/styles/Home.module.css";
 
@@ -187,6 +188,10 @@ export default function Home() {
             </div>
           ))}
         </section>
+
+        <div className={styles.sponsor}>
+          <SponsorCredit />
+        </div>
 
         {/* How it works */}
         <section className={styles.section} aria-labelledby="how">

@@ -50,6 +50,14 @@ export default function Victor({ pose = "idle", className, title, viewBox = "0 0
       {/* badge */}
       <rect x="128" y="200" width="26" height="18" rx="3" fill="#fff" />
       <path d="M133 207h16M133 212h10" stroke="#0b4f9c" strokeWidth="2.4" strokeLinecap="round" />
+      {/* Moldovan flag lapel pin */}
+      <g transform="rotate(-8 70 184)">
+        <rect x="61" y="179" width="18" height="11" rx="1.5" fill="#fff" />
+        <rect x="62" y="180" width="5.4" height="9" fill="#0046ae" />
+        <rect x="67.3" y="180" width="5.4" height="9" fill="#ffd200" />
+        <rect x="72.6" y="180" width="5.4" height="9" fill="#cc092f" />
+        <circle cx="70" cy="184.5" r="1.6" fill="#8a5a1c" />
+      </g>
       {/* ears */}
       <ellipse cx="67" cy="96" rx="6" ry="9.5" fill="#e8b48e" />
       <ellipse cx="133" cy="96" rx="6" ry="9.5" fill="#e8b48e" />

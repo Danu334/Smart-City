@@ -38,7 +38,12 @@ function pageTexture(rand) {
     if (rand() < 0.12) continue;
     const y = top + r * step;
     const len = r % 5 === 4 ? 0.4 + rand() * 0.3 : 0.78 + rand() * 0.2;
-    g.fillStyle = r >= start && r < start + span ? "rgba(11, 79, 156, 0.85)" : "rgba(74, 85, 101, 0.25)";
+    const cited = r >= start && r < start + span;
+    if (cited) {
+      g.fillStyle = "rgba(255, 210, 0, 0.55)";
+      g.fillRect(pad - 6, y - 7, (cw - pad * 2) * len + 12, 22);
+    }
+    g.fillStyle = cited ? "rgba(22, 32, 46, 0.8)" : "rgba(74, 85, 101, 0.25)";
     g.fillRect(pad, y, (cw - pad * 2) * len, 8);
   }
 
@@ -70,7 +75,7 @@ function build(stage) {
     );
     const highlight = new THREE.Mesh(
       new THREE.PlaneGeometry(W * 0.9, passage.h),
-      new THREE.MeshBasicMaterial({ color: BLUE, transparent: true, opacity: 0, depthWrite: false })
+      new THREE.MeshBasicMaterial({ color: 0xffd200, transparent: true, opacity: 0, depthWrite: false })
     );
     highlight.position.set(0, passage.y, 0.005);
     group.add(page, highlight);
