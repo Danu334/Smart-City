@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import Guide from "@/components/guide/Guide";
 import { useI18n } from "@/lib/i18n";
 import styles from "@/styles/Home.module.css";
 
@@ -50,7 +51,7 @@ function AskBox() {
 
   return (
     <div className={styles.askWrap}>
-      <form className={styles.ask} onSubmit={submit} role="search">
+      <form id="ask-box" className={styles.ask} onSubmit={submit} role="search">
         <label htmlFor="ask" className="visually-hidden">
           {t.hero.label}
         </label>
@@ -311,6 +312,7 @@ export default function Home() {
       </main>
 
       <Footer />
+      <Guide targetId="ask-box" />
     </>
   );
 }
