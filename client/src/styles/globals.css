@@ -1,0 +1,165 @@
+:root {
+  /* Parchment surfaces */
+  --paper: #faf8f5;
+  --paper-raised: #fdfbfa;
+  --paper-sunk: #f2efe9;
+  --ink: #27251e;
+  --graphite: #62605a;
+  --ash: #85837d;
+  --hairline: #e2e0da;
+  --hairline-strong: #d1d1cd;
+  --teal: #016a71;
+  --teal-hover: #01565c;
+  --teal-wash: rgba(1, 106, 113, 0.08);
+  --on-teal: #ffffff;
+  --amber: #9a5b00;
+  --amber-wash: rgba(154, 91, 0, 0.09);
+  --rose: #a3313a;
+  --rose-wash: rgba(163, 49, 58, 0.08);
+
+  /* Midnight glass panels (always dark) */
+  --night: #05060f;
+  --night-raised: #0c0f1a;
+  --ice: #d8ecf8;
+  --frost: #d1e4fa;
+  --moon: #c7d3ea;
+  --fog: #9da7ba;
+  --glass-edge: rgba(186, 215, 247, 0.12);
+  --glass-fill: rgba(186, 214, 247, 0.06);
+  --teal-glow: #3fd0c9;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --radius-card: 16px;
+  --radius-input: 12px;
+  --max: 1200px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --nav-h: 68px;
+
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #111214;
+    --paper-raised: #17181b;
+    --paper-sunk: #0c0d0f;
+    --ink: #ecebe6;
+    --graphite: #aeaca5;
+    --ash: #8e8c86;
+    --hairline: #26272b;
+    --hairline-strong: #34353a;
+    --teal: #3fbfc0;
+    --teal-hover: #5ad0d0;
+    --teal-wash: rgba(63, 191, 192, 0.1);
+    --on-teal: #062426;
+    --amber: #e3a54a;
+    --amber-wash: rgba(227, 165, 74, 0.1);
+    --rose: #ec7f86;
+    --rose-wash: rgba(236, 127, 134, 0.1);
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--ink);
+  background: var(--paper);
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* next/font variables live on the app wrapper, so font tokens resolve there. */
+.app {
+  --font-body: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-onest), var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-mono-jb), ui-monospace, monospace;
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: var(--teal);
+  color: var(--on-teal);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 14px;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

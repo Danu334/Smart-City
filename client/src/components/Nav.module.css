@@ -1,0 +1,222 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--paper) 82%, transparent);
+  backdrop-filter: saturate(1.4) blur(14px);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.nav {
+  max-width: var(--max);
+  margin: 0 auto;
+  height: var(--nav-h);
+  padding: 0 var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Brand */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+.mark {
+  flex-shrink: 0;
+}
+.brandText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+.brandName {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+}
+.brandTag {
+  font-size: 11.5px;
+  color: var(--graphite);
+}
+
+/* Links */
+.links {
+  list-style: none;
+  display: flex;
+  gap: 4px;
+  margin: 0 auto;
+}
+.link {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 15px;
+  color: var(--graphite);
+  transition: color 0.15s, background-color 0.15s;
+}
+.link:hover {
+  color: var(--ink);
+  background: var(--paper-sunk);
+}
+.link[aria-current="page"] {
+  color: var(--teal);
+  background: var(--teal-wash);
+  font-weight: 500;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lang {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--hairline);
+  background: var(--paper-raised);
+}
+.langBtn {
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: var(--graphite);
+  transition: color 0.15s, background-color 0.15s;
+}
+.langBtn:hover {
+  color: var(--ink);
+}
+.langBtn[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.ghost,
+.solid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 999px;
+  font-size: 14.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+.ghost {
+  color: var(--ink);
+  border: 1px solid var(--hairline-strong);
+}
+.ghost:hover {
+  background: var(--paper-sunk);
+}
+.solid {
+  background: var(--teal);
+  color: var(--on-teal);
+}
+.solid:hover {
+  background: var(--teal-hover);
+}
+
+/* Mobile */
+.burger {
+  display: none;
+  width: 44px;
+  height: 44px;
+  margin-left: auto;
+  border-radius: 999px;
+  position: relative;
+}
+.burger span,
+.burger span::before,
+.burger span::after {
+  position: absolute;
+  left: 13px;
+  width: 18px;
+  height: 1.6px;
+  border-radius: 2px;
+  background: var(--ink);
+  transition: transform 0.2s, opacity 0.2s;
+}
+.burger span {
+  top: 21px;
+}
+.burger span::before,
+.burger span::after {
+  content: "";
+  left: 0;
+}
+.burger span::before {
+  transform: translateY(-6px);
+}
+.burger span::after {
+  transform: translateY(6px);
+}
+.burger span[data-open="true"] {
+  background: transparent;
+}
+.burger span[data-open="true"]::before {
+  transform: rotate(45deg);
+}
+.burger span[data-open="true"]::after {
+  transform: rotate(-45deg);
+}
+
+.drawer {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .links,
+  .actions {
+    display: none;
+  }
+  .burger {
+    display: block;
+  }
+  .drawer:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 12px var(--gutter) 24px;
+    border-top: 1px solid var(--hairline);
+  }
+  .drawer ul {
+    list-style: none;
+  }
+  .drawerLink {
+    display: block;
+    padding: 12px 0;
+    font-family: var(--font-display);
+    font-size: 22px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .drawer .lang {
+    align-self: flex-start;
+  }
+  .drawerActions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .drawerActions a {
+    height: 48px;
+  }
+}
+
+@media (max-width: 420px) {
+  .brandTag {
+    display: none;
+  }
+}
