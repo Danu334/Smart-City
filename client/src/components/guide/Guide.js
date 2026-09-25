@@ -3,8 +3,8 @@ import { useI18n } from "@/lib/i18n";
 import Victor from "./Victor";
 import styles from "./Guide.module.css";
 
-const OFF_KEY = "sc-guide-off"; // persisted: experienced users opt out
-const SEEN_KEY = "sc-guide-seen"; // per session: don't replay on every visit
+const OFF_KEY = "sc-guide-off"; // persisted: experienced users opt out everywhere
+const seenKey = (tour) => `sc-guide-seen-${tour}`; // per session, per page
 const CARD_W = 400;
 
 const read = (store, key) => {
@@ -21,30 +21,40 @@ const write = (store, key, value) => {
   } catch {}
 };
 
-// Two-step welcome tour for the home page. Step 1: Victor says hello.
-// Step 2: the page dims around the ask box and Victor points at it.
-export default function Guide({ targetId }) {
+/*
+  A short guided tour with Victor. `tour` names the copy in t.guide.tours;
+  `steps` lines up with it:
+    { target?: element id to spotlight, radius?: spotlight corner radius,
+      focus?: focus the target's first input when the step opens }
+  Steps without a target show Victor waving in the corner.
+*/
+export default function Guide({ tour, steps }) {
   const { t } = useI18n();
   const g = t.guide;
+  const copy = g.tours[tour];
   const [ready, setReady] = useState(false);
-  const [step, setStep] = useState(0);
+  const [index, setIndex] = useState(-1); // -1 = closed
   const [rect, setRect] = useState(null);
   const [wide, setWide] = useState(false);
+
+  const step = index >= 0 ? steps[index] : null;
+  const total = steps.length;
 
   useEffect(() => {
     const id = setTimeout(() => {
       const off = read(localStorage, OFF_KEY) === "1";
-      const seen = read(sessionStorage, SEEN_KEY) === "1";
+      const seen = read(sessionStorage, seenKey(tour)) === "1";
       setReady(true);
-      if (!off && !seen) setStep(1);
+      if (!off && !seen) setIndex(0);
     }, 600);
     return () => clearTimeout(id);
-  }, []);
+  }, [tour]);
 
   const finish = useCallback(() => {
-    write(sessionStorage, SEEN_KEY, "1");
-    setStep(0);
-  }, []);
+    write(sessionStorage, seenKey(tour), "1");
+    setIndex(-1);
+    setRect(null);
+  }, [tour]);
 
   const turnOff = () => {
     write(localStorage, OFF_KEY, "1");
@@ -53,13 +63,20 @@ export default function Guide({ targetId }) {
 
   const restart = () => {
     write(localStorage, OFF_KEY, null);
-    setStep(1);
+    setIndex(0);
   };
 
-  // Track the ask box while it is spotlighted.
+  const go = (next) => {
+    setRect(null);
+    setIndex(next);
+  };
+
+  // Keep the spotlight glued to the current target.
+  const target = step?.target;
+  const focus = step?.focus;
   useEffect(() => {
-    if (step !== 2) return;
-    const el = document.getElementById(targetId);
+    if (!target) return;
+    const el = document.getElementById(target);
     if (!el) return;
 
     let raf = 0;
@@ -73,26 +90,35 @@ export default function Guide({ targetId }) {
     };
 
     const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    el.scrollIntoView({ block: "center", behavior: smooth ? "smooth" : "auto" });
+    const behavior = smooth ? "smooth" : "auto";
+    // Phones show the card as a bottom sheet, so park the target near the top.
+    if (window.innerWidth <= 600) {
+      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 16, behavior });
+    } else {
+      el.scrollIntoView({ block: "center", behavior });
+    }
     measure();
-    const focusId = setTimeout(() => el.querySelector("input")?.focus({ preventScroll: true }), smooth ? 450 : 0);
+    const settle = setTimeout(() => {
+      measure();
+      if (focus) el.querySelector("input, select, textarea")?.focus({ preventScroll: true });
+    }, smooth ? 450 : 0);
 
     window.addEventListener("scroll", measure, { passive: true });
     window.addEventListener("resize", measure);
     return () => {
       cancelAnimationFrame(raf);
-      clearTimeout(focusId);
+      clearTimeout(settle);
       window.removeEventListener("scroll", measure);
       window.removeEventListener("resize", measure);
     };
-  }, [step, targetId]);
+  }, [target, focus]);
 
   useEffect(() => {
-    if (!step) return;
+    if (index < 0) return;
     const onKey = (e) => e.key === "Escape" && finish();
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [step, finish]);
+  }, [index, finish]);
 
   if (!ready) return null;
 
@@ -106,14 +132,15 @@ export default function Guide({ targetId }) {
   }
 
   const pad = 8;
-  const spot = step === 2 && rect;
+  const spot = step.target && rect;
   const beside = spot && wide;
   const cardStyle = beside
     ? {
         left: rect.right + 28,
-        top: Math.max(16, Math.min(rect.top + rect.height / 2 - 130, window.innerHeight - 320)),
+        top: Math.max(16, Math.min(rect.top + rect.height / 2 - 130, window.innerHeight - 340)),
       }
     : undefined;
+  const last = index === total - 1;
 
   return (
     <>
@@ -126,12 +153,13 @@ export default function Guide({ targetId }) {
             left: rect.left - pad,
             width: rect.width + pad * 2,
             height: rect.height + pad * 2,
+            borderRadius: step.radius ?? 16,
           }}
         />
       )}
 
       <div
-        key={step}
+        key={index}
         className={styles.card}
         data-beside={beside || undefined}
         style={cardStyle}
@@ -147,13 +175,13 @@ export default function Guide({ targetId }) {
         </button>
 
         <div className={styles.row}>
-          <Victor pose={step === 1 ? "wave" : "point"} className={styles.victor} />
+          <Victor pose={step.target ? "point" : "wave"} className={styles.victor} />
           <div className={styles.bubble}>
             <p id="guide-name" className={styles.name}>
               {g.name}
             </p>
             <p id="guide-text" className={styles.text} aria-live="polite">
-              {step === 1 ? g.hello : g.ask}
+              {copy[index]}
             </p>
           </div>
         </div>
@@ -161,27 +189,32 @@ export default function Guide({ targetId }) {
         <div className={styles.footer}>
           <span className={styles.progress}>
             <span className={styles.dots} aria-hidden="true">
-              <span data-on={step >= 1} />
-              <span data-on={step >= 2} />
+              {steps.map((_, i) => (
+                <span key={i} data-on={i <= index} />
+              ))}
             </span>
-            {g.step.replace("{n}", step)}
+            {g.step.replace("{n}", index + 1).replace("{total}", total)}
           </span>
           <div className={styles.actions}>
-            {step === 1 ? (
-              <>
-                <button type="button" className={styles.ghost} onClick={finish}>
-                  {g.close}
-                </button>
-                <button type="button" className={styles.primary} onClick={() => setStep(2)}>
-                  {g.next}
-                  <svg viewBox="0 0 20 20" aria-hidden="true">
-                    <path d="M4 10h11M11 5.5L15.5 10 11 14.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
-              </>
+            {index === 0 ? (
+              <button type="button" className={styles.ghost} onClick={finish}>
+                {g.close}
+              </button>
             ) : (
+              <button type="button" className={styles.ghost} onClick={() => go(index - 1)}>
+                {g.back}
+              </button>
+            )}
+            {last ? (
               <button type="button" className={styles.primary} onClick={finish}>
                 {g.done}
+              </button>
+            ) : (
+              <button type="button" className={styles.primary} onClick={() => go(index + 1)}>
+                {g.next}
+                <svg viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M4 10h11M11 5.5L15.5 10 11 14.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </button>
             )}
           </div>

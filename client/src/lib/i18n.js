@@ -18,15 +18,27 @@ const dictionaries = {
     },
     guide: {
       name: "Victor · Your guide",
-      hello: "Hello! I'm Victor, a City Hall specialist. I'll help you find answers in the city's official documents.",
-      ask: "Type here everything you want to find out, for example about documents, taxes or permits. Then press “Ask”.",
       next: "Next",
       done: "Got it",
       close: "Close",
-      step: "Step {n} of 2",
+      step: "Step {n} of {total}",
+      back: "Back",
       off: "I'm an experienced user. Don't show the guide again.",
       launcher: "Guide",
       launch: "Start the guide with Victor",
+      tours: {
+        home: [
+          "Hello! I'm Victor, a City Hall specialist. I'll help you find answers in the city's official documents.",
+          "Type here everything you want to find out, for example about documents, taxes or permits. Then press “Ask”.",
+        ],
+        signUp: [
+          "Hello! Creating an account takes about a minute. I'll show you each step.",
+          "First, choose who you are: a resident or a City Hall employee.",
+          "Then write your full name, your email and a password of at least 8 characters. The coloured bar shows how strong the password is.",
+          "Choose the language you want your answers in: Romanian or Russian.",
+          "Finally, tick the confirmation box and press “Create account”. That's it!",
+        ],
+      },
     },
     brand: { name: "Smart City", tag: "Chișinău municipal assistant" },
     hero: {
@@ -159,15 +171,27 @@ const dictionaries = {
     },
     guide: {
       name: "Victor · Ghidul dvs.",
-      hello: "Bună ziua! Sunt Victor, specialist al Primăriei. Vă ajut să găsiți răspunsuri în documentele oficiale ale orașului.",
-      ask: "Scrieți aici tot ce doriți să aflați, de exemplu despre acte, taxe sau autorizații. Apoi apăsați „Întreabă”.",
       next: "Mai departe",
       done: "Am înțeles",
       close: "Închide",
-      step: "Pasul {n} din 2",
+      step: "Pasul {n} din {total}",
+      back: "Înapoi",
       off: "Sunt utilizator experimentat. Nu mai afișa ghidul.",
       launcher: "Ghid",
       launch: "Pornește ghidul cu Victor",
+      tours: {
+        home: [
+          "Bună ziua! Sunt Victor, specialist al Primăriei. Vă ajut să găsiți răspunsuri în documentele oficiale ale orașului.",
+          "Scrieți aici tot ce doriți să aflați, de exemplu despre acte, taxe sau autorizații. Apoi apăsați „Întreabă”.",
+        ],
+        signUp: [
+          "Bună ziua! Crearea contului durează cam un minut. Vă arăt fiecare pas.",
+          "Mai întâi, alegeți cine sunteți: locuitor sau angajat al Primăriei.",
+          "Apoi scrieți numele complet, adresa de e-mail și o parolă de cel puțin 8 caractere. Bara colorată arată cât de sigură este parola.",
+          "Alegeți limba în care doriți să primiți răspunsurile: română sau rusă.",
+          "La final, bifați confirmarea și apăsați „Creează contul”. Gata!",
+        ],
+      },
     },
     brand: { name: "Smart City", tag: "Asistentul municipal Chișinău" },
     hero: {
@@ -300,15 +324,27 @@ const dictionaries = {
     },
     guide: {
       name: "Виктор · Ваш помощник",
-      hello: "Здравствуйте! Я Виктор, специалист Примэрии. Помогу найти ответы в официальных документах города.",
-      ask: "Напишите здесь всё, что хотите узнать, например о документах, налогах или разрешениях. Затем нажмите «Спросить».",
       next: "Далее",
       done: "Понятно",
       close: "Закрыть",
-      step: "Шаг {n} из 2",
+      step: "Шаг {n} из {total}",
+      back: "Назад",
       off: "Я опытный пользователь. Больше не показывать помощника.",
       launcher: "Помощник",
       launch: "Запустить помощника Виктора",
+      tours: {
+        home: [
+          "Здравствуйте! Я Виктор, специалист Примэрии. Помогу найти ответы в официальных документах города.",
+          "Напишите здесь всё, что хотите узнать, например о документах, налогах или разрешениях. Затем нажмите «Спросить».",
+        ],
+        signUp: [
+          "Здравствуйте! Создание аккаунта займёт около минуты. Я покажу каждый шаг.",
+          "Сначала выберите, кто вы: житель или сотрудник Примэрии.",
+          "Затем укажите полное имя, эл. почту и пароль не короче 8 символов. Цветная полоска показывает, насколько надёжен пароль.",
+          "Выберите язык, на котором хотите получать ответы: румынский или русский.",
+          "В конце отметьте подтверждение и нажмите «Создать аккаунт». Готово!",
+        ],
+      },
     },
     brand: { name: "Smart City", tag: "Муниципальный помощник Кишинёва" },
     hero: {

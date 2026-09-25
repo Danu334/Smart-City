@@ -81,6 +81,10 @@
   display: grid;
   gap: 8px;
 }
+.group {
+  display: grid;
+  gap: 20px;
+}
 .labelRow {
   display: flex;
   justify-content: space-between;

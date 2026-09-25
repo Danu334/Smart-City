@@ -12,6 +12,7 @@ import styles from "@/styles/Home.module.css";
 const CityScene = dynamic(() => import("@/components/three/CityScene"), { ssr: false });
 
 const STATE_TONES = ["teal", "amber", "rose"];
+const HOME_TOUR = [{}, { target: "ask-box", radius: 36, focus: true }];
 
 function StateIcon({ tone }) {
   if (tone === "teal")
@@ -312,7 +313,7 @@ export default function Home() {
       </main>
 
       <Footer />
-      <Guide targetId="ask-box" />
+      <Guide tour="home" steps={HOME_TOUR} />
     </>
   );
 }

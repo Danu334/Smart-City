@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 import AuthLayout from "@/components/auth/AuthLayout";
+import Guide from "@/components/guide/Guide";
 import { Field, Notice, PasswordInput, focusFirstInvalid, isEmail } from "@/components/auth/Fields";
 import styles from "@/components/auth/Auth.module.css";
 
@@ -14,9 +15,17 @@ function strength(pw) {
   return Math.min(score, 3);
 }
 
-function Segmented({ name, legend, options, value, onChange }) {
+const SIGN_UP_TOUR = [
+  {},
+  { target: "su-role" },
+  { target: "su-details" },
+  { target: "su-lang" },
+  { target: "su-finish" },
+];
+
+function Segmented({ id, name, legend, options, value, onChange }) {
   return (
-    <fieldset className={styles.fieldset}>
+    <fieldset id={id} className={styles.fieldset}>
       <legend className={styles.label}>{legend}</legend>
       <div className={styles.segmented}>
         {options.map(([v, label, lang]) => (
@@ -80,6 +89,7 @@ export default function SignUp() {
 
       <form ref={form} className={styles.form} onSubmit={submit} noValidate>
         <Segmented
+          id="su-role"
           name="role"
           legend={s.role}
           value={values.role}
@@ -90,41 +100,44 @@ export default function SignUp() {
           ]}
         />
 
-        <Field id="name" label={s.name} error={errors.name}>
-          {(aria) => (
-            <input {...aria} name="name" type="text" autoComplete="name" className={styles.input} value={values.name} onChange={set("name")} />
-          )}
-        </Field>
+        <div id="su-details" className={styles.group}>
+          <Field id="name" label={s.name} error={errors.name}>
+            {(aria) => (
+              <input {...aria} name="name" type="text" autoComplete="name" className={styles.input} value={values.name} onChange={set("name")} />
+            )}
+          </Field>
 
-        <Field id="email" label={t.auth.email} error={errors.email}>
-          {(aria) => (
-            <input
-              {...aria}
-              name="email"
-              type="email"
-              inputMode="email"
-              autoComplete="email"
-              className={styles.input}
-              value={values.email}
-              onChange={set("email")}
-            />
-          )}
-        </Field>
+          <Field id="email" label={t.auth.email} error={errors.email}>
+            {(aria) => (
+              <input
+                {...aria}
+                name="email"
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                className={styles.input}
+                value={values.email}
+                onChange={set("email")}
+              />
+            )}
+          </Field>
 
-        <Field id="password" label={t.auth.password} error={errors.password} hint={s.hint}>
-          {(aria) => (
-            <>
-              <PasswordInput {...aria} autoComplete="new-password" value={values.password} onChange={set("password")} />
-              <div className={styles.meter} data-score={values.password ? score : -1} aria-hidden="true">
-                <span />
-                <span />
-                <span />
-              </div>
-            </>
-          )}
-        </Field>
+          <Field id="password" label={t.auth.password} error={errors.password} hint={s.hint}>
+            {(aria) => (
+              <>
+                <PasswordInput {...aria} autoComplete="new-password" value={values.password} onChange={set("password")} />
+                <div className={styles.meter} data-score={values.password ? score : -1} aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              </>
+            )}
+          </Field>
+        </div>
 
         <Segmented
+          id="su-lang"
           name="lang"
           legend={s.lang}
           value={answerLang}
@@ -135,27 +148,29 @@ export default function SignUp() {
           ]}
         />
 
-        <div className={styles.field} data-invalid={!!errors.terms}>
-          <label className={styles.check}>
-            <input
-              type="checkbox"
-              checked={values.terms}
-              onChange={set("terms")}
-              aria-invalid={!!errors.terms || undefined}
-              aria-describedby={errors.terms ? "terms-error" : undefined}
-            />
-            <span>{s.terms}</span>
-          </label>
-          {errors.terms && (
-            <p id="terms-error" className={styles.error}>
-              {errors.terms}
-            </p>
-          )}
-        </div>
+        <div id="su-finish" className={styles.group}>
+          <div className={styles.field} data-invalid={!!errors.terms}>
+            <label className={styles.check}>
+              <input
+                type="checkbox"
+                checked={values.terms}
+                onChange={set("terms")}
+                aria-invalid={!!errors.terms || undefined}
+                aria-describedby={errors.terms ? "terms-error" : undefined}
+              />
+              <span>{s.terms}</span>
+            </label>
+            {errors.terms && (
+              <p id="terms-error" className={styles.error}>
+                {errors.terms}
+              </p>
+            )}
+          </div>
 
-        <button type="submit" className={styles.submit}>
-          {s.submit}
-        </button>
+          <button type="submit" className={styles.submit}>
+            {s.submit}
+          </button>
+        </div>
 
         {done && <Notice>{t.auth.notConnected}</Notice>}
       </form>
@@ -166,6 +181,8 @@ export default function SignUp() {
           {s.altLink}
         </Link>
       </p>
+
+      <Guide tour="signUp" steps={SIGN_UP_TOUR} />
     </AuthLayout>
   );
 }
