@@ -2,16 +2,15 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { createStage } from "./stage";
 import { fileIconTexture, glowTexture, seeded } from "./textures";
+import { buildChisinau } from "./chisinau";
 
 const BLUE = new THREE.Color("#1f6fd1");
 const LINE = new THREE.Color("#8ea5c4");
-const GRID = 13;
-const GAP = 1.15;
-const ORB = new THREE.Vector3(0, 3.4, 0);
+const ORB = new THREE.Vector3(0, 3.1, -0.6);
 
-// A skyline of "documents": each building is a piece of the corpus. A query
-// orb hovers over the central plaza and fires citation beams at the specific
-// building (document) that holds the answer.
+// Central Chișinău as the corpus: each building stands for a document. A
+// query orb hovers over Piața Marii Adunări Naționale and fires citation
+// beams at the building that holds the answer; a file flies back.
 function build(stage) {
   const { scene, camera } = stage;
   const rand = seeded(11);
@@ -26,7 +25,7 @@ function build(stage) {
 
   const grid = new THREE.GridHelper(44, 44, 0xc9d4e3, 0xc9d4e3);
   grid.material.transparent = true;
-  grid.material.opacity = 0.7;
+  grid.material.opacity = 0.45;
   scene.add(grid);
 
   const pool = new THREE.Mesh(
@@ -37,75 +36,7 @@ function build(stage) {
   pool.position.y = 0.01;
   scene.add(pool);
 
-  // Buildings
-  const buildings = [];
-  const half = (GRID - 1) / 2;
-  for (let i = 0; i < GRID; i++) {
-    for (let j = 0; j < GRID; j++) {
-      const x = (i - half) * GAP;
-      const z = (j - half) * GAP;
-      const d = Math.hypot(x, z);
-      if (d < 2.2) continue; // plaza under the orb
-      const falloff = Math.max(0.25, 1 - d / 10);
-      const h = 0.3 + Math.pow(rand(), 2.2) * 4.2 * falloff + rand() * 0.4;
-      const w = 0.62 + rand() * 0.28;
-      buildings.push({ x, z, w, h });
-    }
-  }
-
-  const box = new THREE.BoxGeometry(1, 1, 1);
-  box.translate(0, 0.5, 0);
-  const towers = new THREE.InstancedMesh(
-    box,
-    new THREE.MeshStandardMaterial({ color: 0xf6f8fb, roughness: 0.85, metalness: 0 }),
-    buildings.length
-  );
-  const m = new THREE.Matrix4();
-  buildings.forEach((b, k) => {
-    m.makeScale(b.w, b.h, b.w).setPosition(b.x, 0, b.z);
-    towers.setMatrixAt(k, m);
-  });
-  scene.add(towers);
-
-  // All building outlines merged into one draw call.
-  const unitEdges = new THREE.EdgesGeometry(box).attributes.position.array;
-  const edgePos = new Float32Array(unitEdges.length * buildings.length);
-  buildings.forEach((b, k) => {
-    for (let p = 0; p < unitEdges.length; p += 3) {
-      const o = k * unitEdges.length + p;
-      edgePos[o] = unitEdges[p] * b.w + b.x;
-      edgePos[o + 1] = unitEdges[p + 1] * b.h;
-      edgePos[o + 2] = unitEdges[p + 2] * b.w + b.z;
-    }
-  });
-  const edgeGeo = new THREE.BufferGeometry();
-  edgeGeo.setAttribute("position", new THREE.BufferAttribute(edgePos, 3));
-  scene.add(
-    new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({ color: LINE, transparent: true, opacity: 0.6 }))
-  );
-
-  // "Text lines" on building faces: thin horizontal slats, like rows of a page.
-  const slatGeo = new THREE.PlaneGeometry(1, 1);
-  const slats = [];
-  buildings.forEach((b) => {
-    if (b.h < 1.2) return;
-    const rows = Math.floor(b.h / 0.22);
-    for (let r = 1; r < rows; r++) {
-      if (rand() < 0.35) continue;
-      slats.push({ b, y: r * 0.22, len: 0.35 + rand() * 0.55 });
-    }
-  });
-  const slatMesh = new THREE.InstancedMesh(
-    slatGeo,
-    new THREE.MeshBasicMaterial({ color: LINE, transparent: true, opacity: 0.45, side: THREE.DoubleSide, depthWrite: false }),
-    slats.length
-  );
-  slats.forEach((s, k) => {
-    const len = s.b.w * s.len;
-    m.makeScale(len, 0.035, 1).setPosition(s.b.x - (s.b.w - len) / 2 + 0.06, s.y, s.b.z + s.b.w / 2 + 0.003);
-    slatMesh.setMatrixAt(k, m);
-  });
-  scene.add(slatMesh);
+  const targets = buildChisinau(scene, rand, LINE);
 
   // Query orb
   const orb = new THREE.Group();
@@ -133,7 +64,6 @@ function build(stage) {
 
   // Citation beams (pooled). Each beam reaches a building, then a file
   // flies back along it into the orb: the cited document being retrieved.
-  const tall = buildings.filter((b) => b.h > 1.4);
   const icons = ["page", "folder", "decision"].map((kind) => fileIconTexture(kind));
   const beamMat = () =>
     new THREE.MeshBasicMaterial({ color: BLUE, transparent: true, opacity: 0, depthWrite: false });
@@ -157,14 +87,14 @@ function build(stage) {
 
   let nextFire = 0.6;
   const fire = (beam) => {
-    const b = tall[Math.floor(rand() * tall.length)];
+    const b = targets[Math.floor(rand() * targets.length)];
     const top = new THREE.Vector3(b.x, b.h, b.z);
     const mid = ORB.clone().lerp(top, 0.5);
     mid.y += 1.6;
     beam.curve = new THREE.QuadraticBezierCurve3(ORB.clone(), mid, top);
     beam.mesh.geometry.dispose();
     beam.mesh.geometry = new THREE.TubeGeometry(beam.curve, 64, 0.014, 5, false);
-    beam.mark.scale.set(b.w + 0.03, b.h + 0.02, b.w + 0.03);
+    beam.mark.scale.set(b.w + 0.03, b.h + 0.02, b.d + 0.03);
     beam.mark.position.set(b.x, 0, b.z);
     beam.edge.scale.copy(beam.mark.scale);
     beam.edge.position.copy(beam.mark.position);
@@ -190,20 +120,20 @@ function build(stage) {
   );
   scene.add(dust);
 
-  let radius = 14;
+  let radius = 12.5;
   const onResize = (w, h) => {
     const wide = w > 900;
-    radius = w / h < 1 ? 20 : 14;
+    radius = w / h < 1 ? 17.5 : 12.5;
     // Wide: push the city right so the headline sits on open sky.
     // Narrow: lift it into the empty band above the stacked text.
     if (wide) camera.setViewOffset(w, h, -w * 0.2, 0, w, h);
-    else camera.setViewOffset(w, h, 0, h * 0.3, w, h);
+    else camera.setViewOffset(w, h, 0, h * 0.27, w, h);
   };
 
   const tick = (dt, t, p) => {
     const a = t * 0.045 + p.x * 0.25 + 0.6;
-    camera.position.set(Math.sin(a) * radius, 7 + p.y * -0.8, Math.cos(a) * radius);
-    camera.lookAt(0, 1.4, 0);
+    camera.position.set(Math.sin(a) * radius, 5.6 + p.y * -0.6, Math.cos(a) * radius - 0.8);
+    camera.lookAt(0, 0.8, -0.8);
 
     orb.position.y = ORB.y + Math.sin(t * 1.2) * 0.08;
     shell.rotation.set(t * 0.3, t * 0.45, 0);
