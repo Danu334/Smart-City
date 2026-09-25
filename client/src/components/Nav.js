@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useI18n } from "@/lib/i18n";
 import Logo from "./Logo";
+import PartnerMark from "./PartnerMark";
 import LanguageSwitch from "./LanguageSwitch";
 import styles from "./Nav.module.css";
 
@@ -30,7 +31,10 @@ export default function Nav() {
         {t.nav.skip}
       </a>
       <nav className={styles.nav} aria-label="Main">
-        <Logo />
+        <div className={styles.brandGroup}>
+          <Logo />
+          <PartnerMark />
+        </div>
 
         <ul className={styles.links}>
           {links.map(([href, label]) => (

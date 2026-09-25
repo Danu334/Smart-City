@@ -1,9 +1,8 @@
-# Sponsor logo
+# Sponsor mark
 
-Put the official Primăria Municipiului Chișinău logo here as
-`primaria-chisinau.png` (transparent background, about 200px tall).
-Use the file supplied by the organisers.
-
-The site shows it automatically next to the "Challenge by Primăria
-Municipiului Chișinău" credit on the home page, the footer and the
-sign-in / sign-up panel. Without the file, only the text credit is shown.
+`primaria-chisinau-stema.png` is the crowned shield cropped from
+"Stema Chișinăului 2020" on Wikimedia Commons
+(https://commons.wikimedia.org/wiki/File:Stema_Chi%C8%99in%C4%83ului_2020.png).
+It is public domain but an official insignia: show it only as the
+challenge sponsor ("Provocare lansată de Primăria Municipiului Chișinău"),
+never in a way that suggests this is an official City Hall service.

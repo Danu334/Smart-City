@@ -3,6 +3,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useI18n } from "@/lib/i18n";
 import Logo from "@/components/Logo";
+import PartnerMark from "@/components/PartnerMark";
 import LanguageSwitch from "@/components/LanguageSwitch";
 import SponsorCredit from "@/components/SponsorCredit";
 import styles from "./Auth.module.css";
@@ -25,7 +26,10 @@ export default function AuthLayout({ title, children }) {
       <div className={styles.shell}>
         <div className={styles.formCol}>
           <header className={styles.top}>
-            <Logo />
+            <div className={styles.brandGroup}>
+              <Logo />
+              <PartnerMark />
+            </div>
             <LanguageSwitch />
           </header>
 

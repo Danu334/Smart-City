@@ -17,6 +17,12 @@
   gap: 16px;
   min-height: 48px;
 }
+.brandGroup {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
 .main {
   width: 100%;
   max-width: 420px;
