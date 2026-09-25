@@ -61,7 +61,7 @@ const dictionaries = {
     pillars: [
       ["RO · RU", "Both languages first-class"],
       ["Doc + passage", "Cited on every answer"],
-      ["Gaps flagged", "Missing info and contradictions"],
+      ["No made-up answers", "Tells you when information is missing or documents conflict"],
       ["Right door", "Routed to the office that can help"],
     ],
     how: {
@@ -79,8 +79,8 @@ const dictionaries = {
       title: "Three kinds of answer. All of them honest.",
       cards: [
         ["Answered", "Cited to the passage", "A clear answer, with the document title and the passage you can open and check yourself."],
-        ["Not in the corpus", "Said plainly", "If the published documents don't cover your question, you're told so and pointed to who can answer it."],
-        ["Documents disagree", "Both sides shown", "When two documents conflict, you see both passages side by side, not a guess."],
+        ["Not in the database", "Said plainly", "If the published documents don't cover your question, you're told so and pointed to who can answer it (with a phone number or an address)."],
+        ["Documents disagree", "Both sides shown", "When two documents conflict, you see both passages side by side, not a guess. The publication date of each document is shown too."],
       ],
       anatomy: "Anatomy of an answer",
       illustrative: "Illustrative layout",
@@ -221,7 +221,7 @@ const dictionaries = {
     pillars: [
       ["RO · RU", "Ambele limbi, la egalitate"],
       ["Document + pasaj", "Citat la fiecare răspuns"],
-      ["Lacune semnalate", "Informații lipsă și contradicții"],
+      ["Fără răspunsuri inventate", "Vă spune când lipsesc informații sau documentele se contrazic"],
       ["Ușa potrivită", "Direcționare spre biroul competent"],
     ],
     how: {
@@ -239,8 +239,8 @@ const dictionaries = {
       title: "Trei tipuri de răspuns. Toate oneste.",
       cards: [
         ["Răspuns găsit", "Citat până la pasaj", "Un răspuns clar, cu titlul documentului și pasajul pe care îl puteți deschide și verifica."],
-        ["Nu există în corpus", "Spus direct", "Dacă documentele publicate nu acoperă întrebarea, vi se spune și sunteți îndrumat spre cine poate răspunde."],
-        ["Documente contradictorii", "Ambele părți", "Când două documente se contrazic, vedeți ambele pasaje alăturat, nu o presupunere."],
+        ["Nu există în baza de date", "Spus direct", "Dacă documentele publicate nu acoperă întrebarea, vi se spune și sunteți îndrumat spre cine poate răspunde (cu un număr de telefon sau o adresă)."],
+        ["Documente contradictorii", "Ambele părți", "Când două documente se contrazic, vedeți ambele pasaje alăturat, nu o presupunere. Se indică și data publicării fiecărui document."],
       ],
       anatomy: "Anatomia unui răspuns",
       illustrative: "Schemă ilustrativă",
@@ -381,7 +381,7 @@ const dictionaries = {
     pillars: [
       ["RO · RU", "Оба языка на равных"],
       ["Документ + фрагмент", "Ссылка в каждом ответе"],
-      ["Пробелы отмечены", "Нехватка данных и противоречия"],
+      ["Без выдуманных ответов", "Скажет, если данных нет или документы противоречат друг другу"],
       ["Нужная дверь", "Переход в профильный отдел"],
     ],
     how: {
@@ -399,8 +399,8 @@ const dictionaries = {
       title: "Три вида ответа. Все честные.",
       cards: [
         ["Ответ найден", "Со ссылкой на фрагмент", "Ясный ответ с названием документа и фрагментом, который можно открыть и проверить."],
-        ["Нет в корпусе", "Сказано прямо", "Если опубликованные документы не отвечают на вопрос, вам об этом скажут и подскажут, кто может помочь."],
-        ["Документы расходятся", "Обе стороны", "Если два документа противоречат друг другу, вы увидите оба фрагмента рядом, а не догадку."],
+        ["Нет в базе данных", "Сказано прямо", "Если опубликованные документы не отвечают на вопрос, вам об этом скажут и подскажут, кто может помочь (с номером телефона или адресом)."],
+        ["Документы расходятся", "Обе стороны", "Если два документа противоречат друг другу, вы увидите оба фрагмента рядом, а не догадку. Также указывается дата публикации каждого документа."],
       ],
       anatomy: "Анатомия ответа",
       illustrative: "Иллюстративная схема",
