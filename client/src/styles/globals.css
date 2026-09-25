@@ -1,0 +1,137 @@
+:root {
+  /* White civic surfaces */
+  --paper: #ffffff;
+  --paper-raised: #ffffff;
+  --paper-sunk: #f4f6f9;
+  --tint: #eef3f9;
+  --ink: #16202e;
+  --graphite: #4a5565;
+  --ash: #6b7585;
+  --hairline: #e4e8ee;
+  --hairline-strong: #cfd6e0;
+
+  /* Government blue */
+  --accent: #0b4f9c;
+  --accent-hover: #083e7c;
+  --accent-wash: rgba(11, 79, 156, 0.07);
+  --accent-bright: #1f6fd1;
+  --on-accent: #ffffff;
+
+  --amber: #9a5b00;
+  --amber-wash: rgba(154, 91, 0, 0.09);
+  --rose: #b42332;
+  --rose-wash: rgba(180, 35, 50, 0.07);
+
+  --shadow-card: 0 1px 2px rgba(16, 32, 56, 0.06);
+  --shadow-raised: 0 1px 2px rgba(16, 32, 56, 0.06), 0 12px 32px -12px rgba(16, 32, 56, 0.14);
+  --radius-card: 12px;
+  --radius-input: 10px;
+  --max: 1200px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --nav-h: 68px;
+
+  /* Light theme only, like a public-service site. */
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--ink);
+  background: var(--paper);
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* next/font variables live on the app wrapper, so font tokens resolve there. */
+.app {
+  --font-body: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-onest), var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-mono-jb), ui-monospace, monospace;
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 14px;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
