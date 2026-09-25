@@ -71,6 +71,19 @@ export default function Guide({ tour, steps }) {
     setIndex(next);
   };
 
+  // On phones the card is a bottom sheet; add room below the page so even
+  // the last element can scroll clear of it.
+  const open = index >= 0;
+  useEffect(() => {
+    if (!open || window.innerWidth > 600) return;
+    const body = document.body.style;
+    const prev = body.paddingBottom;
+    body.paddingBottom = "60vh";
+    return () => {
+      body.paddingBottom = prev;
+    };
+  }, [open]);
+
   // Keep the spotlight glued to the current target.
   const target = step?.target;
   const focus = step?.focus;

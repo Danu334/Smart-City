@@ -31,6 +31,12 @@ const dictionaries = {
           "Hello! I'm Victor, a City Hall specialist. I'll help you find answers in the city's official documents.",
           "Type here everything you want to find out, for example about documents, taxes or permits. Then press “Ask”.",
         ],
+        signIn: [
+          "Hello! I'll help you sign in to your account in a few steps.",
+          "Type the email and password you registered with. Press “Show” to see the password you typed. If you forgot it, press “Forgot password?”.",
+          "Tick “Keep me signed in” if this is your own device, then press “Sign in”.",
+          "Don't have an account yet? Press “Create an account”.",
+        ],
         signUp: [
           "Hello! Creating an account takes about a minute. I'll show you each step.",
           "First, choose who you are: a resident or a City Hall employee.",
@@ -184,6 +190,12 @@ const dictionaries = {
           "Bună ziua! Sunt Victor, specialist al Primăriei. Vă ajut să găsiți răspunsuri în documentele oficiale ale orașului.",
           "Scrieți aici tot ce doriți să aflați, de exemplu despre acte, taxe sau autorizații. Apoi apăsați „Întreabă”.",
         ],
+        signIn: [
+          "Bună ziua! Vă ajut să intrați în cont în câțiva pași.",
+          "Scrieți adresa de e-mail și parola cu care v-ați înregistrat. Apăsați „Arată” ca să vedeți parola scrisă. Dacă ați uitat-o, apăsați „Ați uitat parola?”.",
+          "Bifați „Ține-mă minte” dacă folosiți dispozitivul dvs. personal, apoi apăsați „Autentificare”.",
+          "Nu aveți încă un cont? Apăsați „Creați un cont”.",
+        ],
         signUp: [
           "Bună ziua! Crearea contului durează cam un minut. Vă arăt fiecare pas.",
           "Mai întâi, alegeți cine sunteți: locuitor sau angajat al Primăriei.",
@@ -336,6 +348,12 @@ const dictionaries = {
         home: [
           "Здравствуйте! Я Виктор, специалист Примэрии. Помогу найти ответы в официальных документах города.",
           "Напишите здесь всё, что хотите узнать, например о документах, налогах или разрешениях. Затем нажмите «Спросить».",
+        ],
+        signIn: [
+          "Здравствуйте! Помогу войти в аккаунт за несколько шагов.",
+          "Введите эл. почту и пароль, указанные при регистрации. Нажмите «Показать», чтобы увидеть введённый пароль. Если забыли его, нажмите «Забыли пароль?».",
+          "Отметьте «Запомнить меня», если это ваше личное устройство, и нажмите «Войти».",
+          "Ещё нет аккаунта? Нажмите «Создать аккаунт».",
         ],
         signUp: [
           "Здравствуйте! Создание аккаунта займёт около минуты. Я покажу каждый шаг.",

@@ -3,8 +3,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useI18n } from "@/lib/i18n";
 import AuthLayout from "@/components/auth/AuthLayout";
+import Guide from "@/components/guide/Guide";
 import { Field, Notice, PasswordInput, focusFirstInvalid, isEmail } from "@/components/auth/Fields";
 import styles from "@/components/auth/Auth.module.css";
+
+const SIGN_IN_TOUR = [{}, { target: "si-details" }, { target: "si-finish" }, { target: "si-new", radius: 12 }];
 
 export default function SignIn() {
   const { t } = useI18n();
@@ -49,54 +52,60 @@ export default function SignIn() {
       )}
 
       <form ref={form} className={styles.form} onSubmit={submit} noValidate>
-        <Field id="email" label={t.auth.email} error={errors.email}>
-          {(aria) => (
-            <input
-              {...aria}
-              name="email"
-              type="email"
-              inputMode="email"
-              autoComplete="email"
-              className={styles.input}
-              value={values.email}
-              onChange={set("email")}
-            />
-          )}
-        </Field>
+        <div id="si-details" className={styles.group}>
+          <Field id="email" label={t.auth.email} error={errors.email}>
+            {(aria) => (
+              <input
+                {...aria}
+                name="email"
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                className={styles.input}
+                value={values.email}
+                onChange={set("email")}
+              />
+            )}
+          </Field>
 
-        <Field
-          id="password"
-          label={t.auth.password}
-          error={errors.password}
-          action={
-            <Link href="/sign-in" className={styles.inlineLink}>
-              {s.forgot}
-            </Link>
-          }
-        >
-          {(aria) => (
-            <PasswordInput {...aria} autoComplete="current-password" value={values.password} onChange={set("password")} />
-          )}
-        </Field>
+          <Field
+            id="password"
+            label={t.auth.password}
+            error={errors.password}
+            action={
+              <Link href="/sign-in" className={styles.inlineLink}>
+                {s.forgot}
+              </Link>
+            }
+          >
+            {(aria) => (
+              <PasswordInput {...aria} autoComplete="current-password" value={values.password} onChange={set("password")} />
+            )}
+          </Field>
+        </div>
 
-        <label className={styles.check}>
-          <input type="checkbox" checked={values.remember} onChange={set("remember")} />
-          <span>{s.remember}</span>
-        </label>
+        <div id="si-finish" className={styles.group}>
+          <label className={styles.check}>
+            <input type="checkbox" checked={values.remember} onChange={set("remember")} />
+            <span>{s.remember}</span>
+          </label>
 
-        <button type="submit" className={styles.submit}>
-          {s.submit}
-        </button>
+          <button type="submit" className={styles.submit}>
+            {s.submit}
+          </button>
+        </div>
 
         {done && <Notice>{t.auth.notConnected}</Notice>}
       </form>
 
-      <p className={styles.alt}>
+      <p id="si-new" className={styles.alt}>
         {s.alt}{" "}
         <Link href="/sign-up" className={styles.inlineLink}>
           {s.altLink}
         </Link>
       </p>
+
+      <Guide tour="signIn" steps={SIGN_IN_TOUR} />
     </AuthLayout>
   );
 }
