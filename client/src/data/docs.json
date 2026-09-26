@@ -1,0 +1,93 @@
+{
+  "docs": [
+    {
+      "id": "cnam-alegere-medic-familie",
+      "kind": "guide",
+      "title": "Cum îți alegi medicul de familie: drepturi și pași de urmat",
+      "issuer": "Compania Națională de Asigurări în Medicină (CNAM)",
+      "reference": "Ghid pentru cetățeni · publicat 29.12.2025",
+      "sourceUrl": "https://cnam.md/7754/cum-iti-alegi-medicul-de-familie-drepturi-si-pasi-de-urmat/",
+      "retrieved": "2026-09-26",
+      "fidelity": "full",
+      "sections": [
+        {
+          "id": "dreptul",
+          "heading": "Dreptul de a alege",
+          "paragraphs": [
+            "Orice persoană are dreptul să-și aleagă medicul de familie în Republica Moldova, indiferent dacă este cetățean al țării, cetățean străin cu drept de ședere permanentă sau temporară ori beneficiar de protecție temporară."
+          ]
+        },
+        {
+          "id": "domiciliu",
+          "heading": "Instituția din zona de domiciliu",
+          "paragraphs": [
+            "Pentru a fi înregistrată pe lista unui medic de familie, persoana trebuie să aleagă o instituție de asistență medicală primară și să completeze o cerere pe numele medicului ales. De regulă, se optează pentru instituția din zona de domiciliu, însă este posibilă alegerea unui alt prestator, dacă medicul dorit are locuri disponibile."
+          ]
+        },
+        {
+          "id": "cerere",
+          "heading": "Depunerea cererii",
+          "paragraphs": [
+            "Cererea poate fi solicitată direct de la instituția medicală sau descărcată de pe site-ul oficial al CNAM. În cazul copiilor sau al persoanelor care nu se pot reprezenta singure, documentul este completat de reprezentantul legal.",
+            "După completare, cererea și copia actului de identitate pot fi depuse fizic la medicul de familie ori pot fi transmise online, la adresa de e-mail a instituției medicale.",
+            "Odată acceptată de medicul de familie, cererea este transmisă pentru înregistrare în sistemul informațional de către instituția medicală, fără implicarea suplimentară a persoanei."
+          ]
+        },
+        {
+          "id": "schimbare",
+          "heading": "Schimbarea medicului și verificarea statutului",
+          "paragraphs": [
+            "Medicul de familie și instituția medicală pot fi schimbate o singură dată pe an, cu excepția cazurilor în care persoana își schimbă domiciliul în altă localitate sau sector.",
+            "Statutul de înregistrare la medicul de familie poate fi verificat online, pe site-ul CNAM, iar pentru informații suplimentare puteți apela gratuit Centrul de apel INFO CNAM – 0 800 99999."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lege-1585-1998",
+      "kind": "law",
+      "title": "Legea nr. 1585/1998 cu privire la asigurarea obligatorie de asistență medicală",
+      "issuer": "Parlamentul Republicii Moldova",
+      "reference": "Lege · versiune consolidată pe legis.md",
+      "sourceUrl": "https://www.legis.md/cautare/getResults?doc_id=151186&lang=ro",
+      "retrieved": "2026-09-26",
+      "fidelity": "partial",
+      "sections": [
+        {
+          "id": "art-1",
+          "heading": "Articolul 1. Noțiunea de asigurare obligatorie de asistență medicală",
+          "paragraphs": [
+            "(1) Asigurarea obligatorie de asistență medicală reprezintă un sistem autonom garantat de stat de protecţie financiară a populaţiei în domeniul ocrotirii sănătăţii."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "amt-riscani-institutii",
+      "kind": "registry",
+      "title": "IMSP Asociația Medicală Teritorială Rîșcani — instituțiile de asistență medicală primară",
+      "issuer": "Registrul achizițiilor publice (MTender · Agenția Achiziții Publice)",
+      "reference": "Date de identificare din anunțuri publice · IDNO 1003600153212",
+      "sourceUrl": "https://tender.gov.md/ro/system/files/bap/2014/bap_nr_97_1.pdf",
+      "retrieved": "2026-09-26",
+      "fidelity": "record",
+      "sections": [
+        {
+          "id": "institutie",
+          "heading": "Instituția",
+          "paragraphs": [
+            "Instituția Medico-Sanitară Publică Asociația Medicală Teritorială Rîșcani, mun. Chișinău. IDNO 1003600153212."
+          ]
+        },
+        {
+          "id": "centre",
+          "heading": "Centrele Medicilor de Familie din subordine",
+          "paragraphs": [
+            "Centrul Medicilor de Familie nr. 10 — mun. Chișinău, str. Socoleni 19.",
+            "Centrul Medicilor de Familie nr. 11 — mun. Chișinău, str. Petru Rareș 32."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -131,6 +131,72 @@ const dictionaries = {
         altLink: "Sign in",
       },
     },
+    chat: {
+      title: "Ask the corpus",
+      sidebar: {
+        newChat: "New conversation",
+        filter: "Filter conversations",
+        filterEmpty: "No conversation matches.",
+        history: "Conversation history",
+        today: "Today",
+        week: "This week",
+        older: "Earlier",
+        collapse: "Collapse sidebar",
+        expand: "Expand sidebar",
+        resize: "Resize sidebar",
+        backHome: "Back to home",
+      },
+      empty: {
+        title: "What would you like to ask City Hall's documents?",
+        sub: "Write your question in your own words. The answer comes back with the document and the passage it rests on — and with a plain note when the corpus does not cover your case.",
+        statesLabel: "What an answer can look like",
+        suggestionsLabel: "Try one of these",
+        suggestions: [
+          "Cine e medicul meu de familie dacă locuiesc pe str. Kiev 12?",
+          "What do I need for a building permit?",
+          "Who sets the parking tariff in the centre?",
+        ],
+      },
+      composer: {
+        placeholder: "Ask about permits, taxes or public services…",
+        send: "Send",
+        attach: "Attach files",
+        attachHint: "Files stay in your browser — nothing is uploaded.",
+        dropHere: "Drop the files to attach them",
+        remove: "Remove attachment",
+        thinking: "Searching the corpus…",
+        attachments: "Attachments",
+      },
+      answer: {
+        you: "You",
+        assistant: "Municipal assistant",
+        sources: "Sources",
+        citation: "Reference",
+        nextSteps: "Continue here",
+        stubTitle: "Kept as history only",
+        stubText:
+          "This conversation sits in the demo history to show how the list behaves. Its messages were not saved.",
+        offlineTitle: "Not connected to a server yet",
+        offlineText:
+          "The interface is complete, but there is no backend behind it, so no search ran over the corpus. The seeded question does work end to end.",
+      },
+      reader: {
+        label: "Cited document",
+        close: "Close document",
+        openSource: "Open the source",
+        prev: "Previous reference",
+        next: "Next reference",
+        retrieved: "Retrieved",
+        fidelity: {
+          full: "Full text retrieved from the source.",
+          partial:
+            "Only the quoted passage was retrieved from the source. Open the source for the full document.",
+          record:
+            "Structured record compiled from the public source, not the source's own wording. Open the source for the original.",
+        },
+        kinds: { guide: "Guide", law: "Law", registry: "Public record" },
+      },
+    },
   },
 
   ro: {
@@ -260,6 +326,72 @@ const dictionaries = {
         altLink: "Autentificare",
       },
     },
+    chat: {
+      title: "Întreabă corpusul",
+      sidebar: {
+        newChat: "Conversație nouă",
+        filter: "Filtrează conversațiile",
+        filterEmpty: "Nicio conversație nu corespunde.",
+        history: "Istoricul conversațiilor",
+        today: "Astăzi",
+        week: "Săptămâna aceasta",
+        older: "Mai vechi",
+        collapse: "Ascunde bara laterală",
+        expand: "Arată bara laterală",
+        resize: "Redimensionează bara laterală",
+        backHome: "Înapoi acasă",
+      },
+      empty: {
+        title: "Ce doriți să întrebați documentele Primăriei?",
+        sub: "Scrieți întrebarea cu cuvintele dvs. Răspunsul vine cu documentul și pasajul pe care se bazează — iar când corpusul nu acoperă cazul dvs., vi se spune direct.",
+        statesLabel: "Cum poate arăta un răspuns",
+        suggestionsLabel: "Încercați una dintre acestea",
+        suggestions: [
+          "Cine e medicul meu de familie dacă locuiesc pe str. Kiev 12?",
+          "Ce acte îmi trebuie pentru autorizația de construire?",
+          "Cine stabilește tariful de parcare în centru?",
+        ],
+      },
+      composer: {
+        placeholder: "Întrebați despre autorizații, taxe sau servicii publice…",
+        send: "Trimite",
+        attach: "Atașează fișiere",
+        attachHint: "Fișierele rămân în browserul dvs. — nimic nu este încărcat.",
+        dropHere: "Eliberați fișierele pentru a le atașa",
+        remove: "Elimină atașamentul",
+        thinking: "Căutăm în corpus…",
+        attachments: "Atașamente",
+      },
+      answer: {
+        you: "Dvs.",
+        assistant: "Asistentul municipal",
+        sources: "Surse",
+        citation: "Referința",
+        nextSteps: "Continuați aici",
+        stubTitle: "Păstrată doar în istoric",
+        stubText:
+          "Această conversație apare în istoricul demonstrativ pentru a arăta cum se comportă lista. Mesajele ei nu au fost salvate.",
+        offlineTitle: "Încă neconectat la un server",
+        offlineText:
+          "Interfața este completă, dar nu există un backend în spate, așa că nu s-a făcut nicio căutare în corpus. Întrebarea din istoric funcționează însă cap-coadă.",
+      },
+      reader: {
+        label: "Documentul citat",
+        close: "Închide documentul",
+        openSource: "Deschide sursa",
+        prev: "Referința precedentă",
+        next: "Referința următoare",
+        retrieved: "Preluat",
+        fidelity: {
+          full: "Text integral preluat din sursă.",
+          partial:
+            "Doar pasajul citat a fost preluat din sursă. Deschideți sursa pentru documentul integral.",
+          record:
+            "Fișă structurată, alcătuită din sursa publică — nu formularea proprie a documentului. Deschideți sursa pentru original.",
+        },
+        kinds: { guide: "Ghid", law: "Lege", registry: "Registru public" },
+      },
+    },
   },
 
   ru: {
@@ -387,6 +519,72 @@ const dictionaries = {
         submit: "Создать аккаунт",
         alt: "Уже есть аккаунт?",
         altLink: "Войти",
+      },
+    },
+    chat: {
+      title: "Спросите корпус",
+      sidebar: {
+        newChat: "Новый разговор",
+        filter: "Фильтр разговоров",
+        filterEmpty: "Совпадений нет.",
+        history: "История разговоров",
+        today: "Сегодня",
+        week: "На этой неделе",
+        older: "Ранее",
+        collapse: "Скрыть боковую панель",
+        expand: "Показать боковую панель",
+        resize: "Изменить ширину панели",
+        backHome: "На главную",
+      },
+      empty: {
+        title: "Что вы хотите спросить у документов Примэрии?",
+        sub: "Напишите вопрос своими словами. Ответ придёт с документом и фрагментом, на котором он основан, — а если корпус не охватывает ваш случай, вам скажут об этом прямо.",
+        statesLabel: "Как может выглядеть ответ",
+        suggestionsLabel: "Попробуйте один из этих",
+        suggestions: [
+          "Cine e medicul meu de familie dacă locuiesc pe str. Kiev 12?",
+          "Какие документы нужны для разрешения на строительство?",
+          "Кто устанавливает тариф на парковку в центре?",
+        ],
+      },
+      composer: {
+        placeholder: "Спросите о разрешениях, налогах или городских услугах…",
+        send: "Отправить",
+        attach: "Прикрепить файлы",
+        attachHint: "Файлы остаются в вашем браузере — ничего не загружается.",
+        dropHere: "Отпустите файлы, чтобы прикрепить",
+        remove: "Убрать вложение",
+        thinking: "Ищем в корпусе…",
+        attachments: "Вложения",
+      },
+      answer: {
+        you: "Вы",
+        assistant: "Муниципальный помощник",
+        sources: "Источники",
+        citation: "Ссылка",
+        nextSteps: "Продолжите здесь",
+        stubTitle: "Только в истории",
+        stubText:
+          "Этот разговор есть в демонстрационной истории, чтобы показать поведение списка. Его сообщения не сохранялись.",
+        offlineTitle: "Пока не подключено к серверу",
+        offlineText:
+          "Интерфейс готов, но за ним нет бэкенда, поэтому поиск по корпусу не выполнялся. Вопрос из истории при этом работает полностью.",
+      },
+      reader: {
+        label: "Цитируемый документ",
+        close: "Закрыть документ",
+        openSource: "Открыть источник",
+        prev: "Предыдущая ссылка",
+        next: "Следующая ссылка",
+        retrieved: "Получено",
+        fidelity: {
+          full: "Полный текст получен из источника.",
+          partial:
+            "Из источника получен только цитируемый фрагмент. Откройте источник, чтобы увидеть документ полностью.",
+          record:
+            "Структурированная справка, составленная по открытому источнику, а не собственная формулировка документа. Оригинал — по ссылке на источник.",
+        },
+        kinds: { guide: "Руководство", law: "Закон", registry: "Открытый реестр" },
       },
     },
   },
