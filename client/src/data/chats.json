@@ -1,0 +1,136 @@
+{
+  "conversations": [
+    {
+      "id": "medic-familie-kiev-12",
+      "title": "Cine e medicul meu de familie dacă locuiesc pe str. Kiev 12?",
+      "locale": "ro",
+      "updatedAt": "2026-09-26T07:42:00.000Z",
+      "messages": [
+        {
+          "id": "m1",
+          "role": "user",
+          "text": "Cine e medicul meu de familie dacă locuiesc pe str. Kiev 12?"
+        },
+        {
+          "id": "m2",
+          "role": "assistant",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Str. Kiev se află în sectorul Rîșcani al municipiului Chișinău, așa că asistența medicală primară pentru adresa dvs. ține de instituția publică din sector — IMSP Asociația Medicală Teritorială Rîșcani, care administrează Centrul Medicilor de Familie nr. 10 (str. Socoleni 19) și Centrul Medicilor de Familie nr. 11 (str. Petru Rareș 32).",
+              "refs": [5]
+            },
+            {
+              "type": "p",
+              "text": "Numele medicului nu decurge însă din adresă: înregistrarea se face în baza unei cereri depuse la instituția aleasă, iar zona de domiciliu este doar regula implicită.",
+              "refs": [1]
+            },
+            {
+              "type": "steps",
+              "title": "Cum aflați și cum vă înregistrați",
+              "items": [
+                "Verificați online statutul dvs. de înregistrare pe pagina CNAM — dacă figurați deja pe lista unui medic, veți vedea instituția la care sunteți arondat.",
+                "Dacă nu sunteți înregistrat, cereți formularul de la instituția medicală sau descărcați-l de pe site-ul CNAM și completați cererea pe numele medicului ales.",
+                "Depuneți cererea împreună cu copia actului de identitate fizic la medicul de familie sau prin e-mail la adresa instituției. Înregistrarea în sistemul informațional o face instituția, fără implicarea dvs."
+              ],
+              "refs": [2]
+            },
+            {
+              "type": "p",
+              "text": "Medicul de familie și instituția medicală pot fi schimbate o singură dată pe an, cu excepția cazului în care vă schimbați domiciliul în altă localitate sau sector.",
+              "refs": [3]
+            },
+            {
+              "type": "p",
+              "text": "Cadrul general al acestei proceduri este dat de legea asigurării obligatorii de asistență medicală, care definește sistemul în care funcționează arondarea la medicul de familie.",
+              "refs": [4]
+            },
+            {
+              "type": "flag",
+              "tone": "amber",
+              "title": "Ce nu se găsește în corpus",
+              "text": "Niciun document public din corpus nu conține repartizarea pe numere de casă: nu există o listă publicată care să spună care medic de familie deservește str. Kiev 12. Informația există doar în sistemul informațional al instituției medicale și se obține prin pașii de mai sus sau la Centrul de apel INFO CNAM."
+            }
+          ],
+          "citations": [
+            {
+              "n": 1,
+              "docId": "cnam-alegere-medic-familie",
+              "sectionId": "domiciliu",
+              "quote": "De regulă, se optează pentru instituția din zona de domiciliu, însă este posibilă alegerea unui alt prestator, dacă medicul dorit are locuri disponibile."
+            },
+            {
+              "n": 2,
+              "docId": "cnam-alegere-medic-familie",
+              "sectionId": "cerere",
+              "quote": "După completare, cererea și copia actului de identitate pot fi depuse fizic la medicul de familie ori pot fi transmise online, la adresa de e-mail a instituției medicale."
+            },
+            {
+              "n": 3,
+              "docId": "cnam-alegere-medic-familie",
+              "sectionId": "schimbare",
+              "quote": "Medicul de familie și instituția medicală pot fi schimbate o singură dată pe an, cu excepția cazurilor în care persoana își schimbă domiciliul în altă localitate sau sector."
+            },
+            {
+              "n": 4,
+              "docId": "lege-1585-1998",
+              "sectionId": "art-1",
+              "quote": "Asigurarea obligatorie de asistență medicală reprezintă un sistem autonom garantat de stat de protecţie financiară a populaţiei în domeniul ocrotirii sănătăţii."
+            },
+            {
+              "n": 5,
+              "docId": "amt-riscani-institutii",
+              "sectionId": "centre",
+              "quote": "Centrul Medicilor de Familie nr. 10 — mun. Chișinău, str. Socoleni 19."
+            }
+          ],
+          "actions": [
+            {
+              "label": "Verifică statutul de asigurat și înregistrarea",
+              "href": "https://statut-aoam.cnam.gov.md/check-status",
+              "platform": "CNAM"
+            },
+            {
+              "label": "Programare online la medic",
+              "href": "https://sia.amp.md/",
+              "platform": "SIA AMP"
+            },
+            {
+              "label": "INFO CNAM — 0 800 99999",
+              "href": "tel:080099999",
+              "platform": "Centru de apel"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "autorizatie-construire-acte",
+      "title": "Ce acte îmi trebuie pentru autorizația de construire?",
+      "locale": "ro",
+      "updatedAt": "2026-09-25T14:05:00.000Z",
+      "stub": true
+    },
+    {
+      "id": "taxa-parcare-centru",
+      "title": "Cât costă parcarea în centrul orașului și cine stabilește tariful?",
+      "locale": "ro",
+      "updatedAt": "2026-09-24T09:18:00.000Z",
+      "stub": true
+    },
+    {
+      "id": "pretura-riscani-contacte",
+      "title": "Unde e pretura sectorului Rîșcani și la ce ore primește?",
+      "locale": "ro",
+      "updatedAt": "2026-09-19T11:30:00.000Z",
+      "stub": true
+    },
+    {
+      "id": "taxa-salubrizare",
+      "title": "Cine plătește taxa de salubrizare pentru un apartament închiriat?",
+      "locale": "ro",
+      "updatedAt": "2026-09-11T16:47:00.000Z",
+      "stub": true
+    }
+  ]
+}

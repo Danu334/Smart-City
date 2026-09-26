@@ -7,9 +7,9 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Guide from "@/components/guide/Guide";
 import SponsorCredit from "@/components/SponsorCredit";
+import StateIcon from "@/components/StateIcon";
 import { useI18n } from "@/lib/i18n";
 import { useReveal } from "@/lib/useReveal";
-import { useSession } from "@/lib/auth-client";
 import styles from "@/styles/Home.module.css";
 
 const CityScene = dynamic(() => import("@/components/three/CityScene"), { ssr: false });
@@ -17,47 +17,18 @@ const CityScene = dynamic(() => import("@/components/three/CityScene"), { ssr: f
 const STATE_TONES = ["teal", "amber", "rose"];
 const HOME_TOUR = [{}, { target: "ask-box", radius: 36, focus: true }];
 
-function StateIcon({ tone }) {
-  if (tone === "teal")
-    return (
-      <svg viewBox="0 0 20 20" aria-hidden="true">
-        <path d="M5 10.5l3.2 3L15 6.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    );
-  if (tone === "amber")
-    return (
-      <svg viewBox="0 0 20 20" aria-hidden="true">
-        <circle cx="10" cy="10" r="6.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeDasharray="3 2.4" />
-        <path d="M10 7v3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-        <circle cx="10" cy="13.2" r="1" fill="currentColor" />
-      </svg>
-    );
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true">
-      <path d="M4 7h8M4 13h8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      <path d="M12 4.5L15.5 7 12 9.5M12 10.5l3.5 2.5-3.5 2.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 function AskBox() {
   const { t } = useI18n();
   const router = useRouter();
   const [q, setQ] = useState("");
-  const [saved, setSaved] = useState(false);
   const input = useRef(null);
-  const { data: session } = useSession();
 
+  // The chat is open to everyone; it arrives with the question filled in.
   const submit = (e) => {
     e.preventDefault();
     const question = q.trim();
     if (!question) return input.current?.focus();
-    if (!session) return router.push({ pathname: "/sign-in", query: { q: question } });
-    // Signed in: keep the question for the chat page (coming next).
-    try {
-      sessionStorage.setItem("sc-pending-question", question);
-    } catch {}
-    setSaved(true);
+    router.push({ pathname: "/chat", query: { q: question } });
   };
 
   return (
@@ -86,11 +57,6 @@ function AskBox() {
           </svg>
         </button>
       </form>
-      {saved && (
-        <p className={styles.saved} role="status">
-          {t.hero.saved}
-        </p>
-      )}
       <ul className={styles.chips}>
         {t.hero.chips.map((chip) => (
           <li key={chip}>

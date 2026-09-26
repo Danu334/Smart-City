@@ -1,0 +1,7 @@
+<svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+  <rect x="4.5" y="2.5" width="16" height="21" rx="3" fill="none" stroke="currentColor" stroke-width="1.6" />
+  <path d="M8.5 8h8M8.5 11.5h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.45" />
+  <path d="M8.5 15h6" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" />
+  <circle cx="21.5" cy="21" r="4.5" fill="var(--accent)" />
+  <circle cx="21.5" cy="21" r="1.6" fill="var(--paper)" />
+</svg>

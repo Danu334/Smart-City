@@ -55,3 +55,48 @@ Verifiable grounding: every answer is traceable to a specific document and passa
 - Full bilingual legibility: Romanian (Latin, diacritics) and Russian (Cyrillic) both require typographic support; no transliteration shortcuts.
 - Plain-language answers for citizens without legal background, with the cited passage available for verification.
 - No formal accessibility standard was set yet (to be decided with the stack/backend work).
+
+## Annex 1 — List of Data Sources (links)
+
+- http://chisinau.md
+- https://www.chisinau.md/ro/transparenta
+- https://suburbii.chisinau.md/
+- https://proiecte.chisinau.md/
+- https://mobilitatechisinau.md/
+- https://rtec.md/
+- https://autourban.md/ro/rute/suburbane
+- https://exdrupo.md/
+- https://dgaurf.md/
+- https://dglca.md/
+- https://autosalubritate.md/informatie-de-contact/
+- https://www.acc.md/
+- https://agsv.md/diagrama-defrisare-curatare-a-arborilor-2/
+- https://chisinauedu.dgets.md/
+- https://detsriscani.md/
+- https://detsciocana.educ.md/
+- https://detscentru.md/
+- https://buiucanidets.md
+- https://detsbotanica.md
+- https://educatieonline.md/
+- https://extrascolar.md/
+- https://egradinita.md/
+- https://escoala.chisinau.md/
+- https://dgams.md/
+- https://help.chisinau.md/
+- https://amt-botanica.md/
+- https://amt-centru.md/
+- https://amtbuiucani.md/
+- https://amt-ciocana.md/
+- http://amtriscani.md/
+- https://www.botanica.md/
+- https://chisinaucentru.md/
+- https://ciocana.md/
+- https://rascani.md/
+- https://preturabuiucani.md/
+- https://comert.chisinau.md/
+- https://visit.chisinau.md/
+- https://invest.chisinau.md/
+- https://proiecte.chisinau.md/ro/pv-289-startup-pentru-tineri-si-migranti
+- https://e-tineret.md/
+- http://www.infocom.md/
+- https://liftservice.md/
