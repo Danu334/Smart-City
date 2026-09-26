@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { STEMA } from "./PartnerMark";
 import styles from "./Loader.module.css";
 
-const MIN_MS = 1600; // let the logo animation finish
-const MAX_MS = 3500; // never hold people longer than this
-const LEAVE_MS = 750; // curtain slide-up
+const MIN_MS = 3300; // logo animation (~2.6s) plus a moment to see it
+const MAX_MS = 5000; // never hold people longer than this
+const LEAVE_MS = 900; // curtain slide-up
 export const LOADED_KEY = "sc-loaded";
 
 // Full-screen splash shown once per browser session. It is server-rendered
@@ -23,7 +23,7 @@ export default function Loader() {
     }
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const minEnd = reduce ? 700 : MIN_MS;
+    const minEnd = reduce ? 1200 : MIN_MS;
     const timers = [];
     let left = false;
 
@@ -61,11 +61,11 @@ export default function Loader() {
         <svg className={styles.mark} viewBox="0 0 96 96">
           <path className={styles.page} d="M26 12h32l16 16v52a4 4 0 0 1-4 4H26a4 4 0 0 1-4-4V16a4 4 0 0 1 4-4z" />
           <path className={styles.fold} d="M58 12v16h16" />
-          <line className={styles.row} style={{ "--d": "0.55s" }} x1="32" y1="38" x2="62" y2="38" />
-          <line className={styles.row} style={{ "--d": "0.68s" }} x1="32" y1="48" x2="58" y2="48" />
+          <line className={styles.row} style={{ "--d": "1.0s" }} x1="32" y1="38" x2="62" y2="38" />
+          <line className={styles.row} style={{ "--d": "1.2s" }} x1="32" y1="48" x2="58" y2="48" />
           <rect className={styles.marker} x="29" y="54" width="36" height="10" rx="2" />
-          <line className={styles.row} style={{ "--d": "0.81s" }} x1="32" y1="59" x2="62" y2="59" />
-          <line className={styles.row} style={{ "--d": "0.94s" }} x1="32" y1="70" x2="50" y2="70" />
+          <line className={styles.row} style={{ "--d": "1.4s" }} x1="32" y1="59" x2="62" y2="59" />
+          <line className={styles.row} style={{ "--d": "1.6s" }} x1="32" y1="70" x2="50" y2="70" />
           <circle className={styles.dot} cx="72" cy="76" r="11" />
           <circle className={styles.dotInner} cx="72" cy="76" r="4" />
         </svg>
