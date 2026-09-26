@@ -89,3 +89,50 @@ export async function addMessage(
   );
   return id;
 }
+
+const IMPORT_MAX_CONVERSATIONS = 20;
+const IMPORT_MAX_MESSAGES = 60;
+const IMPORT_MAX_TEXT = 8000;
+const IMPORT_BLOCK_TYPES = new Set(["p", "quote", "steps", "flag", "places"]);
+
+/** Keeps only well-formed messages from a browser-sent conversation. */
+function cleanImported(raw: unknown): { role: "user"; text: string } | { role: "assistant"; content: AssistantContent } | null {
+  if (!raw || typeof raw !== "object") return null;
+  const m = raw as Partial<Record<"role" | "text" | "blocks" | "citations" | "actions", unknown>>;
+  const text = typeof m.text === "string" ? m.text.slice(0, IMPORT_MAX_TEXT) : "";
+  if (m.role === "user") return text.trim() ? { role: "user", text } : null;
+  if (m.role !== "assistant") return null;
+  const list = (v: unknown) => (Array.isArray(v) ? v.filter((x) => x && typeof x === "object") : []);
+  const blocks = list(m.blocks).filter((b) => IMPORT_BLOCK_TYPES.has((b as Block).type)) as Block[];
+  const citations = list(m.citations).filter(
+    (c) => typeof (c as Citation).n === "number" && typeof (c as Citation).docId === "string",
+  ) as Citation[];
+  const actions = list(m.actions).filter(
+    (a) => typeof (a as Action).label === "string" && typeof (a as Action).href === "string" && /^(https?:|tel:|\/)/.test((a as Action).href),
+  ) as Action[];
+  if (!text.trim() && !blocks.length) return null;
+  return { role: "assistant", content: { text, blocks, citations, actions } };
+}
+
+/**
+ * Saves conversations a visitor had before signing in (sent by their browser)
+ * into their account. Returns how many were saved.
+ */
+export async function importConversations(userId: string, raw: unknown, locale: string): Promise<number> {
+  if (!Array.isArray(raw)) return 0;
+  let saved = 0;
+  for (const item of raw.slice(0, IMPORT_MAX_CONVERSATIONS)) {
+    const c = (item ?? {}) as { title?: unknown; messages?: unknown };
+    const messages = (Array.isArray(c.messages) ? c.messages : [])
+      .slice(0, IMPORT_MAX_MESSAGES)
+      .map(cleanImported)
+      .filter((m) => m !== null);
+    const firstQuestion = messages.find((m) => m.role === "user");
+    if (!firstQuestion) continue;
+    const title = (typeof c.title === "string" && c.title.trim() ? c.title : firstQuestion.text).slice(0, 80);
+    const conversation = await createConversation(userId, title, locale);
+    for (const m of messages) await addMessage(conversation.id, m);
+    saved += 1;
+  }
+  return saved;
+}

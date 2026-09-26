@@ -51,7 +51,7 @@ const en = {
       ],
       chat: [
         "Hello! Here you can ask questions about City Hall's documents. Let me show you quickly how it works.",
-        "The conversation history (on a phone, the ☰ button at the top left) keeps earlier questions. Answers need an account, and your conversations are saved in it, so you can come back to them from any device.",
+        "The conversation history (on a phone, the ☰ button at the top left) keeps earlier questions. With an account, your conversations are saved, so you can come back to them from any device.",
         "In answers, the small numbers like [1] are the sources. Press one and the document opens with the exact passage highlighted.",
         "Type your question here in your own words, then press “Send” or the Enter key.",
       ],
@@ -72,9 +72,9 @@ const en = {
     sections: [
       ["What we keep", [], ["The name and email address you enter when signing up.", "The role you choose (resident or municipal employee) and your preferred answer language.", "Your password, only in irreversibly encrypted form (a scrypt hash). Nobody, including the project team, can read it.", "The date you accepted this policy and its version.", "When you sign in: a session with your IP address and browser type, so we can keep you signed in safely."]],
       ["Why we use it", ["Only to create your account, sign you in and protect the account, for example by limiting repeated password attempts. We don't sell your data, use it for advertising or send you marketing messages."], []],
-      ["Questions you ask the assistant", ["The questions you type in the chat and the assistant's answers are saved in your account, so you can come back to them. A question asked before signing in waits only in this browser tab and is not sent anywhere until you sign in.", "To find and write an answer, your question is sent to OpenAI (USA). Attached files stay only in your browser and are not sent anywhere.", "When you look up a place on the map, only the name or website you searched for is sent, through our server, to OpenStreetMap (Nominatim and Overpass), without any data about you."], []],
+      ["Questions you ask the assistant", ["The questions you type in the chat and the assistant's answers are saved in your account, so you can come back to them. Without an account, the conversation is not saved on our server: it stays only on the open page. If you then sign in or create an account from the chat, that conversation is saved in your account.", "To find and write an answer, your question is sent to OpenAI (USA). Attached files stay only in your browser and are not sent anywhere.", "When you look up a place on the map, only the name or website you searched for is sent, through our server, to OpenStreetMap (Nominatim and Overpass), without any data about you."], []],
       ["Where it is stored", ["Account data and conversations are kept in a PostgreSQL database hosted by Neon, in an Amazon Web Services data centre in the USA, and the website runs on Vercel, also in the USA. The connection between your browser and the server is encrypted (HTTPS)."], []],
-      ["Cookies and browser storage", [], ["One session cookie, needed to sign in. Page scripts cannot read it.", "In browser storage we keep only preferences (the interface language and whether you want to see Victor, the guide) and, until you sign in, a question you asked before signing in.", "We don't use advertising or tracking cookies."]],
+      ["Cookies and browser storage", [], ["One session cookie, needed to sign in. Page scripts cannot read it.", "In browser storage we keep only preferences (the interface language and whether you want to see Victor, the guide) and, while you sign in from the chat, the conversation you had without an account, so it can be saved to your account.", "We don't use advertising or tracking cookies."]],
       ["How long we keep it", ["As long as you have an account; your conversations are deleted together with it. A session expires after at most 30 days, or when you close the browser if you don't tick “Keep me signed in”."], []],
       ["Your rights", ["Under the law of the Republic of Moldova on personal data protection, you can find out what data we keep about you, correct it and ask for your account to be deleted. You can withdraw your consent at any time; without it, the account can no longer work."], []],
     ] as PolicySection[],
@@ -234,7 +234,6 @@ const en = {
       pending: "Your question will be waiting after you sign in:",
     },
     signUp: {
-      pending: "Your question will be answered as soon as your account is ready:",
       title: "Create your account",
       sub: "Free for every resident and municipal employee.",
       name: "Full name",
@@ -313,11 +312,14 @@ const en = {
       errorTitle: "Something went wrong",
       errorText: "The assistant couldn't answer right now. Please try again in a moment.",
     },
-    gate: {
-      title: "Sign in to see the answer",
-      text: "You need a free account to get answers. Your question is kept in this browser tab and sent as soon as you sign in. Creating an account takes about a minute.",
+    nudge: {
+      title: "You can do more with an account",
+      text: "You can keep using the chat without one, but this conversation is lost when you reload or close the page. With a free account:",
+      benefits: ["your conversations are saved, so you can come back to them any time;", "you can open them on any device, phone or computer;", "the conversation you are having now is kept in your account."],
       signUp: "Create an account",
       signIn: "Sign in",
+      later: "Not now",
+      close: "Close",
     },
     reader: {
       label: "Cited document",
@@ -379,7 +381,7 @@ const ro: Dictionary = {
       ],
       chat: [
         "Bună ziua! Aici puneți întrebări despre documentele Primăriei. Vă arăt pe scurt cum funcționează.",
-        "În istoricul conversațiilor (pe telefon, butonul ☰ din stânga sus) găsiți întrebările anterioare. Pentru răspunsuri aveți nevoie de un cont, iar conversațiile se salvează în el, ca să reveniți la ele de pe orice dispozitiv.",
+        "În istoricul conversațiilor (pe telefon, butonul ☰ din stânga sus) găsiți întrebările anterioare. Cu un cont, conversațiile se salvează și reveniți la ele de pe orice dispozitiv.",
         "În răspunsuri, numerele mici, de exemplu [1], sunt sursele. Apăsați pe ele și se deschide documentul, cu pasajul exact evidențiat.",
         "Scrieți aici întrebarea, cu cuvintele dvs., apoi apăsați „Trimite” sau tasta Enter.",
       ],
@@ -400,9 +402,9 @@ const ro: Dictionary = {
     sections: [
       ["Ce date păstrăm", [], ["Numele și adresa de e-mail pe care le introduceți la înregistrare.", "Rolul ales (locuitor sau angajat municipal) și limba preferată a răspunsurilor.", "Parola, doar în formă criptată ireversibil (hash scrypt). Nimeni, nici echipa proiectului, nu o poate citi.", "Data la care ați acceptat această politică și versiunea ei.", "La autentificare: o sesiune cu adresa IP și tipul de browser, ca să vă putem ține conectat în siguranță."]],
       ["De ce le folosim", ["Doar pentru a vă crea contul, a vă autentifica și a vă proteja contul, de exemplu limitând încercările repetate de parolă. Nu vindem datele, nu le folosim pentru publicitate și nu vă trimitem mesaje de marketing."], []],
-      ["Întrebările adresate asistentului", ["Întrebările pe care le scrieți în chat și răspunsurile asistentului sunt salvate în contul dvs., ca să puteți reveni la ele. O întrebare pusă înainte de autentificare rămâne doar în această filă a browserului și nu este trimisă nicăieri până nu vă conectați.", "Pentru a găsi și scrie răspunsul, întrebarea este trimisă către OpenAI (SUA). Fișierele atașate rămân doar în browserul dvs. și nu sunt trimise nicăieri.", "Când căutați un loc pe hartă, doar numele sau site-ul căutat este trimis, prin serverul nostru, către OpenStreetMap (Nominatim și Overpass), fără date despre dvs."], []],
+      ["Întrebările adresate asistentului", ["Întrebările pe care le scrieți în chat și răspunsurile asistentului sunt salvate în contul dvs., ca să puteți reveni la ele. Fără cont, conversația nu este salvată pe serverul nostru: rămâne doar pe pagina deschisă. Dacă apoi vă conectați sau vă creați un cont din chat, acea conversație se salvează în contul dvs.", "Pentru a găsi și scrie răspunsul, întrebarea este trimisă către OpenAI (SUA). Fișierele atașate rămân doar în browserul dvs. și nu sunt trimise nicăieri.", "Când căutați un loc pe hartă, doar numele sau site-ul căutat este trimis, prin serverul nostru, către OpenStreetMap (Nominatim și Overpass), fără date despre dvs."], []],
       ["Unde sunt stocate", ["Datele contului și conversațiile sunt păstrate într-o bază de date PostgreSQL găzduită de Neon, într-un centru de date Amazon Web Services din SUA, iar site-ul rulează pe Vercel, tot în SUA. Legătura dintre browser și server este criptată (HTTPS)."], []],
-      ["Cookie-uri și memoria browserului", [], ["Un singur cookie de sesiune, necesar pentru autentificare. Scripturile paginii nu îl pot citi.", "În memoria browserului păstrăm doar preferințe (limba interfeței și dacă doriți să-l vedeți pe Victor, ghidul) și, până vă conectați, întrebarea pusă înainte de autentificare.", "Nu folosim cookie-uri de publicitate sau de urmărire."]],
+      ["Cookie-uri și memoria browserului", [], ["Un singur cookie de sesiune, necesar pentru autentificare. Scripturile paginii nu îl pot citi.", "În memoria browserului păstrăm doar preferințe (limba interfeței și dacă doriți să-l vedeți pe Victor, ghidul) și, cât timp vă conectați din chat, conversația purtată fără cont, ca să fie salvată în contul dvs.", "Nu folosim cookie-uri de publicitate sau de urmărire."]],
       ["Cât timp le păstrăm", ["Cât timp aveți cont; conversațiile se șterg odată cu el. Sesiunea expiră după cel mult 30 de zile, iar dacă nu bifați „Ține-mă minte”, la închiderea browserului."], []],
       ["Drepturile dvs.", ["Conform legislației Republicii Moldova privind protecția datelor cu caracter personal, aveți dreptul să aflați ce date păstrăm despre dvs., să le corectați și să cereți ștergerea contului. Vă puteți retrage oricând acordul; fără el, contul nu mai poate funcționa."], []],
     ],
@@ -562,7 +564,6 @@ const ro: Dictionary = {
       pending: "Întrebarea vă așteaptă după autentificare:",
     },
     signUp: {
-      pending: "Răspundem la întrebare imediat ce contul este gata:",
       title: "Creați-vă contul",
       sub: "Gratuit pentru fiecare locuitor și angajat municipal.",
       name: "Nume complet",
@@ -641,11 +642,14 @@ const ro: Dictionary = {
       errorTitle: "Ceva nu a funcționat",
       errorText: "Asistentul nu a putut răspunde acum. Încercați din nou peste câteva momente.",
     },
-    gate: {
-      title: "Conectați-vă ca să vedeți răspunsul",
-      text: "Pentru răspunsuri aveți nevoie de un cont gratuit. Întrebarea rămâne în această filă a browserului și este trimisă imediat ce vă conectați. Crearea unui cont durează cam un minut.",
+    nudge: {
+      title: "Cu un cont aveți mai multe posibilități",
+      text: "Puteți folosi chatul și fără cont, dar conversația se pierde când reîncărcați sau închideți pagina. Cu un cont gratuit:",
+      benefits: ["conversațiile se salvează și reveniți la ele oricând;", "le deschideți de pe orice dispozitiv, telefon sau calculator;", "conversația de acum se păstrează în cont."],
       signUp: "Creați un cont",
       signIn: "Conectați-vă",
+      later: "Nu acum",
+      close: "Închide",
     },
     reader: {
       label: "Documentul citat",
@@ -704,7 +708,7 @@ const ru: Dictionary = {
       ],
       chat: [
         "Здравствуйте! Здесь можно задавать вопросы по документам Примэрии. Коротко покажу, как это работает.",
-        "В истории разговоров (на телефоне — кнопка ☰ слева вверху) хранятся прежние вопросы. Для ответов нужен аккаунт, и разговоры сохраняются в нём, поэтому к ним можно вернуться с любого устройства.",
+        "В истории разговоров (на телефоне — кнопка ☰ слева вверху) хранятся прежние вопросы. С аккаунтом разговоры сохраняются, и к ним можно вернуться с любого устройства.",
         "В ответах маленькие цифры, например [1], — это источники. Нажмите на цифру, и откроется документ с выделенным точным фрагментом.",
         "Напишите здесь вопрос своими словами и нажмите «Отправить» или клавишу Enter.",
       ],
@@ -725,9 +729,9 @@ const ru: Dictionary = {
     sections: [
       ["Какие данные мы храним", [], ["Имя и адрес эл. почты, которые вы указываете при регистрации.", "Выбранную роль (житель или муниципальный служащий) и предпочитаемый язык ответов.", "Пароль — только в необратимо зашифрованном виде (хеш scrypt). Его не может прочитать никто, включая команду проекта.", "Дату, когда вы приняли эту политику, и её версию.", "При входе: сессию с IP-адресом и типом браузера, чтобы безопасно сохранять вход."]],
       ["Зачем мы их используем", ["Только чтобы создать аккаунт, выполнить вход и защитить аккаунт, например ограничивая повторные попытки ввода пароля. Мы не продаём данные, не используем их для рекламы и не отправляем рекламные сообщения."], []],
-      ["Вопросы помощнику", ["Вопросы, которые вы пишете в чате, и ответы помощника сохраняются в вашем аккаунте, чтобы вы могли к ним вернуться. Вопрос, заданный до входа, остаётся только в этой вкладке браузера и никуда не отправляется, пока вы не войдёте.", "Чтобы найти и написать ответ, вопрос передаётся в OpenAI (США). Прикреплённые файлы остаются только в вашем браузере и никуда не отправляются.", "Когда вы ищете место на карте, через наш сервер в OpenStreetMap (Nominatim и Overpass) передаётся только искомое название или сайт, без данных о вас."], []],
+      ["Вопросы помощнику", ["Вопросы, которые вы пишете в чате, и ответы помощника сохраняются в вашем аккаунте, чтобы вы могли к ним вернуться. Без аккаунта разговор не сохраняется на нашем сервере: он остаётся только на открытой странице. Если затем войти или создать аккаунт из чата, этот разговор сохранится в вашем аккаунте.", "Чтобы найти и написать ответ, вопрос передаётся в OpenAI (США). Прикреплённые файлы остаются только в вашем браузере и никуда не отправляются.", "Когда вы ищете место на карте, через наш сервер в OpenStreetMap (Nominatim и Overpass) передаётся только искомое название или сайт, без данных о вас."], []],
       ["Где хранятся данные", ["Данные аккаунта и разговоры хранятся в базе данных PostgreSQL у Neon, в центре обработки данных Amazon Web Services в США, а сайт работает на Vercel, также в США. Соединение между браузером и сервером зашифровано (HTTPS)."], []],
-      ["Cookie и память браузера", [], ["Один cookie сессии, необходимый для входа. Скрипты страницы не могут его прочитать.", "В памяти браузера хранятся только настройки (язык интерфейса и то, показывать ли помощника Виктора) и, до входа, вопрос, заданный до входа в аккаунт.", "Мы не используем рекламные и отслеживающие cookie."]],
+      ["Cookie и память браузера", [], ["Один cookie сессии, необходимый для входа. Скрипты страницы не могут его прочитать.", "В памяти браузера хранятся только настройки (язык интерфейса и то, показывать ли помощника Виктора) и, пока вы входите в аккаунт из чата, разговор, который вы вели без аккаунта, чтобы сохранить его в аккаунте.", "Мы не используем рекламные и отслеживающие cookie."]],
       ["Как долго мы их храним", ["Пока у вас есть аккаунт; разговоры удаляются вместе с ним. Сессия истекает не позднее чем через 30 дней, а если не отметить «Запомнить меня» — при закрытии браузера."], []],
       ["Ваши права", ["Согласно законодательству Республики Молдова о защите персональных данных, вы можете узнать, какие данные мы о вас храним, исправить их и потребовать удалить аккаунт. Вы можете в любой момент отозвать согласие; без него аккаунт не сможет работать."], []],
     ],
@@ -887,7 +891,6 @@ const ru: Dictionary = {
       pending: "Ваш вопрос будет ждать вас после входа:",
     },
     signUp: {
-      pending: "Мы ответим на ваш вопрос, как только аккаунт будет создан:",
       title: "Создайте аккаунт",
       sub: "Бесплатно для всех жителей и муниципальных служащих.",
       name: "Полное имя",
@@ -966,11 +969,14 @@ const ru: Dictionary = {
       errorTitle: "Что-то пошло не так",
       errorText: "Помощник сейчас не смог ответить. Попробуйте ещё раз через несколько минут.",
     },
-    gate: {
-      title: "Войдите, чтобы увидеть ответ",
-      text: "Для ответов нужен бесплатный аккаунт. Ваш вопрос сохраняется в этой вкладке браузера и будет отправлен сразу после входа. Создание аккаунта занимает около минуты.",
+    nudge: {
+      title: "С аккаунтом у вас больше возможностей",
+      text: "Чатом можно пользоваться и без аккаунта, но этот разговор пропадёт, если перезагрузить или закрыть страницу. С бесплатным аккаунтом:",
+      benefits: ["разговоры сохраняются, и к ним можно вернуться в любое время;", "их можно открыть на любом устройстве — телефоне или компьютере;", "текущий разговор сохранится в вашем аккаунте."],
       signUp: "Создать аккаунт",
       signIn: "Войти",
+      later: "Не сейчас",
+      close: "Закрыть",
     },
     reader: {
       label: "Цитируемый документ",

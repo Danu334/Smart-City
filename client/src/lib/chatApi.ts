@@ -1,10 +1,10 @@
 import type { ChatEvent } from "@/pages/api/chat";
 import type { Conversation } from "@/types/chat";
 
-// Browser side of /api/chat and /api/conversations. History is kept per
-// account; visitors get a 401 from /api/chat and are asked to sign in.
+// Browser side of /api/chat and /api/conversations. History is saved per
+// account; visitors are answered too, but their chat stays on the page.
 
-/** A failed request, with the HTTP status (401 = sign in first). */
+/** A failed request, with its HTTP status. */
 export class ChatApiError extends Error {
   constructor(
     message: string,
@@ -23,24 +23,29 @@ async function errorFrom(res: Response): Promise<ChatApiError> {
   return new ChatApiError(message, res.status);
 }
 
-/** POST a question and feed each server-sent event to `onEvent`. */
+/**
+ * POST a question and feed each server-sent event to `onEvent`. Visitors send
+ * their earlier turns as `history`, since the server keeps nothing for them.
+ */
 export async function streamChat({
   conversationId,
   message,
   locale,
+  history,
   onEvent,
   signal,
 }: {
   conversationId: string | null;
   message: string;
   locale: string;
+  history?: { role: "user" | "assistant"; text: string }[];
   onEvent: (event: ChatEvent) => void;
   signal?: AbortSignal;
 }): Promise<void> {
   const res = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ conversationId, message, locale }),
+    body: JSON.stringify({ conversationId, message, locale, history }),
     signal,
   });
   if (!res.ok) throw await errorFrom(res);
@@ -87,4 +92,16 @@ export async function fetchConversation(id: string): Promise<Conversation> {
   if (!res.ok) throw await errorFrom(res);
   const data = (await res.json()) as { conversation: Conversation };
   return data.conversation;
+}
+
+/** Saves a visitor's conversations to the account they just signed in to. */
+export async function importConversations(conversations: Conversation[], locale: string): Promise<number> {
+  const res = await fetch("/api/conversations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ conversations, locale }),
+  });
+  if (!res.ok) throw await errorFrom(res);
+  const data = (await res.json()) as { saved?: number };
+  return data.saved ?? 0;
 }

@@ -7,11 +7,12 @@ import Conversation from "@/components/chat/Conversation";
 import DocViewer from "@/components/chat/DocViewer";
 import EmptyState from "@/components/chat/EmptyState";
 import Guide from "@/components/guide/Guide";
+import AccountNudge, { nudgeDismissed } from "@/components/chat/AccountNudge";
 import type { StatusPhase } from "@/components/chat/Conversation";
 import { useSession } from "@/lib/auth-client";
-import { ChatApiError, fetchConversation, fetchConversations, streamChat } from "@/lib/chatApi";
+import { fetchConversation, fetchConversations, importConversations, streamChat } from "@/lib/chatApi";
 import { makeId } from "@/lib/ids";
-import { savePendingQuestion, takePendingQuestion } from "@/lib/pendingQuestion";
+import { saveGuestChats, takeGuestChats } from "@/lib/guestChats";
 import { useI18n } from "@/lib/i18n";
 import { cssVars } from "@/lib/css";
 import type {
@@ -35,14 +36,16 @@ export default function Chat() {
   const { t, locale } = useI18n();
   const router = useRouter();
 
-  // History lives on the server, per account. Visitors can ask, but the
-  // answer comes after sign-in; the question waits in this tab until then.
+  // Signed in: history is saved on the server. Visitors can chat too, but
+  // their conversation stays on this page (nothing is stored for them).
   const { data: session, isPending: sessionPending } = useSession();
   const userId = session?.user.id ?? null;
 
   const [conversations, setConversations] = useState<ConversationData[]>([]);
   const [pending, setPending] = useState(false);
   const [statusPhase, setStatusPhase] = useState<StatusPhase | null>(null);
+  // "An account gives you more" notice, shown to a visitor after an answer.
+  const [nudge, setNudge] = useState(false);
   const [collapsed, setCollapsed] = useStoredFlag(COLLAPSE_KEY, false);
   const [drawer, setDrawer] = useState(false);
   const [width, setWidth] = useState(288);
@@ -126,7 +129,9 @@ export default function Chat() {
 
   const send = async (text: string, files: File[]) => {
     const stamp = new Date().toISOString();
-    const existingId = activeId && conversations.some((c) => c.id === activeId) ? activeId : null;
+    const existing = activeId ? conversations.find((c) => c.id === activeId) : undefined;
+    const existingId = existing?.id ?? null;
+    const guest = !userId;
     const userMsg: UserMessage = {
       id: makeId(),
       role: "user",
@@ -158,12 +163,6 @@ export default function Chat() {
         ),
       );
 
-    // No account: keep the question in this tab and ask to sign in.
-    const gate = () => {
-      savePendingQuestion(text);
-      patchAssistant((m) => ({ ...m, streaming: false, blocks: [{ type: "signin", question: text }] }));
-    };
-
     const fail = (message: string) =>
       patchAssistant((m) => ({
         ...m,
@@ -186,13 +185,6 @@ export default function Chat() {
     setStatusPhase("think");
     go({ c: track.convId });
 
-    if (!sessionPending && !userId) {
-      gate();
-      setPending(false);
-      setStatusPhase(null);
-      return;
-    }
-
     abort.current?.abort();
     const controller = new AbortController();
     abort.current = controller;
@@ -200,7 +192,11 @@ export default function Chat() {
 
     try {
       await streamChat({
-        conversationId: existingId,
+        // A visitor's conversation only exists here, so its earlier turns go along.
+        conversationId: guest ? null : existingId,
+        history: guest
+          ? existing?.messages.map((m) => ({ role: m.role, text: m.text ?? "" })).filter((m) => m.text)
+          : undefined,
         message: text,
         locale,
         signal: controller.signal,
@@ -245,6 +241,7 @@ export default function Chat() {
                 citations: event.citations,
                 actions: event.actions,
               }));
+              if (guest && !nudgeDismissed()) setNudge(true);
               break;
             case "error":
               fail(event.message);
@@ -254,7 +251,6 @@ export default function Chat() {
       });
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") return;
-      if (err instanceof ChatApiError && err.status === 401) return gate();
       fail(err instanceof Error && err.message ? err.message : t.chat.answer.errorText);
     } finally {
       if (abort.current === controller) {
@@ -264,10 +260,18 @@ export default function Chat() {
     }
   };
 
-  // Back from sign-in with a question waiting: ask it now, once.
-  const sendPendingQuestion = useEffectEvent(() => {
-    const question = takePendingQuestion();
-    if (question) void send(question, []);
+  // Just signed in from the chat: save the conversations had as a visitor.
+  const importGuestChats = useEffectEvent(async () => {
+    const waiting = takeGuestChats();
+    if (!waiting.length) return;
+    try {
+      await importConversations(waiting, locale);
+      const list = await fetchConversations();
+      setConversations(list);
+      if (list[0]) openConversation(list[0].id);
+    } catch (err) {
+      console.error(err);
+    }
   });
 
   // Load the history list, and again after sign-in or sign-out.
@@ -286,7 +290,7 @@ export default function Chat() {
           const listed = new Set(list.map((c) => c.id));
           return [...prev.filter((c) => open.has(c.id) && !listed.has(c.id)), ...list.map((c) => open.get(c.id) ?? c)];
         });
-        if (userId) sendPendingQuestion();
+        if (userId) void importGuestChats();
       })
       .catch((err) => console.error(err));
     return () => {
@@ -388,6 +392,9 @@ export default function Chat() {
           </div>
 
           <div id="chat-composer" className={styles.composerWrap}>
+            {nudge && !userId && (
+              <AccountNudge onClose={() => setNudge(false)} onLeave={() => saveGuestChats(conversations)} />
+            )}
             <Composer value={value} onChange={setDraft} onSend={send} busy={pending} />
           </div>
         </main>

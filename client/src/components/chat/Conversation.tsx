@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import StateIcon from "@/components/StateIcon";
 import MarkdownAnswer from "@/components/chat/MarkdownAnswer";
 import PlacesPanel from "@/components/places/PlacesPanel";
@@ -46,41 +45,6 @@ function DocIcon() {
       <rect x="4.5" y="2.5" width="11" height="15" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
       <path d="M7.5 7h5M7.5 10h5M7.5 13h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
-  );
-}
-
-function LockIcon() {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true">
-      <rect x="4.5" y="9" width="11" height="8" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M7 9V6.5a3 3 0 016 0V9" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-/** Shown instead of an answer to a visitor: the question waits for sign-in. */
-function SignInGate({ question }: { question: string }) {
-  const { t } = useI18n();
-  const g = t.chat.gate;
-  const query = { q: question };
-  return (
-    <div className={styles.flag} data-tone="teal">
-      <span className={styles.flagIcon}>
-        <LockIcon />
-      </span>
-      <div>
-        <strong>{g.title}</strong>
-        <p>{g.text}</p>
-        <div className={styles.gateActions}>
-          <Link href={{ pathname: "/sign-up", query }} className={styles.gatePrimary}>
-            {g.signUp}
-          </Link>
-          <Link href={{ pathname: "/sign-in", query }} className={styles.gateGhost}>
-            {g.signIn}
-          </Link>
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -150,8 +114,6 @@ function Block({ block, citations, onOpen, active }: MarkerProps & { block: Answ
     );
 
   if (block.type === "places") return <PlacesPanel query={block.query} title={block.title} compact />;
-
-  if (block.type === "signin") return <SignInGate question={block.question} />;
 
   if (block.type === "quote")
     return (

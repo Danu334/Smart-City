@@ -725,38 +725,6 @@
 .flag p {
   color: var(--graphite);
 }
-.gateActions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 12px;
-}
-.gatePrimary,
-.gateGhost {
-  display: inline-flex;
-  align-items: center;
-  min-height: 40px;
-  padding: 0 16px;
-  border-radius: 10px;
-  font-size: 14.5px;
-  font-weight: 600;
-  text-decoration: none;
-}
-.gatePrimary {
-  background: var(--accent);
-  color: #fff;
-}
-.gatePrimary:hover {
-  background: var(--ink);
-}
-.gateGhost {
-  border: 1px solid var(--hairline-strong);
-  background: var(--paper);
-  color: var(--ink);
-}
-.gateGhost:hover {
-  border-color: var(--ink);
-}
 .flagIcon {
   flex-shrink: 0;
   margin-top: 1px;
@@ -1318,5 +1286,124 @@
   }
   .drawerBtn {
     display: grid;
+  }
+}
+
+/* ---------- Account notice (visitors) ---------- */
+.nudge {
+  position: relative;
+  max-width: 740px;
+  margin: 0 auto 12px;
+  padding: 16px 44px 16px 18px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--hairline-strong);
+  border-left: 3px solid var(--accent);
+  background: var(--paper);
+  box-shadow: 0 8px 28px rgba(15, 30, 55, 0.1);
+  animation: nudgeIn 0.35s ease;
+}
+.nudgeClose {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--graphite);
+  cursor: pointer;
+}
+.nudgeClose:hover {
+  background: var(--paper-sunk);
+  color: var(--ink);
+}
+.nudgeClose svg {
+  width: 16px;
+  height: 16px;
+}
+.nudgeTitle {
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.nudgeText {
+  margin-top: 4px;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--graphite);
+}
+.nudgeList {
+  display: grid;
+  gap: 4px;
+  margin: 8px 0 0;
+  padding-left: 20px;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--graphite);
+}
+.nudgeList li::marker {
+  color: var(--accent);
+}
+.nudgeActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+.nudgePrimary,
+.nudgeGhost {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-size: 14.5px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.nudgePrimary {
+  background: var(--accent);
+  color: #fff;
+}
+.nudgePrimary:hover {
+  background: var(--ink);
+}
+.nudgeGhost {
+  border: 1px solid var(--hairline-strong);
+  background: var(--paper);
+  color: var(--ink);
+}
+.nudgeGhost:hover {
+  border-color: var(--ink);
+}
+.nudgeLater {
+  min-height: 40px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 14.5px;
+  color: var(--graphite);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+@keyframes nudgeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nudge {
+    animation: none;
   }
 }
