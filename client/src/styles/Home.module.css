@@ -377,102 +377,101 @@
   background: var(--rose-wash);
 }
 
-/* Anatomy card */
-.anatomy {
+/* Answer sheet: official-style information table */
+.sheet {
   position: sticky;
   top: calc(var(--nav-h) + 24px);
-  display: grid;
-  gap: 20px;
-  padding: 24px;
-  border-radius: 20px;
+  overflow: hidden;
+  border-radius: 14px;
   background: var(--paper-raised);
-  border: 1px solid var(--hairline);
+  border: 1px solid var(--hairline-strong);
   box-shadow: var(--shadow-raised);
 }
-.anatomyHead {
+.sheetHead {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--hairline);
+  padding: 14px 20px;
+  background: var(--accent);
+  color: #fff;
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 17px;
 }
-.tag {
-  font-family: var(--font-mono);
-  font-weight: 400;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--graphite);
-  padding: 4px 8px;
-  border-radius: 6px;
-  border: 1px dashed var(--hairline-strong);
-  white-space: nowrap;
-}
-.part {
-  display: grid;
-  gap: 8px;
-}
-.partLabel {
-  font-family: var(--font-mono);
-  font-size: 11.5px;
+.sheetTag {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+.sheetRows {
+  margin: 0;
+}
+.sheetRow {
+  display: grid;
+  grid-template-columns: minmax(150px, 38%) 1fr;
+  gap: 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--hairline);
+}
+.sheetRow:last-child {
+  border-bottom: 0;
+}
+.sheetRow:nth-child(even) {
+  background: var(--paper-sunk);
+}
+.sheetRow dt {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 14.5px;
+  color: var(--ink);
+}
+.sheetRow dt svg {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sheetRow[data-key="missing"] dt svg {
+  stroke: var(--amber);
+}
+.sheetRow dd {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
   color: var(--graphite);
 }
-.bar {
-  display: block;
-  height: 9px;
-  border-radius: 999px;
-  background: var(--hairline);
+.sheetRow[data-key="question"] dd {
+  color: var(--ink);
+  font-style: italic;
 }
-.bubble {
-  justify-self: end;
-  width: 70%;
-  padding: 12px 14px;
-  border-radius: 14px 14px 4px 14px;
-  background: var(--ink);
-}
-.bubble .bar {
-  margin-left: auto;
-  background: color-mix(in srgb, var(--paper) 35%, transparent);
-}
-.quote {
-  display: grid;
-  gap: 8px;
-  padding: 12px 14px;
-  border-left: 3px solid var(--highlight-edge);
-  border-radius: 0 10px 10px 0;
-  background: #fffbe6;
-}
-/* Cited passage marked like a yellow highlighter. */
-.quote .bar {
-  height: 12px;
-  background: var(--highlight);
+.sheetMark {
+  display: inline;
+  margin-left: 4px;
+  padding: 1px 4px;
   border-radius: 3px;
+  background: var(--highlight);
+  color: var(--ink);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
-.partRow {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding-top: 16px;
-  border-top: 1px solid var(--hairline);
-}
-.route {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13.5px;
-  font-weight: 500;
-  color: var(--accent);
-}
-.route svg {
-  width: 16px;
-  height: 16px;
+@media (max-width: 520px) {
+  .sheetRow {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
 }
 
 /* Bilingual */
@@ -678,7 +677,7 @@
   .bilingual {
     grid-template-columns: 1fr;
   }
-  .anatomy {
+  .sheet {
     position: static;
   }
 }

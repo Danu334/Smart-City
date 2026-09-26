@@ -82,14 +82,17 @@ const dictionaries = {
         ["Not in the database", "Said plainly", "If the published documents don't cover your question, you're told so and pointed to who can answer it (with a phone number or an address)."],
         ["Documents disagree", "Both sides shown", "When two documents conflict, you see both passages side by side, not a guess. The publication date of each document is shown too."],
       ],
-      anatomy: "Anatomy of an answer",
-      illustrative: "Illustrative layout",
-      parts: {
-        question: "Your question",
-        answer: "Plain-language answer",
-        source: "Document · article · paragraph",
-        flag: "Gap or contradiction flag",
-        route: "Contact page for the next step",
+      sheet: {
+        title: "What an answer looks like",
+        tag: "Sample",
+        mark: "The exact passage is highlighted in the document.",
+        rows: [
+        ["question", "Your question", "“What documents do I need for a building permit?”"],
+        ["answer", "The answer", "Short and in plain language, based only on official documents."],
+        ["source", "Source", "Document title, article and paragraph, plus the publication date."],
+        ["missing", "If information is missing", "We tell you plainly and never make up an answer."],
+        ["next", "Next step", "The responsible City Hall office, with phone number and address."],
+        ],
       },
     },
     bilingual: {
@@ -242,14 +245,17 @@ const dictionaries = {
         ["Nu există în baza de date", "Spus direct", "Dacă documentele publicate nu acoperă întrebarea, vi se spune și sunteți îndrumat spre cine poate răspunde (cu un număr de telefon sau o adresă)."],
         ["Documente contradictorii", "Ambele părți", "Când două documente se contrazic, vedeți ambele pasaje alăturat, nu o presupunere. Se indică și data publicării fiecărui document."],
       ],
-      anatomy: "Anatomia unui răspuns",
-      illustrative: "Schemă ilustrativă",
-      parts: {
-        question: "Întrebarea dvs.",
-        answer: "Răspuns pe înțeles",
-        source: "Document · articol · alineat",
-        flag: "Semnal de lacună sau contradicție",
-        route: "Pagina de contact pentru pasul următor",
+      sheet: {
+        title: "Cum arată un răspuns",
+        tag: "Model",
+        mark: "Pasajul exact este evidențiat în document.",
+        rows: [
+        ["question", "Întrebarea dvs.", "„Ce acte îmi trebuie pentru autorizația de construire?”"],
+        ["answer", "Răspunsul", "Explicat pe scurt și pe înțeles, doar pe baza documentelor oficiale."],
+        ["source", "Sursa", "Denumirea documentului, articolul și alineatul, plus data publicării."],
+        ["missing", "Dacă lipsesc informații", "Vă spunem direct și nu inventăm un răspuns."],
+        ["next", "Pasul următor", "Biroul responsabil al Primăriei, cu telefon și adresă."],
+        ],
       },
     },
     bilingual: {
@@ -402,14 +408,17 @@ const dictionaries = {
         ["Нет в базе данных", "Сказано прямо", "Если опубликованные документы не отвечают на вопрос, вам об этом скажут и подскажут, кто может помочь (с номером телефона или адресом)."],
         ["Документы расходятся", "Обе стороны", "Если два документа противоречат друг другу, вы увидите оба фрагмента рядом, а не догадку. Также указывается дата публикации каждого документа."],
       ],
-      anatomy: "Анатомия ответа",
-      illustrative: "Иллюстративная схема",
-      parts: {
-        question: "Ваш вопрос",
-        answer: "Ответ простым языком",
-        source: "Документ · статья · пункт",
-        flag: "Отметка о пробеле или противоречии",
-        route: "Контактная страница для следующего шага",
+      sheet: {
+        title: "Как выглядит ответ",
+        tag: "Образец",
+        mark: "Точный фрагмент выделен в документе.",
+        rows: [
+        ["question", "Ваш вопрос", "«Какие документы нужны для разрешения на строительство?»"],
+        ["answer", "Ответ", "Кратко и понятно, только на основе официальных документов."],
+        ["source", "Источник", "Название документа, статья и пункт, а также дата публикации."],
+        ["missing", "Если данных нет", "Мы прямо об этом скажем и не будем выдумывать ответ."],
+        ["next", "Следующий шаг", "Ответственный отдел Примэрии, с телефоном и адресом."],
+        ],
       },
     },
     bilingual: {

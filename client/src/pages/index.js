@@ -97,50 +97,41 @@ function AskBox() {
   );
 }
 
-function Anatomy() {
+const SHEET_ICONS = {
+  question: <path d="M5 5.5h14a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5H10l-4 3.5v-3.5H5A1.5 1.5 0 0 1 3.5 15V7A1.5 1.5 0 0 1 5 5.5z" />,
+  answer: <path d="M5 7h14M5 11h14M5 15h9" />,
+  source: <path d="M7 3.5h7l4 4v13H7zM14 3.5v4h4M9.5 12h6M9.5 15.5h4" />,
+  missing: <path d="M12 3.5l9 16H3zM12 10v4M12 17h.01" />,
+  next: <path d="M4 20.5h16M6 20.5V10l6-5 6 5v10.5M10 20.5v-5h4v5" />,
+};
+
+// "What an answer looks like": an official-style information sheet that
+// names each part of an answer in plain words (no invented citations).
+function AnswerSheet() {
   const { t } = useI18n();
-  const p = t.honesty.parts;
+  const sheet = t.honesty.sheet;
   return (
-    <figure className={styles.anatomy} aria-label={t.honesty.anatomy}>
-      <figcaption className={styles.anatomyHead}>
-        <span>{t.honesty.anatomy}</span>
-        <span className={styles.tag}>{t.honesty.illustrative}</span>
+    <figure className={styles.sheet}>
+      <figcaption className={styles.sheetHead}>
+        <span>{sheet.title}</span>
+        <span className={styles.sheetTag}>{sheet.tag}</span>
       </figcaption>
-
-      <div className={styles.part}>
-        <span className={styles.partLabel}>01 · {p.question}</span>
-        <div className={styles.bubble}>
-          <span className={styles.bar} style={{ width: "72%" }} />
-        </div>
-      </div>
-
-      <div className={styles.part}>
-        <span className={styles.partLabel}>02 · {p.answer}</span>
-        <span className={styles.bar} style={{ width: "96%" }} />
-        <span className={styles.bar} style={{ width: "88%" }} />
-        <span className={styles.bar} style={{ width: "54%" }} />
-      </div>
-
-      <div className={styles.part}>
-        <span className={styles.partLabel}>03 · {p.source}</span>
-        <blockquote className={styles.quote}>
-          <span className={styles.bar} style={{ width: "92%" }} />
-          <span className={styles.bar} style={{ width: "70%" }} />
-        </blockquote>
-      </div>
-
-      <div className={styles.partRow}>
-        <span className={`${styles.pill} ${styles.amber}`}>
-          <StateIcon tone="amber" />
-          {p.flag}
-        </span>
-        <span className={styles.route}>
-          {p.route}
-          <svg viewBox="0 0 20 20" aria-hidden="true">
-            <path d="M6 14L14 6M8 6h6v6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </span>
-      </div>
+      <dl className={styles.sheetRows}>
+        {sheet.rows.map(([key, label, value]) => (
+          <div key={key} className={styles.sheetRow} data-key={key}>
+            <dt>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                {SHEET_ICONS[key]}
+              </svg>
+              {label}
+            </dt>
+            <dd>
+              {value}
+              {key === "source" && <mark className={styles.sheetMark}>{sheet.mark}</mark>}
+            </dd>
+          </div>
+        ))}
+      </dl>
     </figure>
   );
 }
@@ -236,7 +227,7 @@ export default function Home() {
                 );
               })}
             </ul>
-            <Anatomy />
+            <AnswerSheet />
           </div>
         </section>
 
