@@ -259,6 +259,128 @@ const TRANSPORT_ANSWER: DemoAnswer = {
   contradictions: [],
 };
 
+// Real chunks from the Qdrant index (autosalubritate.md), trimmed to the cited part.
+const TARIFF_HITS: Hit[] = [
+  hit({
+    n: 1,
+    id: "8a856fcb-dd15-56c7-93cf-553916e60936",
+    docId: "dispozitie-304-d",
+    title:
+      "Dispoziție cu privire la aprobarea tarifelor și a normelor de acumulare pentru colectarea, transportarea și depozitarea deșeurilor municipale din municipiul Chișinău - Regia AutoSalubritate",
+    site: "autosalubritate.md",
+    url: "https://autosalubritate.md/dispozitie-cu-privire-la-aprobarea-tarifelor-si-a-normelor-de-acumulare-pentru-colectarea-transportarea-si-depozitarea-deseurilor-municipale-din-municipiul-chisinau",
+    citeUrl:
+      "https://autosalubritate.md/dispozitie-cu-privire-la-aprobarea-tarifelor-si-a-normelor-de-acumulare-pentru-colectarea-transportarea-si-depozitarea-deseurilor-municipale-din-municipiul-chisinau/",
+    // The page carries no date of its own; this is the date of the disposition it announces.
+    date: "2022-07-07",
+    text: `Anunțul publicat în Monitorul Oficial Nr 208-216 (8252-8260) PARTEA IV din 15 iulie 2022.
+Î.M. Regia „Autosalubritate” informează că, începând cu 07.07.2022, sunt în vigoare tarifele pentru colectarea, transportarea și depozitarea deșeurilor din municipiul Chișinău, aprobate prin Dispoziția Primarului General al mun. Chișinău nr.304-d din 07.07.2022: pentru agenții economici – 210,00 lei/1 m3 (fără TVA), pentru populație – 105,00 lei/1 m3 (fără TVA) sau lunar 17,50 lei pentru un locatar la bloc și 35,00 lei pentru un locatar în sectorul particular.`,
+  }),
+  hit({
+    n: 2,
+    id: "f28026d6-c953-5555-9bc2-a14ab8e0b15d",
+    docId: "cmc-ajustare-tarife-2022",
+    title:
+      "CMC A VOTAT AJUSTAREA TARIFELOR PENTRU COLECTAREA, TRANSPORTAREA ȘI DEPOZITAREA DEȘEURILOR MUNICIPALE DIN CHIȘINĂU - Regia AutoSalubritate",
+    site: "autosalubritate.md",
+    url: "https://autosalubritate.md/cmc-a-votat-ajustarea-tarifelor-pentru-colectarea-transportarea-si-depozitarea-deseurilor-municipale-din-chisinau",
+    citeUrl:
+      "https://autosalubritate.md/cmc-a-votat-ajustarea-tarifelor-pentru-colectarea-transportarea-si-depozitarea-deseurilor-municipale-din-chisinau/",
+    date: "2022-06-21",
+    text: `Din 1 iulie curent, serviciile pentru colectarea, transportarea și depozitarea deșeurilor municipale din Chișinău, vor fi facturate în corespundere cu noile tarife. Decizia a fost luată astăzi, 21 iunie, în cadrul ședinței consiliului municipal.
+Costul pentru evacuarea unui 1 m3 de deșeuri pentru populația orașului Chișinău va constitui 105 lei fără TVA, iar plata lunară pentru evacuarea deșeurilor pentru persoanele fizice la bloc va constitui 17,50 lei, iar pentru cei care trăiesc la case particulare – 35 lei.
+Totodată, pensionarii și familiile social vulnerabile din capitală vor beneficia de compensații la plata lunară pentru evacuarea deșeurilor pe care le generează.`,
+  }),
+  hit({
+    n: 3,
+    id: "aab69d5e-8242-52f2-ab6f-916dbd1bf991",
+    docId: "cmc-ajustare-tarife-2022",
+    title:
+      "CMC A VOTAT AJUSTAREA TARIFELOR PENTRU COLECTAREA, TRANSPORTAREA ȘI DEPOZITAREA DEȘEURILOR MUNICIPALE DIN CHIȘINĂU - Regia AutoSalubritate",
+    site: "autosalubritate.md",
+    url: "https://autosalubritate.md/cmc-a-votat-ajustarea-tarifelor-pentru-colectarea-transportarea-si-depozitarea-deseurilor-municipale-din-chisinau",
+    citeUrl:
+      "https://autosalubritate.md/cmc-a-votat-ajustarea-tarifelor-pentru-colectarea-transportarea-si-depozitarea-deseurilor-municipale-din-chisinau/",
+    date: "2022-06-21",
+    text: `Precizăm, că ultima dată, tarifele pentru colectarea, transportarea și depozitarea deșeurilor municipale din Chișinău, au fost ajustate acum cinci ani în 2017.`,
+  }),
+  hit({
+    n: 4,
+    id: "7533777c-e981-5886-8338-979780c644a3",
+    docId: "aducem-multumiri-2021",
+    title:
+      "Aducem mulțumiri și aprecieri, cetățenilor, care informează Regia ,,Autosalubritate’’, despre încălcarea și nerespectarea regulelor de salubrizare. - Regia AutoSalubritate",
+    site: "autosalubritate.md",
+    url: "https://autosalubritate.md/aducem-multumiri-si-aprecieri-cetatenilor-care-informeaza-regia-autosalubritate-despre-incalcarea-si-nerespectarea-regulelor-de-salubrizare",
+    citeUrl:
+      "https://autosalubritate.md/aducem-multumiri-si-aprecieri-cetatenilor-care-informeaza-regia-autosalubritate-despre-incalcarea-si-nerespectarea-regulelor-de-salubrizare/",
+    date: "2021-05-21",
+    text: `Respectați regulele de salubrizare și nu aruncați gunoiul la întîmplare.
+Abonați-vă la serviciul de evacuare a deșeurilor din cardul Î.M Regia ,, Autosalubritate,, pentru a evita sancționarea, cu un tarif minim de 18,50 per persoană, în acest context, oamenii, nu vor mai arunca deşeurile la întâmplare, iar localităţile vor avea un aspect îngrijit.`,
+  }),
+  hit({
+    n: 5,
+    id: "66bbc467-5db5-501e-8e48-26eaa91377e2",
+    docId: "contracte-februarie-2024",
+    title: "Î.M. REGIA „AUTOSALUBRITATE” A ÎNCHEIAT ÎN LUNA FEBRUARIE 236 CONTRACTE - Regia AutoSalubritate",
+    site: "autosalubritate.md",
+    url: "https://autosalubritate.md/i-m-regia-autosalubritate-a-incheiat-in-luna-februarie-236-contracte",
+    citeUrl: "https://autosalubritate.md/i-m-regia-autosalubritate-a-incheiat-in-luna-februarie-236-contracte/",
+    date: "2024-03-11",
+    text: `Pentru a deveni clientul Î.M. Regia „Autosalubritate” — Persoane fizice: Copia actului de proprietate; Buletinul de identitate; Numărul persoanelor ce locuiesc pe adresa indicată; Cerere.
+Ulterior, întreg setul de acte pentru încheierea contractelor directe, privind evacuarea deșeurilor municipale, se va prezenta la sediul Întreprinderii, strada 27 Martie 1918, nr.14, de luni până vineri, între orele 08.00-16.30, pauza de masă 12.00-13.00, sau online.
+Pentru mai multe informații, accesați https://autosalubritate.md/servicii/servicii-persoane-fizice/ sau sunați la numerele de telefon: 022-740-672 – secția contracte, 022-747-520 – dispecerat.`,
+  }),
+];
+
+const TARIFF_ANSWER: DemoAnswer = {
+  status: "contradiction",
+  answer: `**Cel mai recent tarif publicat este 17,50 lei pe lună pentru un locatar la bloc** (35 lei pentru un locatar la casă particulară), în vigoare din **07.07.2022**, prin Dispoziția Primarului General nr. 304-d [1]. În volum, asta înseamnă 105 lei/m³ fără TVA pentru populație [1].
+
+**De ce găsiți și 18,50 lei:** pe același site, un articol din **21.05.2021** vorbește despre „un tarif minim de 18,50 per persoană” [4]. Acest articol este anterior deciziei din 2022: Consiliul Municipal a votat ajustarea tarifelor pe 21.06.2022 [2], iar precedenta ajustare avusese loc în 2017 [3]. În plus, cele două cifre au unități diferite („per persoană” față de „pentru un locatar la bloc”), iar niciuna dintre pagini nu explică trecerea de la una la alta. **Considerați 18,50 lei o informație istorică.**
+
+**Ce nu pot confirma:** în documente nu există o pagină cu tarifele din 2025–2026. Dacă tariful s-a schimbat după iulie 2022, sursele mele nu o arată, așa că verificați factura sau întrebați Regia.
+
+Pensionarii și familiile social vulnerabile beneficiază de compensații la plata lunară [2].`,
+  steps: [
+    {
+      text: "Verificați pe factură tariful aplicat. Valoarea cunoscută din 07.07.2022: 17,50 lei/lună la bloc sau 35 lei/lună la casă particulară.",
+      refs: [1],
+    },
+    {
+      text: "Dacă sunteți pensionar sau familie social vulnerabilă, întrebați de compensația la plata lunară.",
+      refs: [2],
+    },
+    {
+      text: "Dacă locuiți la casă și nu aveți contract: pregătiți copia actului de proprietate, buletinul, numărul persoanelor care locuiesc la adresă și o cerere, apoi depuneți-le la sediul Regiei (luni–vineri, 08:00–16:30) sau online.",
+      refs: [5],
+    },
+    {
+      text: "Pentru tariful în vigoare azi, sunați la secția contracte: 022-740-672.",
+      refs: [5],
+    },
+  ],
+  institution: {
+    name: "Î.M. Regia „Autosalubritate”",
+    address: "str. 27 Martie 1918, nr. 14, Chișinău",
+    phone: "022-740-672",
+    email: null,
+    website: "https://autosalubritate.md",
+    hours: "Luni–vineri, 08:00–16:30 (pauză 12:00–13:00)",
+    refs: [5],
+  },
+  missing: ["Tarifele în vigoare în 2025–2026 (cea mai recentă sursă este din iulie 2022)"],
+  contradictions: [
+    {
+      topic: "Tariful lunar pentru evacuarea deșeurilor",
+      claims: [
+        { text: "17,50 lei/lună pentru un locatar la bloc, 35 lei la casă particulară — în vigoare din 07.07.2022 (cel mai recent)", ref: 1 },
+        { text: "18,50 lei „per persoană” — articol din 21.05.2021 (informație istorică)", ref: 4 },
+      ],
+    },
+  ],
+};
+
 const SCRIPTS: DemoScript[] = [
   {
     // "200 lei for sorting" rumour, in any close phrasing (Romanian or Russian).
@@ -303,6 +425,20 @@ const SCRIPTS: DemoScript[] = [
       },
       { label: "Sunați la DGAMS", href: "tel:+37322228084", platform: "022 22 80 84" },
     ],
+  },
+  {
+    // Monthly waste fee: 18,50 vs 17,50 lei, any close phrasing.
+    match: (q) =>
+      /(salubr|gunoi|deseu)/.test(q) && /(17[,.]50|18[,.]50|tarif|cat (costa|platesc|plateste|se plateste))/.test(q),
+    queries: [
+      "Cât plătește lunar un locatar pentru evacuarea deșeurilor în Chișinău?",
+      "Care sunt tarifele în vigoare pentru colectarea, transportarea și depozitarea deșeurilor municipale?",
+      "Tariful de 18,50 lei per persoană pentru salubrizare mai este valabil?",
+      "Care este adresa și numărul de telefon al Î.M. Regia „Autosalubritate”, secția contracte?",
+    ],
+    hits: TARIFF_HITS,
+    answer: TARIFF_ANSWER,
+    flags: [],
   },
 ];
 
