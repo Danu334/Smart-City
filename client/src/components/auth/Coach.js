@@ -15,8 +15,10 @@ export default function Coach({ target, message, tone = "error", onClose }) {
   const [rect, setRect] = useState(null);
 
   useEffect(() => {
-    const el = target && document.getElementById(target);
-    if (!el) return;
+    const input = target && document.getElementById(target);
+    if (!input) return;
+    // Checkboxes are tiny: point at the whole row (box + text) instead.
+    const el = input.type === "checkbox" ? input.closest("label") || input : input;
     let raf = 0;
     const measure = () => {
       cancelAnimationFrame(raf);

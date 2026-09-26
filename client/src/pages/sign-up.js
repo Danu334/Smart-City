@@ -3,12 +3,13 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useI18n } from "@/lib/i18n";
 import { signUp, useSession } from "@/lib/auth-client";
-import { checkEmail, checkName, checkPassword, checkTerms, fromServerError } from "@/lib/validation";
+import { checkEmail, checkName, checkPassword, checkPrivacy, checkTerms, fromServerError } from "@/lib/validation";
 import AuthLayout from "@/components/auth/AuthLayout";
 import Guide from "@/components/guide/Guide";
 import Coach, { messageFor, useCoachOff } from "@/components/auth/Coach";
 import { Field, PasswordInput } from "@/components/auth/Fields";
 import { useAuthForm } from "@/components/auth/useAuthForm";
+import PrivacyText from "@/components/PrivacyText";
 import styles from "@/components/auth/Auth.module.css";
 
 function strength(pw) {
@@ -28,12 +29,13 @@ const SIGN_UP_TOUR = [
   { target: "su-finish" },
 ];
 
-const ORDER = ["name", "email", "password", "terms"];
+const ORDER = ["name", "email", "password", "terms", "privacy"];
 const VALIDATORS = {
   name: checkName,
   email: checkEmail,
   password: (v) => checkPassword(v, { isNew: true }),
   terms: checkTerms,
+  privacy: checkPrivacy,
 };
 
 function Segmented({ id, name, legend, options, value, onChange }) {
@@ -60,7 +62,7 @@ export default function SignUp() {
   const coachOff = useCoachOff();
 
   const form = useAuthForm({
-    initial: { name: "", email: "", password: "", role: "citizen", lang: null, terms: false },
+    initial: { name: "", email: "", password: "", role: "citizen", lang: null, terms: false, privacy: false },
     validators: VALIDATORS,
     order: ORDER,
   });
@@ -89,6 +91,7 @@ export default function SignUp() {
           password: v.password,
           role: v.role,
           lang: answerLang,
+          privacyConsent: v.privacy,
         },
         { onError: (ctx) => (retryAfter = Number(ctx.response?.headers?.get("X-Retry-After")) || undefined) }
       );
@@ -204,6 +207,26 @@ export default function SignUp() {
             {inline("terms") && (
               <p id="terms-error" className={styles.error}>
                 {inline("terms")}
+              </p>
+            )}
+          </div>
+
+          <div className={styles.field} data-invalid={!!inline("privacy")}>
+            <label className={styles.check}>
+              <input
+                id="privacy"
+                type="checkbox"
+                checked={values.privacy}
+                onChange={set("privacy")}
+                {...bind("privacy")}
+                aria-invalid={!!inline("privacy") || undefined}
+                aria-describedby={inline("privacy") ? "privacy-error" : undefined}
+              />
+              <PrivacyText text={t.privacy.consent} linkText={t.privacy.consentLink} className={styles.inlineLink} />
+            </label>
+            {inline("privacy") && (
+              <p id="privacy-error" className={styles.error}>
+                {inline("privacy")}
               </p>
             )}
           </div>

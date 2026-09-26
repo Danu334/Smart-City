@@ -22,6 +22,7 @@ export default function Footer() {
             <li><Link href="/about">{t.nav.about}</Link></li>
             <li><Link href="/faq">{t.nav.faq}</Link></li>
             <li><Link href="/sign-in">{t.nav.signIn}</Link></li>
+            <li><Link href="/privacy">{t.privacy.title}</Link></li>
           </ul>
         </div>
 

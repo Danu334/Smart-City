@@ -9,6 +9,7 @@ import Guide from "@/components/guide/Guide";
 import Coach, { messageFor, useCoachOff } from "@/components/auth/Coach";
 import { Field, PasswordInput } from "@/components/auth/Fields";
 import { useAuthForm } from "@/components/auth/useAuthForm";
+import PrivacyText from "@/components/PrivacyText";
 import styles from "@/components/auth/Auth.module.css";
 
 const SIGN_IN_TOUR = [{}, { target: "si-details" }, { target: "si-finish" }, { target: "si-new", radius: 12 }];
@@ -140,6 +141,9 @@ export default function SignIn() {
               {submitError}
             </p>
           )}
+          <p className={styles.legal}>
+            <PrivacyText text={t.privacy.signInNote} linkText={t.privacy.signInLink} className={styles.inlineLink} />
+          </p>
         </div>
       </form>
 

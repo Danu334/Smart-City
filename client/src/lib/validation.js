@@ -40,12 +40,17 @@ export function checkTerms(checked) {
   return checked ? null : { code: "terms" };
 }
 
+export function checkPrivacy(checked) {
+  return checked ? null : { code: "privacy" };
+}
+
 // Map a Better Auth error to the field it concerns and a coach code.
 export function fromServerError(error, retryAfter) {
   if (!error) return null;
   const code = error.code || "";
   if (error.status === 429) return { field: "submit", code: "rateLimited", n: retryAfter || 60 };
   if (code.startsWith("USER_ALREADY_EXISTS")) return { field: "email", code: "userExists" };
+  if ((error.message || "").includes("PRIVACY_CONSENT_REQUIRED")) return { field: "privacy", code: "privacy" };
   if (code === "INVALID_EMAIL_OR_PASSWORD") return { field: "password", code: "badCredentials" };
   if (code === "INVALID_EMAIL") return { field: "email", code: "emailInvalid" };
   if (code === "PASSWORD_TOO_SHORT") return { field: "password", code: "passwordShort", n: MIN_PASSWORD - 1 };

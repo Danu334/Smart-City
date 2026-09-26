@@ -2,9 +2,12 @@ import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Logo, { LogoMark } from "@/components/Logo";
 import LanguageSwitch from "@/components/LanguageSwitch";
+import StateIcon from "@/components/StateIcon";
 import { useI18n } from "@/lib/i18n";
 import { groupByRecency, normalize } from "@/lib/corpus";
 import styles from "./Chat.module.css";
+
+const LEGEND_TONES = ["teal", "amber", "rose"];
 
 const MIN_W = 240;
 const MAX_W = 420;
@@ -126,6 +129,24 @@ export default function ChatSidebar({
             </section>
           ))}
         </nav>
+
+        {/* Colour key for the three kinds of answer, same icons as the home page. */}
+        <details className={styles.legend} open>
+          <summary className={styles.legendTitle}>{s.legend.title}</summary>
+          <ul>
+            {t.honesty.cards.map(([name], i) => (
+              <li key={name} className={styles.legendItem} data-tone={LEGEND_TONES[i]}>
+                <span className={styles.legendIcon}>
+                  <StateIcon tone={LEGEND_TONES[i]} />
+                </span>
+                <span>
+                  <strong>{name}</strong>
+                  <span className={styles.legendText}>{s.legend.items[i]}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </details>
 
         <div className={styles.sidebarFoot}>
           <LanguageSwitch />

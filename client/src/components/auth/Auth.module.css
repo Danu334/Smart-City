@@ -297,6 +297,15 @@
 }
 
 
+.legal {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--graphite);
+}
+.legal a {
+  font-size: inherit;
+}
+
 .alt {
   margin-top: 28px;
   padding-top: 24px;

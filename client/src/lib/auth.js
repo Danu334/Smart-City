@@ -1,5 +1,7 @@
 import { betterAuth } from "better-auth";
+import { APIError } from "better-auth/api";
 import { Pool } from "pg";
+import { PRIVACY_VERSION } from "./privacy.js";
 
 // Origins allowed to call the auth API. On Vercel, preview and production
 // URLs come from system env vars, so BETTER_AUTH_URL is optional there.
@@ -28,6 +30,24 @@ export const auth = betterAuth({
       // Never grant employee-only access based on this field alone.
       role: { type: ["citizen", "employee"], required: false, defaultValue: "citizen", input: true },
       lang: { type: ["ro", "ru"], required: false, defaultValue: "ro", input: true },
+      // Privacy consent: the client sends privacyConsent; the server records
+      // when and which version was accepted (see databaseHooks below).
+      privacyConsent: { type: "boolean", required: false, input: true },
+      privacyVersion: { type: "string", required: false, input: false },
+      privacyAcceptedAt: { type: "date", required: false, input: false },
+    },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        // No account without consent, even when the API is called directly.
+        before: async (user) => {
+          if (user.privacyConsent !== true) {
+            throw new APIError("BAD_REQUEST", { message: "PRIVACY_CONSENT_REQUIRED" });
+          }
+          return { data: { ...user, privacyVersion: PRIVACY_VERSION, privacyAcceptedAt: new Date() } };
+        },
+      },
     },
   },
   session: {
