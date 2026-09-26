@@ -11,7 +11,7 @@ import type { AssistantContent } from "@/lib/chat/store";
 import type { AnswerStatus, Block, Citation, Contradiction, Institution, Message } from "@/types/chat";
 
 const EMBED_MODEL = "text-embedding-3-large";
-const CHAT_MODEL = "gpt-4o-mini";
+const CHAT_MODEL = process.env.CHAT_MODEL || "gpt-4o-mini";
 const TIMEZONE = "Europe/Chisinau";
 const MAX_TOOL_ROUNDS = 6;
 
@@ -91,9 +91,9 @@ When you have enough evidence, reply with the JSON answer (no more tool calls):
   - "partial": the main answer was found, but something the user needs is missing (phone, address, a step, a fee, a deadline). List each missing item in "missing".
   - "not_found": the passages do not answer the question. Say so plainly in "answer"; do not guess.
   - "contradiction": two passages disagree on a fact that matters for the answer (e.g. different phone numbers, addresses, fees, deadlines, hours). List every such case in "contradictions" with both claims and their [n]; do not silently pick one. Still fill the rest.
-- answer: 1–3 sentences answering directly, with [n] markers inline. Do not repeat the documents, the steps or the contact details here; they are shown separately.
+- answer: 1–3 sentences answering directly, with [n] markers inline. NEVER name or list documents here: they go only in "documents". Do not repeat the steps or the contact details either; they are shown separately.
 - needs_documents: true if doing what the user asks requires submitting or presenting documents (an application, a permit, a certificate, a contract, a benefit, registering something), even when no passage lists them; false otherwise.
-- documents: every document the user must prepare or bring for the procedure (application form, copies of ID or deeds, certificates, plans, receipts), one per item. "text" names it in the user's language; "quote" copies its name exactly as written in the passage, in the passage's language (it is checked against the passage, and the item is dropped if it is not there); "refs" holds the [n] of that passage. Only documents for the exact procedure asked: a passage about a similar but different procedure (e.g. a permit to operate a paid car park vs. a building permit for one) does not count. Empty if the question is not about a procedure. If the user needs documents but no passage lists them, leave it empty and add "the list of required documents" to "missing".
+- documents: every document the user needs for the procedure, one per item: what they must prepare or bring (application form, copies of ID or deeds, plans, receipts) AND the permits, certificates or approvals they must obtain first when a passage says so (e.g. certificat de urbanism, acord de mediu, autorizație de construire). Put them in the order they are needed. "text" names it in the user's language; "quote" copies its name exactly as written in the passage, in the passage's language (it is checked against the passage, and the item is dropped if it is not there); "refs" holds the [n] of that passage. Only documents for the exact procedure asked: a passage about a similar but different procedure (e.g. a permit to operate a paid car park vs. a building permit for one) does not count. Empty if the question is not about a procedure. If the user needs documents but no passage lists them, leave it empty and add "the list of required documents" to "missing".
 - steps: the ordered, practical steps to achieve the user's goal (where to go, fees, deadlines), each with the [n] of its source in "refs". Do not repeat the documents list here; refer to it ("depuneți actele de mai sus"). Empty if the question is not about doing something.
 - institution: the institution the user should contact, with every field taken verbatim from a passage (null for a field that is not in any passage) and the passages used in "refs". null if no institution is involved.
   Contact details must belong to THAT institution in the passage. Pages often list the contacts of a subdivision, directorate or another office (e.g. a transport directorate on a City Hall topic): never transfer them to a different institution. If the institution's own contacts are not in any passage, set those fields to null and list them in "missing".
@@ -432,9 +432,45 @@ function groundDocuments(docs: StructuredAnswer["documents"], hits: Hit[]) {
     const quote = plainWords(d.quote || "");
     if (quote.length < 4) return false;
     const cited = hits.filter((h) => d.refs.includes(h.n));
-    return cited.some((h) => plainWords(h.text).includes(quote));
+    const ok = cited.some((h) => plainWords(h.text).includes(quote));
+    if (!ok) console.warn("[chat] document not in its passage", { quote: d.quote, refs: d.refs });
+    return ok;
   });
   return { documents: kept, dropped: docs.length - kept.length };
+}
+
+/** A sentence that enumerates documents ("aveți nevoie de următoarele acte: …"). */
+const DOC_WORDS = "(?:document\\w*|acte(?:le)?|документ\\w*)";
+const NEED_WORDS = "(?:nevoie|necesar\\w*|trebui\\w*|preg[aă]ti\\w*|prezenta\\w*|anexa\\w*|нужн\\w*|необходим\\w*|потреб\\w*|понадоб\\w*)";
+const LIST_WORDS = "(?::|urm[aă]toarele|includ\\w*|inclusiv|printre care|precum|\\b1\\)|следующ\\w*|включа\\w*|такие как)";
+const DOC_LIST_SENTENCE = new RegExp(
+  `${NEED_WORDS}[^.!?]*${DOC_WORDS}[^.!?]*${LIST_WORDS}|${DOC_WORDS}[^.!?]*${NEED_WORDS}[^.!?]*${LIST_WORDS}`,
+  "i",
+);
+
+/**
+ * Drops the sentences of the answer that list documents: the documents section
+ * is the one place they belong, where each one is checked against its source.
+ * The model often lists them in the text too, unchecked.
+ */
+function withoutDocumentLists(text: string): string {
+  return text
+    .split(/\n{2,}/)
+    .map((para) => {
+      // Items of a dropped list ("… : 1. X. 2. Y.") go with it.
+      let dropping = false;
+      return para
+        .split(/(?<=[.!?])(?<!\b\d\.)\s+/)
+        .filter((sentence) => {
+          if (DOC_LIST_SENTENCE.test(sentence)) return !(dropping = true);
+          if (dropping && /^(\d+[.)]|[-•*])\s/.test(sentence)) return false;
+          dropping = false;
+          return true;
+        })
+        .join(" ");
+    })
+    .filter((para) => para.trim())
+    .join("\n\n");
 }
 
 /** Words too common to identify an institution on their own. */
@@ -477,6 +513,12 @@ const FIELD_LABEL: Record<string, Record<Field | "documents", string>> = {
   English: { address: "address", phone: "phone number", documents: "the list of required documents" },
 };
 const DOCS_WORD = /acte|document|документ/i;
+/** The answer when all it said was the list of documents, now shown below it. */
+const DOCS_BELOW: Record<string, string> = {
+  Romanian: "Actele necesare, pașii și instituția la care vă adresați sunt mai jos.",
+  Russian: "Необходимые документы, шаги и учреждение, куда обращаться, указаны ниже.",
+  English: "The documents you need, the steps and where to go are below.",
+};
 /** Whether a missing item already talks about this field, in any language. */
 const FIELD_WORD: Record<Field, RegExp> = { address: /adres|address|адрес/i, phone: /tel|phone|телефон/i };
 
@@ -517,6 +559,8 @@ function toContent(answer: StructuredAnswer, hits: Hit[], lang: string): Assista
   };
   const { documents: groundedDocs, dropped: droppedDocs } = groundDocuments(answer.documents, hits);
   answer = { ...answer, documents: groundedDocs };
+  if (answer.needs_documents || groundedDocs.length || droppedDocs)
+    answer = { ...answer, answer: withoutDocumentLists(answer.answer) || (DOCS_BELOW[lang] ?? DOCS_BELOW.Romanian) };
   const missing = [...answer.missing];
   // The model gave a list, but none of it is in the passages: say the list is missing.
   if ((droppedDocs || answer.needs_documents) && !groundedDocs.length && !missing.some((m) => DOCS_WORD.test(m)))

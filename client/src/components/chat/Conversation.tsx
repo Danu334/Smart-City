@@ -252,19 +252,19 @@ function DocumentsList({
         </div>
       </div>
       {block.items.length === 0 && <p className={styles.documentsEmpty}>{s.empty}</p>}
-      <ul className={styles.documentsList}>
+      <ol className={styles.documentsList}>
         {block.items.map((item, i) => (
           <li key={i}>
-            <svg viewBox="0 0 20 20" aria-hidden="true">
-              <rect x="3.5" y="3.5" width="13" height="13" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
+            <span className={styles.documentsNum} aria-hidden="true">
+              {i + 1}
+            </span>
             <span>
               {item}
               <Refs refs={block.itemRefs?.[i]} citations={citations} onOpen={onOpen} active={active} />
             </span>
           </li>
         ))}
-      </ul>
+      </ol>
     </section>
   );
 }

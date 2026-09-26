@@ -756,18 +756,24 @@
 }
 .documentsList li {
   display: flex;
-  gap: 10px;
-  align-items: flex-start;
+  gap: 12px;
+  align-items: center;
   padding: 10px 12px;
   border-radius: 9px;
   background: var(--paper);
 }
-.documentsList li > svg {
+.documentsNum {
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
-  width: 18px;
-  height: 18px;
-  margin-top: 2px;
-  color: var(--accent);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
 .blockQuote {
