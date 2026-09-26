@@ -21,6 +21,7 @@ export default function DocViewer({ docId, sectionId, citations, index, onStep, 
   const doc = getDoc(docId, citations.find((c) => c.docId === docId)?.doc);
   const heading = useRef<HTMLHeadingElement>(null);
   const sections = useRef(new Map<string, HTMLElement>());
+  const body = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onKey = (ev: KeyboardEvent) => ev.key === "Escape" && onClose();
@@ -30,15 +31,21 @@ export default function DocViewer({ docId, sectionId, citations, index, onStep, 
 
   // Move focus into the panel when it opens, so keyboard users land in the document.
   useEffect(() => {
-    heading.current?.focus();
+    // preventScroll: focusing may otherwise scroll the page itself (see below).
+    heading.current?.focus({ preventScroll: true });
   }, [docId]);
 
   // Bring the cited passage into view inside the panel's own scroll container.
   useEffect(() => {
+    // Not scrollIntoView: it also scrolls every ancestor, including the page,
+    // which overflow: hidden doesn't stop, and the whole chat slides up.
     const target = sectionId ? sections.current.get(sectionId) : undefined;
-    if (!target) return;
+    const box = body.current;
+    if (!target || !box) return;
     const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    target.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
+    const offset = target.getBoundingClientRect().top - box.getBoundingClientRect().top;
+    const top = box.scrollTop + offset - Math.max(0, (box.clientHeight - target.offsetHeight) / 2);
+    box.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" });
   }, [docId, sectionId]);
 
   if (!doc) return null;
@@ -97,7 +104,7 @@ export default function DocViewer({ docId, sectionId, citations, index, onStep, 
         </div>
       </header>
 
-      <div className={styles.readerBody}>
+      <div className={styles.readerBody} ref={body}>
         <p className={styles.fidelity} data-fidelity={doc.fidelity}>
           {s.fidelity[doc.fidelity]}
           {doc.retrieved ? ` ${s.retrieved}: ${doc.retrieved}.` : ""}
