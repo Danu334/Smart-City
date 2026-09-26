@@ -311,6 +311,24 @@ const en = {
         "This conversation sits in the demo history to show how the list behaves. Its messages were not saved.",
       errorTitle: "Something went wrong",
       errorText: "The assistant couldn't answer right now. Please try again in a moment.",
+      published: "Published {date}",
+      publishedUnknown: "Publication date not stated in the source",
+      state: {
+        found: { title: "Answer found", text: "Taken from the official documents below." },
+        partial: { title: "Answer found, but some information is missing", text: "What the documents do say is below; what they don't is listed here." },
+        not_found: { title: "Not in the documents", text: "The published documents don't answer this. Nothing below was guessed." },
+        contradiction: { title: "The documents contradict each other", text: "Two sources say different things. Both are shown, with their dates; check with the institution." },
+        missingTitle: "Not found in the documents:",
+      },
+      institution: {
+        title: "Where to go",
+        address: "Address",
+        phone: "Phone",
+        email: "E-mail",
+        website: "Website",
+        hours: "Opening hours",
+        notFound: "not in the documents",
+      },
     },
     nudge: {
       title: "You can do more with an account",
@@ -328,6 +346,8 @@ const en = {
       prev: "Previous reference",
       next: "Next reference",
       retrieved: "Retrieved",
+      published: "Published",
+      publishedUnknown: "Publication date not stated.",
       fidelity: {
         full: "Full text retrieved from the source.",
         partial:
@@ -641,6 +661,24 @@ const ro: Dictionary = {
         "Această conversație apare în istoricul demonstrativ pentru a arăta cum se comportă lista. Mesajele ei nu au fost salvate.",
       errorTitle: "Ceva nu a funcționat",
       errorText: "Asistentul nu a putut răspunde acum. Încercați din nou peste câteva momente.",
+      published: "Publicat la {date}",
+      publishedUnknown: "Data publicării nu este indicată în sursă",
+      state: {
+        found: { title: "Răspuns găsit", text: "Preluat din documentele oficiale de mai jos." },
+        partial: { title: "Răspuns găsit, dar lipsesc unele informații", text: "Mai jos este ce spun documentele; ce nu spun este enumerat aici." },
+        not_found: { title: "Nu există în documente", text: "Documentele publicate nu răspund la această întrebare. Nimic de mai jos nu a fost ghicit." },
+        contradiction: { title: "Documentele se contrazic", text: "Două surse spun lucruri diferite. Le vedeți pe amândouă, cu datele lor; verificați la instituție." },
+        missingTitle: "Nu am găsit în documente:",
+      },
+      institution: {
+        title: "Unde vă adresați",
+        address: "Adresa",
+        phone: "Telefon",
+        email: "E-mail",
+        website: "Site",
+        hours: "Program",
+        notFound: "nu apare în documente",
+      },
     },
     nudge: {
       title: "Cu un cont aveți mai multe posibilități",
@@ -658,6 +696,8 @@ const ro: Dictionary = {
       prev: "Referința precedentă",
       next: "Referința următoare",
       retrieved: "Preluat",
+      published: "Publicat",
+      publishedUnknown: "Data publicării nu este indicată.",
       fidelity: {
         full: "Text integral preluat din sursă.",
         partial:
@@ -968,6 +1008,24 @@ const ru: Dictionary = {
         "Этот разговор есть в демонстрационной истории, чтобы показать поведение списка. Его сообщения не сохранялись.",
       errorTitle: "Что-то пошло не так",
       errorText: "Помощник сейчас не смог ответить. Попробуйте ещё раз через несколько минут.",
+      published: "Опубликовано {date}",
+      publishedUnknown: "Дата публикации в источнике не указана",
+      state: {
+        found: { title: "Ответ найден", text: "Взято из официальных документов ниже." },
+        partial: { title: "Ответ найден, но части информации нет", text: "Ниже — то, что есть в документах; чего в них нет, перечислено здесь." },
+        not_found: { title: "Нет в документах", text: "Опубликованные документы не отвечают на этот вопрос. Ничего ниже не придумано." },
+        contradiction: { title: "Документы противоречат друг другу", text: "Два источника говорят разное. Показаны оба, с датами; уточните в учреждении." },
+        missingTitle: "Не найдено в документах:",
+      },
+      institution: {
+        title: "Куда обращаться",
+        address: "Адрес",
+        phone: "Телефон",
+        email: "E-mail",
+        website: "Сайт",
+        hours: "Часы работы",
+        notFound: "нет в документах",
+      },
     },
     nudge: {
       title: "С аккаунтом у вас больше возможностей",
@@ -985,6 +1043,8 @@ const ru: Dictionary = {
       prev: "Предыдущая ссылка",
       next: "Следующая ссылка",
       retrieved: "Получено",
+      published: "Опубликовано",
+      publishedUnknown: "Дата публикации не указана.",
       fidelity: {
         full: "Полный текст получен из источника.",
         partial:

@@ -98,8 +98,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       emit: (event) => send(res, event),
     });
 
-    // Questions about a facility ("unde e un notar?", "gov.md") also get the map.
-    const content: AssistantContent = { ...result, blocks: [...result.blocks, ...placeBlocksFor(text, t)] };
+    // Questions about a facility ("unde e un notar?", "gov.md") also get the
+    // map, unless the answer already shows its institution on one.
+    const hasMap = result.blocks.some((b) => b.type === "places");
+    const content: AssistantContent = hasMap ? result : { ...result, blocks: [...result.blocks, ...placeBlocksFor(text, t)] };
     const messageId = savedId ? await addMessage(savedId, { role: "assistant", content }) : randomUUID();
 
     send(res, { type: "done", messageId, ...content });

@@ -3,10 +3,31 @@
 /** Colour/meaning of an answer state; matches StateIcon and the legend. */
 export type Tone = "teal" | "amber" | "rose";
 
+/** How well the documents answer: matches the colour legend (teal / amber / rose). */
+export type AnswerStatus = "found" | "partial" | "not_found" | "contradiction";
+
+/** Two or more passages that disagree on the same fact; each claim cites one. */
+export type Contradiction = { topic: string; claims: { text: string; ref: number }[] };
+
+/** Where to go: the institution responsible, with what the documents give about it. */
+export type Institution = {
+  name: string;
+  address: string | null;
+  phone: string | null;
+  email: string | null;
+  website: string | null;
+  hours: string | null;
+};
+
 export type Block =
   | { type: "p"; text: string; refs?: number[] }
   | { type: "quote"; text: string; refs?: number[] }
-  | { type: "steps"; title?: string; items: string[]; refs?: number[] }
+  /** `itemRefs[i]` are the sources of step i. */
+  | { type: "steps"; title?: string; items: string[]; itemRefs?: number[][]; refs?: number[] }
+  /** The answer's state, shown first; `missing` and `contradictions` explain amber and rose. */
+  | { type: "status"; status: AnswerStatus; missing?: string[]; contradictions?: Contradiction[]; refs?: number[] }
+  /** Contact card for the institution to go to. */
+  | ({ type: "institution"; refs?: number[] } & Institution)
   | { type: "flag"; tone?: Tone; title: string; text: string; refs?: number[] }
   /** Map + profiles for a facility name, its website, or a category ("birou notarial"). */
   | { type: "places"; query: string; title?: string; refs?: number[] };
@@ -68,6 +89,8 @@ export type Doc = {
   reference: string;
   sourceUrl: string;
   retrieved: string;
+  /** When the source page or file was published, if it says; null = not stated. */
+  published?: string | null;
   fidelity: Fidelity;
   sections: DocSection[];
 };

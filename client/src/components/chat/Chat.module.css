@@ -1407,3 +1407,126 @@
     animation: none;
   }
 }
+
+/* ---------- Answer state, institution, source dates ---------- */
+.statusBody {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.conflict {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--paper);
+}
+.conflictTopic {
+  font-weight: 600;
+  color: var(--ink);
+}
+.conflict ul {
+  display: grid;
+  gap: 8px;
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+.conflict li::marker {
+  color: var(--rose);
+}
+.conflict li > span:first-child {
+  color: var(--ink);
+}
+.conflictMeta {
+  display: block;
+  font-size: 12.5px;
+  color: var(--ash);
+}
+.missingTitle {
+  margin-top: 8px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.missingList {
+  display: grid;
+  gap: 2px;
+  margin: 2px 0 0;
+  padding-left: 18px;
+  color: var(--graphite);
+}
+
+.institution {
+  display: grid;
+  gap: 6px;
+  padding: 16px 18px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-card);
+  background: var(--paper);
+}
+.instTitle {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ash);
+}
+.instName {
+  font-size: 16.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+}
+.instFields {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 16px;
+  margin: 4px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.instFields dt {
+  color: var(--ash);
+}
+.instFields dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+}
+.instFields a {
+  color: var(--accent);
+  text-underline-offset: 2px;
+}
+.instPhone {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.instPhone svg {
+  width: 16px;
+  height: 16px;
+}
+.instMissing {
+  color: var(--amber);
+  font-style: italic;
+}
+@media (max-width: 480px) {
+  .instFields {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .instFields dd {
+    margin-bottom: 8px;
+  }
+}
+
+.sourceDate {
+  font-size: 12.5px;
+  color: var(--graphite);
+}
+.sourceDate[data-known="false"] {
+  color: var(--amber);
+  font-style: italic;
+}

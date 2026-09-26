@@ -101,6 +101,7 @@ export default function DocViewer({ docId, sectionId, citations, index, onStep, 
         <p className={styles.fidelity} data-fidelity={doc.fidelity}>
           {s.fidelity[doc.fidelity]}
           {doc.retrieved ? ` ${s.retrieved}: ${doc.retrieved}.` : ""}
+          {"published" in doc ? ` ${doc.published ? `${s.published}: ${doc.published}.` : s.publishedUnknown}` : ""}
         </p>
 
         {doc.sections.map((section) => (

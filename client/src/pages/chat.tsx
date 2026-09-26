@@ -12,6 +12,7 @@ import type { StatusPhase } from "@/components/chat/Conversation";
 import { useSession } from "@/lib/auth-client";
 import { fetchConversation, fetchConversations, importConversations, streamChat } from "@/lib/chatApi";
 import { makeId } from "@/lib/ids";
+import { messagePlainText } from "@/lib/chat/plain";
 import { saveGuestChats, takeGuestChats } from "@/lib/guestChats";
 import { useI18n } from "@/lib/i18n";
 import { cssVars } from "@/lib/css";
@@ -195,7 +196,7 @@ export default function Chat() {
         // A visitor's conversation only exists here, so its earlier turns go along.
         conversationId: guest ? null : existingId,
         history: guest
-          ? existing?.messages.map((m) => ({ role: m.role, text: m.text ?? "" })).filter((m) => m.text)
+          ? existing?.messages.map((m) => ({ role: m.role, text: messagePlainText(m) })).filter((m) => m.text)
           : undefined,
         message: text,
         locale,

@@ -8,10 +8,12 @@ import styles from "./Chat.module.css";
 import type {
   Action,
   ActiveCitation,
+  AnswerStatus,
   Block as AnswerBlock,
   Citation,
   Conversation as ConversationData,
   OpenCitation,
+  Tone,
 } from "@/types/chat";
 
 /** What the assistant is doing while the answer is on its way. */
@@ -94,11 +96,19 @@ function Block({ block, citations, onOpen, active }: MarkerProps & { block: Answ
         )}
         <ol>
           {block.items.map((item, i) => (
-            <li key={i}>{item}</li>
+            <li key={i}>
+              {item}
+              <Refs refs={block.itemRefs?.[i]} citations={citations} onOpen={onOpen} active={active} />
+            </li>
           ))}
         </ol>
       </div>
     );
+
+  if (block.type === "status") return <StatusCard block={block} citations={citations} onOpen={onOpen} active={active} />;
+
+  if (block.type === "institution")
+    return <InstitutionCard block={block} citations={citations} onOpen={onOpen} active={active} />;
 
   if (block.type === "flag")
     return (
@@ -123,16 +133,165 @@ function Block({ block, citations, onOpen, active }: MarkerProps & { block: Answ
       </blockquote>
     );
 
+  if (block.type === "p")
+    return (
+      <p className={styles.answerP}>
+        {block.text}
+        {refs}
+      </p>
+    );
+
+  return null;
+}
+
+const STATUS_TONE: Record<AnswerStatus, Tone> = {
+  found: "teal",
+  partial: "amber",
+  not_found: "amber",
+  contradiction: "rose",
+};
+
+/** Formats a source's publication date ("2024-03-12") for the interface language. */
+function usePublished() {
+  const { t, locale } = useI18n();
+  const intl = locale === "en" ? "en-GB" : locale;
+  return (published: string | null | undefined) => {
+    const date = published ? new Date(`${published.slice(0, 10)}T12:00:00Z`) : null;
+    if (!date || Number.isNaN(date.getTime())) return t.chat.answer.publishedUnknown;
+    const text = new Intl.DateTimeFormat(intl, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(date);
+    return t.chat.answer.published.replace("{date}", text);
+  };
+}
+
+/** The answer's state, in the legend's colours: found, something missing, or a contradiction. */
+function StatusCard({
+  block,
+  citations,
+  onOpen,
+  active,
+}: MarkerProps & { block: Extract<AnswerBlock, { type: "status" }> }) {
+  const { t } = useI18n();
+  const s = t.chat.answer.state;
+  const published = usePublished();
+  const tone = STATUS_TONE[block.status];
+  const copy = s[block.status];
+  const missing = block.missing ?? [];
+  const contradictions = block.contradictions ?? [];
+  // "Found" without any source would be a claim we can't back; say nothing then.
+  if (block.status === "found" && !citations.length) return null;
+
   return (
-    <p className={styles.answerP}>
-      {block.text}
-      {refs}
-    </p>
+    <div className={styles.flag} data-tone={tone} data-status={block.status}>
+      <span className={styles.flagIcon}>
+        <StateIcon tone={tone} />
+      </span>
+      <div className={styles.statusBody}>
+        <strong>{copy.title}</strong>
+        <p>{copy.text}</p>
+        {contradictions.map((c, i) => (
+          <div key={i} className={styles.conflict}>
+            <p className={styles.conflictTopic}>{c.topic}</p>
+            <ul>
+              {c.claims.map((claim, j) => {
+                const citation = citations.find((x) => x.n === claim.ref);
+                const doc = resolveCitationDoc(citation);
+                return (
+                  <li key={j}>
+                    <span>{claim.text}</span>
+                    <Refs refs={[claim.ref]} citations={citations} onOpen={onOpen} active={active} />
+                    {doc && (
+                      <span className={styles.conflictMeta}>
+                        {doc.issuer} · {published(doc.published)}
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+        {missing.length > 0 && (
+          <>
+            <p className={styles.missingTitle}>{s.missingTitle}</p>
+            <ul className={styles.missingList}>
+              {missing.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const telHref = (phone: string) => `tel:${phone.replace(/[^\d+]/g, "")}`;
+const webHref = (site: string) => (/^https?:\/\//i.test(site) ? site : `https://${site}`);
+
+/** Where to go: the institution's contacts as the documents give them. */
+function InstitutionCard({
+  block,
+  citations,
+  onOpen,
+  active,
+}: MarkerProps & { block: Extract<AnswerBlock, { type: "institution" }> }) {
+  const { t } = useI18n();
+  const s = t.chat.answer.institution;
+  const notInDocs = <span className={styles.instMissing}>{s.notFound}</span>;
+
+  return (
+    <section className={styles.institution} aria-labelledby={`inst-${block.name}`}>
+      <h3 className={styles.instTitle}>{s.title}</h3>
+      <p id={`inst-${block.name}`} className={styles.instName}>
+        {block.name}
+        <Refs refs={block.refs} citations={citations} onOpen={onOpen} active={active} />
+      </p>
+      <dl className={styles.instFields}>
+        <dt>{s.address}</dt>
+        <dd>{block.address ?? notInDocs}</dd>
+        <dt>{s.phone}</dt>
+        <dd>
+          {block.phone ? (
+            <a className={styles.instPhone} href={telHref(block.phone)}>
+              <PhoneIcon />
+              {block.phone}
+            </a>
+          ) : (
+            notInDocs
+          )}
+        </dd>
+        {block.email && (
+          <>
+            <dt>{s.email}</dt>
+            <dd>
+              <a href={`mailto:${block.email}`}>{block.email}</a>
+            </dd>
+          </>
+        )}
+        {block.website && (
+          <>
+            <dt>{s.website}</dt>
+            <dd>
+              <a href={webHref(block.website)} target="_blank" rel="noopener noreferrer">
+                {block.website.replace(/^https?:\/\//i, "")}
+              </a>
+            </dd>
+          </>
+        )}
+        {block.hours && (
+          <>
+            <dt>{s.hours}</dt>
+            <dd>{block.hours}</dd>
+          </>
+        )}
+      </dl>
+    </section>
   );
 }
 
 function Sources({ citations, onOpen, active }: MarkerProps) {
   const { t } = useI18n();
+  const published = usePublished();
   if (!citations.length) return null;
 
   return (
@@ -163,6 +322,11 @@ function Sources({ citations, onOpen, active }: MarkerProps) {
                     {doc.issuer}
                     {doc.reference ? ` · ${doc.reference}` : ""}
                   </span>
+                  {"published" in doc && (
+                    <span className={styles.sourceDate} data-known={Boolean(doc.published)}>
+                      {published(doc.published)}
+                    </span>
+                  )}
                   <q className={styles.sourceQuote}>{citation.quote}</q>
                 </span>
               </button>
@@ -288,16 +452,18 @@ export default function Conversation({
         const active = activeCitation?.messageId === message.id ? activeCitation.n : null;
         const open: OpenCitation = (citation, el) => onOpenCitation(citation, citations, message.id, el);
         // Live answers are Markdown in `text`; their "p" blocks only repeat it
-        // for older readers, so just the flags and maps are drawn as blocks.
+        // for older readers. Order: state first, then the answer, then steps,
+        // the institution and its map.
         const markdown = message.text?.trim() ?? "";
-        const blocks = markdown ? message.blocks.filter((b) => b.type === "flag" || b.type === "places") : message.blocks;
+        const blocks = markdown ? message.blocks.filter((b) => b.type !== "p") : message.blocks;
+        const isTop = (b: AnswerBlock) => b.type === "flag" || b.type === "status";
         if (message.streaming && !markdown && !blocks.length) return null;
 
         return (
           <article key={message.id} className={styles.answer}>
             <h2 className={styles.msgWho}>{t.chat.answer.assistant}</h2>
             {blocks
-              .filter((b) => b.type === "flag")
+              .filter(isTop)
               .map((block, i) => (
                 <Block key={`flag-${i}`} block={block} citations={citations} active={active} onOpen={open} />
               ))}
@@ -305,7 +471,7 @@ export default function Conversation({
               <MarkdownAnswer text={markdown} citations={citations} active={active} onOpenCitation={open} />
             )}
             {blocks
-              .filter((b) => b.type !== "flag")
+              .filter((b) => !isTop(b))
               .map((block, i) => (
                 <Block key={i} block={block} citations={citations} active={active} onOpen={open} />
               ))}

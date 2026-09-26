@@ -93,7 +93,7 @@ export async function addMessage(
 const IMPORT_MAX_CONVERSATIONS = 20;
 const IMPORT_MAX_MESSAGES = 60;
 const IMPORT_MAX_TEXT = 8000;
-const IMPORT_BLOCK_TYPES = new Set(["p", "quote", "steps", "flag", "places"]);
+const IMPORT_BLOCK_TYPES = new Set(["p", "quote", "steps", "flag", "places", "status", "institution"]);
 
 /** Keeps only well-formed messages from a browser-sent conversation. */
 function cleanImported(raw: unknown): { role: "user"; text: string } | { role: "assistant"; content: AssistantContent } | null {
