@@ -25,6 +25,10 @@ export type DemoScript = {
   /** Map lookup to use instead of the address, when the address finds the wrong places. */
   placesQuery?: string;
   actions?: Action[];
+  /** Show a clock check before searching, for time-aware questions. */
+  clock?: boolean;
+  /** The same answer in Russian; the Romanian one is used otherwise. */
+  ru?: { answer: DemoAnswer; actions?: Action[] };
 };
 
 const hit = (h: Omit<Hit, "score" | "type"> & { type?: string }): Hit => ({
@@ -381,6 +385,161 @@ Pensionarii și familiile social vulnerabile beneficiază de compensații la pla
   ],
 };
 
+const ACC_DISCONNECTIONS = "https://www.acc.md/disconnections";
+
+// Real chunks from the Qdrant index (acc.md, crawled 25.09.2026), trimmed to the cited part.
+const WATER_HITS: Hit[] = [
+  hit({
+    n: 1,
+    id: "1a501b36-e317-5781-b792-dab0ee5187d0",
+    docId: "6b26a29eba5a",
+    title: "Deconectări — Sistări planificate — S.A. „Apă-Canal Chișinău”",
+    site: "www.acc.md",
+    url: ACC_DISCONNECTIONS,
+    citeUrl: ACC_DISCONNECTIONS,
+    date: "2026-09-25",
+    text: `25.09.26 13:18
+În intervalul 09:00 – 21:00, Joi, 1 Octombrie 2026, fără apă să fie consumatorii din: str. Mateevici 87, 66/1, 103, bd. B. Bodoni 1
+În legătură cu executarea lucrărilor planificate de către S.A. „Apă-Canal Chişinău”. Rugăm toţi consumatorii afectaţi de această oprire să-şi asigure rezerva minimă de apă pentru consum şi uz casnic pe perioada întreruperii furnizării apei.
+23.09.26 10:49
+În legătura cu executarea lucrărilor planificate la apeduct, S.A. "Apă-Canal Chişinău” este nevoită să întrerupă furnizarea apei potabile Luni, de la ora 09:00, data de 28 Septembrie 2026 pînă la Marți la ora 15:00 data de 29 Septembrie 2026. Vor fi afectaţi de lipsa apei consumatorii din: str. Doina 189/...-203/.., str. Ankara 6, str. Ceucari 7 uzina de beton, Comuna Gratiești, s. Hulboaca`,
+  }),
+  hit({
+    n: 2,
+    id: "484a6ed9-22ea-5b89-b332-d5cdbd6b94a8",
+    docId: "6b26a29eba5a",
+    title: "Deconectări — Presiune joasă — S.A. „Apă-Canal Chișinău”",
+    site: "www.acc.md",
+    url: ACC_DISCONNECTIONS,
+    citeUrl: ACC_DISCONNECTIONS,
+    date: "2026-09-25",
+    text: `22.09.26 16:14
+Consumatorii de pe următoarele străzi: str. Petrarilor 4, 4/1, 6, 8, 8/1, str. Drumul Viilor 26, 28, 28/1, 28/2, 30/2.
+Luni, 28 septembrie, 2026 și Marți, 29 septembrie în intervalul 9:00– 21:00, este posibilă deconectarea energiei electrice, un proces care va avea ca rezultat furnizarea de apă cu presiune joasă, în legătură cu executarea unor lucrări de către Î.C.S. „Premier Energy Distribution”.
+22.09.26 16:00
+str. I. Neculce 10, 12/1
+Luni, 28 septembrie, 2026 în intervalul 9:00– 16:00, este posibilă deconectarea energiei electrice, un proces care va avea ca rezultat furnizarea de apă cu presiune joasă.`,
+  }),
+  hit({
+    n: 3,
+    id: "3a80df02-fd15-5db9-90b8-d57f7a588781",
+    docId: "6b26a29eba5a",
+    title: "Deconectări — Avarieri apeduct — S.A. „Apă-Canal Chișinău”",
+    site: "www.acc.md",
+    url: ACC_DISCONNECTIONS,
+    citeUrl: ACC_DISCONNECTIONS,
+    date: "2026-09-25",
+    text: `Număr fişă | Adresa avarierii | Avariere | Depistat | Străzi afectate | Deconectat | Reconectare
+Buiucani | 33311 | str. Vasile Lupu | 59/2 < Cor | Scurgere de sub asfalt | 25.09.2026 | Lupu, Cornului, Ghioceilor | 25.09.2026 15:00 | 25.09.2026 15:30`,
+  }),
+  hit({
+    n: 4,
+    id: "0a62fbed-b706-5e0b-8312-247b71b614d4",
+    docId: "6b26a29eba5a",
+    title: "Deconectări — Avarieri apeduct — S.A. „Apă-Canal Chișinău”",
+    site: "www.acc.md",
+    url: ACC_DISCONNECTIONS,
+    citeUrl: ACC_DISCONNECTIONS,
+    date: "2026-09-25",
+    text: `Număr fişă | Adresa avarierii | Avariere | Depistat | Străzi afectate | Deconectat | Reconectare
+Ialoveni | 33343 | str-la 1 Valeriu Cupcea | 9 | Scurgere din fintina | 25.09.2026 | Ial. Str-La Cupcea | 25.09.2026 16:40 | 25.09.2026 18:00`,
+  }),
+  hit({
+    n: 5,
+    id: "a1e31adc-43e4-56e6-b556-a3dd2b445689",
+    docId: "acc-contacts",
+    title: "Contacte — S.A. „Apă-Canal Chișinău”",
+    site: "www.acc.md",
+    url: "https://www.acc.md/contacts",
+    citeUrl: "https://www.acc.md/contacts",
+    date: null,
+    text: `Date de contact
+Adresa: Strada Albişoara 38, Chișinău, MD-2005
+Program de lucru: Luni – Joi: 08:00 – 17:00; Vineri: 08:00 – 15:45; Pauza de masă: 12:00 – 12:45
+E-mail: acc@acc.md
+Şef Departamentul dispecerat: 0(22) 256 – 899
+Departamentul dispecerat: 0(22) 25 – 66 – 66, 857 – 777`,
+  }),
+];
+
+const WATER_ANSWER: DemoAnswer = {
+  status: "found",
+  answer: `**Nu știu la ce adresă este blocul dvs., așa că vă arăt toate sistările anunțate de S.A. „Apă-Canal Chișinău”** (pagina „Deconectări”, actualizată pe 25.09.2026). Verificați dacă strada dvs. apare mai jos.
+
+**Sistări planificate — fără apă:**
+- **Luni 28.09, 09:00 – marți 29.09, 15:00** (lucrări la apeduct): str. Doina 189–203, str. Ankara 6, str. Ceucari 7 (uzina de beton), com. Grătiești, s. Hulboaca [1]
+- **Joi 01.10, 09:00 – 21:00** (lucrări planificate): str. Mateevici 87, 66/1, 103, bd. B. Bodoni 1 [1]
+
+**Apă cu presiune joasă** (deconectări de energie electrică, Premier Energy Distribution):
+- **Luni 28.09 și marți 29.09, 09:00 – 21:00**: str. Petrarilor 4, 4/1, 6, 8, 8/1; str. Drumul Viilor 26, 28, 28/1, 28/2, 30/2 [2]
+- **Luni 28.09, 09:00 – 16:00**: str. I. Neculce 10, 12/1 [2]
+
+**Avarii cu apa oprită (25.09.2026, apa a fost reluată):**
+- str. Vasile Lupu, Cornului, Ghioceilor (Buiucani): 15:00 – 15:30 [3]
+- Ialoveni, str-la Valeriu Cupcea: 16:40 – 18:00 [4]
+
+Dacă adresa dvs. nu este în listă, poate fi o avarie nouă, care nu a apărut încă pe pagină. Sunați la dispeceratul Apă-Canal: **022 25-66-66** [5].`,
+  steps: [
+    {
+      text: "Căutați strada și numărul blocului în lista de mai sus.",
+      refs: [1, 2],
+    },
+    {
+      text: "Dacă blocul are o sistare planificată, faceți-vă o rezervă minimă de apă pentru perioada întreruperii.",
+      refs: [1],
+    },
+    {
+      text: "Dacă blocul nu este în listă, sunați la dispeceratul Apă-Canal (022 25-66-66) și spuneți adresa exactă.",
+      refs: [5],
+    },
+  ],
+  institution: {
+    name: "S.A. „Apă-Canal Chișinău”",
+    address: "str. Albișoara 38, MD-2005, Chișinău",
+    phone: "022 25-66-66",
+    email: "acc@acc.md",
+    website: "https://www.acc.md",
+    hours: "Luni–joi 08:00–17:00, vineri 08:00–15:45",
+    refs: [5],
+  },
+  missing: [],
+  contradictions: [],
+};
+
+const WATER_ANSWER_RU: DemoAnswer = {
+  ...WATER_ANSWER,
+  answer: `**Я не знаю адрес вашего дома, поэтому показываю все отключения, объявленные АО «Apă-Canal Chișinău»** (страница «Deconectări», обновлена 25.09.2026). Проверьте, есть ли ваша улица в списке ниже.
+
+**Плановые отключения — без воды:**
+- **Понедельник 28.09, 09:00 – вторник 29.09, 15:00** (работы на водопроводе): str. Doina 189–203, str. Ankara 6, str. Ceucari 7 (бетонный завод), коммуна Грэтиешть, с. Хулбоака [1]
+- **Четверг 01.10, 09:00 – 21:00** (плановые работы): str. Mateevici 87, 66/1, 103, bd. B. Bodoni 1 [1]
+
+**Низкое давление воды** (отключения электроэнергии, Premier Energy Distribution):
+- **Понедельник 28.09 и вторник 29.09, 09:00 – 21:00**: str. Petrarilor 4, 4/1, 6, 8, 8/1; str. Drumul Viilor 26, 28, 28/1, 28/2, 30/2 [2]
+- **Понедельник 28.09, 09:00 – 16:00**: str. I. Neculce 10, 12/1 [2]
+
+**Аварии с отключением воды (25.09.2026, подача восстановлена):**
+- str. Vasile Lupu, Cornului, Ghioceilor (Буюкань): 15:00 – 15:30 [3]
+- Яловень, str-la Valeriu Cupcea: 16:40 – 18:00 [4]
+
+Если вашего адреса нет в списке, возможно, это новая авария, которая ещё не появилась на странице. Позвоните в диспетчерскую Apă-Canal: **022 25-66-66** [5].`,
+  steps: [
+    { text: "Найдите улицу и номер дома в списке выше.", refs: [1, 2] },
+    {
+      text: "Если у дома плановое отключение, сделайте минимальный запас воды на время отключения.",
+      refs: [1],
+    },
+    {
+      text: "Если дома нет в списке, позвоните в диспетчерскую Apă-Canal (022 25-66-66) и назовите точный адрес.",
+      refs: [5],
+    },
+  ],
+  institution: {
+    ...WATER_ANSWER.institution!,
+    hours: "Пн–Чт 08:00–17:00, Пт 08:00–15:45",
+  },
+};
+
 const SCRIPTS: DemoScript[] = [
   {
     // "200 lei for sorting" rumour, in any close phrasing (Romanian or Russian).
@@ -439,6 +598,27 @@ const SCRIPTS: DemoScript[] = [
     hits: TARIFF_HITS,
     answer: TARIFF_ANSWER,
     flags: [],
+  },
+  {
+    // "Why is there no water in my building?", in Romanian or Russian.
+    match: (q) =>
+      (/\b(apa|apei)\b/.test(q) && /(nu (este|e|am|avem|curge)|lips|fara apa|sistar|deconect|oprit)/.test(q)) ||
+      (/вод/.test(q) && /(нет|отключ|почему)/.test(q)),
+    clock: true,
+    queries: [
+      "Unde este sistată livrarea apei potabile în Chișinău în zilele acestea?",
+      "Deconectări planificate și avarii la apeduct S.A. „Apă-Canal Chișinău”",
+      "Care este numărul de telefon al dispeceratului S.A. „Apă-Canal Chișinău”?",
+    ],
+    hits: WATER_HITS,
+    answer: WATER_ANSWER,
+    flags: [],
+    placesQuery: "Apă-Canal Chișinău",
+    actions: [{ label: "Sunați la dispeceratul Apă-Canal", href: "tel:+37322256666", platform: "022 25-66-66" }],
+    ru: {
+      answer: WATER_ANSWER_RU,
+      actions: [{ label: "Позвонить в диспетчерскую Apă-Canal", href: "tel:+37322256666", platform: "022 25-66-66" }],
+    },
   },
 ];
 

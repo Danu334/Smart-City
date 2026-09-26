@@ -551,6 +551,10 @@ async function runDemoScript(script: DemoScript, lang: string, emit: Emit): Prom
   const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
   await emit({ type: "status", phase: "think", detail: "round 1" });
   await wait(1400);
+  if (script.clock) {
+    await emit({ type: "status", phase: "clock" });
+    await wait(900);
+  }
   for (const query of script.queries) {
     await emit({ type: "status", phase: "search", detail: query });
     await wait(1500);
@@ -558,8 +562,9 @@ async function runDemoScript(script: DemoScript, lang: string, emit: Emit): Prom
   await emit({ type: "status", phase: "tools", detail: "round 3" });
   await wait(900);
 
-  const content = toContent(script.answer, script.hits, lang);
-  if (script.actions) content.actions = script.actions;
+  const variant = lang === "Russian" && script.ru ? script.ru : script;
+  const content = toContent(variant.answer, script.hits, lang);
+  if (variant.actions) content.actions = variant.actions;
   const [status, ...rest] = content.blocks;
   content.blocks = [
     status,
