@@ -39,6 +39,12 @@ const dictionaries = {
           "Tick “Keep me signed in” if this is your own device, then press “Sign in”.",
           "Don't have an account yet? Press “Create an account”.",
         ],
+        chat: [
+          "Hello! Here you can ask questions about City Hall's documents. Let me show you quickly how it works.",
+          "The conversation history (on a phone, the ☰ button at the top left) keeps earlier questions. Open the one about the family doctor to see a complete answer with sources.",
+          "In answers, the small numbers like [1] are the sources. Press one and the document opens with the exact passage highlighted.",
+          "Type your question here in your own words, then press “Send” or the Enter key.",
+        ],
         signUp: [
           "Hello! Creating an account takes about a minute. I'll show you each step.",
           "First, choose who you are: a resident or a City Hall employee.",
@@ -59,7 +65,6 @@ const dictionaries = {
       ask: "Ask",
       chips: ["Building permit", "Local taxes", "Parking in the centre", "District office contacts"],
       note: "Answers come only from City Hall's published documents.",
-      saved: "Your question is saved. Chat with the assistant is coming soon.",
     },
     pillars: [
       ["RO · RU", "Both languages first-class"],
@@ -192,7 +197,7 @@ const dictionaries = {
       },
     },
     chat: {
-      title: "Ask the corpus",
+      title: "Ask City Hall's documents",
       sidebar: {
         newChat: "New conversation",
         filter: "Filter conversations",
@@ -208,7 +213,7 @@ const dictionaries = {
       },
       empty: {
         title: "What would you like to ask City Hall's documents?",
-        sub: "Write your question in your own words. The answer comes back with the document and the passage it rests on — and with a plain note when the corpus does not cover your case.",
+        sub: "Write your question in your own words. The answer comes back with the document and the passage it rests on — and with a plain note when the documents do not cover your case.",
         statesLabel: "What an answer can look like",
         suggestionsLabel: "Try one of these",
         suggestions: [
@@ -224,7 +229,7 @@ const dictionaries = {
         attachHint: "Files stay in your browser — nothing is uploaded.",
         dropHere: "Drop the files to attach them",
         remove: "Remove attachment",
-        thinking: "Searching the corpus…",
+        thinking: "Searching the official documents…",
         attachments: "Attachments",
       },
       answer: {
@@ -238,7 +243,7 @@ const dictionaries = {
           "This conversation sits in the demo history to show how the list behaves. Its messages were not saved.",
         offlineTitle: "Not connected to a server yet",
         offlineText:
-          "The interface is complete, but there is no backend behind it, so no search ran over the corpus. The seeded question does work end to end.",
+          "The assistant isn't connected to the document database yet, so it couldn't search for an answer. The family-doctor question in the history already works end to end.",
       },
       reader: {
         label: "Cited document",
@@ -294,6 +299,12 @@ const dictionaries = {
           "Bifați „Ține-mă minte” dacă folosiți dispozitivul dvs. personal, apoi apăsați „Autentificare”.",
           "Nu aveți încă un cont? Apăsați „Creați un cont”.",
         ],
+        chat: [
+          "Bună ziua! Aici puneți întrebări despre documentele Primăriei. Vă arăt pe scurt cum funcționează.",
+          "În istoricul conversațiilor (pe telefon, butonul ☰ din stânga sus) găsiți întrebările anterioare. Deschideți-o pe cea despre medicul de familie ca să vedeți un răspuns complet, cu surse.",
+          "În răspunsuri, numerele mici, de exemplu [1], sunt sursele. Apăsați pe ele și se deschide documentul, cu pasajul exact evidențiat.",
+          "Scrieți aici întrebarea, cu cuvintele dvs., apoi apăsați „Trimite” sau tasta Enter.",
+        ],
         signUp: [
           "Bună ziua! Crearea contului durează cam un minut. Vă arăt fiecare pas.",
           "Mai întâi, alegeți cine sunteți: locuitor sau angajat al Primăriei.",
@@ -314,7 +325,6 @@ const dictionaries = {
       ask: "Întreabă",
       chips: ["Autorizație de construire", "Taxe locale", "Parcare în centru", "Contactele preturilor"],
       note: "Răspunsurile provin doar din documentele publice ale Primăriei.",
-      saved: "Întrebarea a fost salvată. Chatul cu asistentul va fi disponibil în curând.",
     },
     pillars: [
       ["RO · RU", "Ambele limbi, la egalitate"],
@@ -447,7 +457,7 @@ const dictionaries = {
       },
     },
     chat: {
-      title: "Întreabă corpusul",
+      title: "Întrebați documentele Primăriei",
       sidebar: {
         newChat: "Conversație nouă",
         filter: "Filtrează conversațiile",
@@ -463,7 +473,7 @@ const dictionaries = {
       },
       empty: {
         title: "Ce doriți să întrebați documentele Primăriei?",
-        sub: "Scrieți întrebarea cu cuvintele dvs. Răspunsul vine cu documentul și pasajul pe care se bazează — iar când corpusul nu acoperă cazul dvs., vi se spune direct.",
+        sub: "Scrieți întrebarea cu cuvintele dvs. Răspunsul vine cu documentul și pasajul pe care se bazează — iar când documentele nu acoperă cazul dvs., vi se spune direct.",
         statesLabel: "Cum poate arăta un răspuns",
         suggestionsLabel: "Încercați una dintre acestea",
         suggestions: [
@@ -479,7 +489,7 @@ const dictionaries = {
         attachHint: "Fișierele rămân în browserul dvs. — nimic nu este încărcat.",
         dropHere: "Eliberați fișierele pentru a le atașa",
         remove: "Elimină atașamentul",
-        thinking: "Căutăm în corpus…",
+        thinking: "Căutăm în documentele oficiale…",
         attachments: "Atașamente",
       },
       answer: {
@@ -493,7 +503,7 @@ const dictionaries = {
           "Această conversație apare în istoricul demonstrativ pentru a arăta cum se comportă lista. Mesajele ei nu au fost salvate.",
         offlineTitle: "Încă neconectat la un server",
         offlineText:
-          "Interfața este completă, dar nu există un backend în spate, așa că nu s-a făcut nicio căutare în corpus. Întrebarea din istoric funcționează însă cap-coadă.",
+          "Asistentul nu este încă conectat la baza de documente, așa că nu a putut căuta un răspuns. Întrebarea despre medicul de familie din istoric funcționează deja complet.",
       },
       reader: {
         label: "Documentul citat",
@@ -549,6 +559,12 @@ const dictionaries = {
           "Отметьте «Запомнить меня», если это ваше личное устройство, и нажмите «Войти».",
           "Ещё нет аккаунта? Нажмите «Создать аккаунт».",
         ],
+        chat: [
+          "Здравствуйте! Здесь можно задавать вопросы по документам Примэрии. Коротко покажу, как это работает.",
+          "В истории разговоров (на телефоне — кнопка ☰ слева вверху) хранятся прежние вопросы. Откройте разговор о семейном враче, чтобы увидеть полный ответ с источниками.",
+          "В ответах маленькие цифры, например [1], — это источники. Нажмите на цифру, и откроется документ с выделенным точным фрагментом.",
+          "Напишите здесь вопрос своими словами и нажмите «Отправить» или клавишу Enter.",
+        ],
         signUp: [
           "Здравствуйте! Создание аккаунта займёт около минуты. Я покажу каждый шаг.",
           "Сначала выберите, кто вы: житель или сотрудник Примэрии.",
@@ -569,7 +585,6 @@ const dictionaries = {
       ask: "Спросить",
       chips: ["Разрешение на строительство", "Местные налоги", "Парковка в центре", "Контакты претур"],
       note: "Ответы берутся только из опубликованных документов Примэрии.",
-      saved: "Вопрос сохранён. Чат с помощником скоро будет доступен.",
     },
     pillars: [
       ["RO · RU", "Оба языка на равных"],
@@ -702,7 +717,7 @@ const dictionaries = {
       },
     },
     chat: {
-      title: "Спросите корпус",
+      title: "Спросите документы Примэрии",
       sidebar: {
         newChat: "Новый разговор",
         filter: "Фильтр разговоров",
@@ -718,7 +733,7 @@ const dictionaries = {
       },
       empty: {
         title: "Что вы хотите спросить у документов Примэрии?",
-        sub: "Напишите вопрос своими словами. Ответ придёт с документом и фрагментом, на котором он основан, — а если корпус не охватывает ваш случай, вам скажут об этом прямо.",
+        sub: "Напишите вопрос своими словами. Ответ придёт с документом и фрагментом, на котором он основан, — а если документы не охватывают ваш случай, вам скажут об этом прямо.",
         statesLabel: "Как может выглядеть ответ",
         suggestionsLabel: "Попробуйте один из этих",
         suggestions: [
@@ -734,7 +749,7 @@ const dictionaries = {
         attachHint: "Файлы остаются в вашем браузере — ничего не загружается.",
         dropHere: "Отпустите файлы, чтобы прикрепить",
         remove: "Убрать вложение",
-        thinking: "Ищем в корпусе…",
+        thinking: "Ищем в официальных документах…",
         attachments: "Вложения",
       },
       answer: {
@@ -748,7 +763,7 @@ const dictionaries = {
           "Этот разговор есть в демонстрационной истории, чтобы показать поведение списка. Его сообщения не сохранялись.",
         offlineTitle: "Пока не подключено к серверу",
         offlineText:
-          "Интерфейс готов, но за ним нет бэкенда, поэтому поиск по корпусу не выполнялся. Вопрос из истории при этом работает полностью.",
+          "Помощник пока не подключён к базе документов, поэтому не смог найти ответ. Вопрос о семейном враче из истории уже работает полностью.",
       },
       reader: {
         label: "Цитируемый документ",

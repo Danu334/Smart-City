@@ -28,7 +28,7 @@ const write = (store, key, value) => {
       focus?: focus the target's first input when the step opens }
   Steps without a target show Victor waving in the corner.
 */
-export default function Guide({ tour, steps }) {
+export default function Guide({ tour, steps, launcherPlace }) {
   const { t } = useI18n();
   const g = t.guide;
   const copy = g.tours[tour];
@@ -62,6 +62,15 @@ export default function Guide({ tour, steps }) {
     setIndex(-1);
     setRect(null);
   }, [tour]);
+
+  // Last step: close, and leave the cursor in the highlighted field.
+  const complete = () => {
+    const step = steps[index];
+    finish();
+    if (step?.focus && step.target) {
+      setTimeout(() => document.getElementById(step.target)?.querySelector("input, textarea, select")?.focus(), 0);
+    }
+  };
 
   const turnOff = () => {
     write(localStorage, OFF_KEY, "1");
@@ -112,6 +121,12 @@ export default function Guide({ tour, steps }) {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
         const r = el.getBoundingClientRect();
+        // Hidden or off-screen target (e.g. the chat history drawer on
+        // phones): no spotlight, just the card.
+        if (!r.width || !r.height || r.right <= 0 || r.left >= window.innerWidth) {
+          setRect(null);
+          return;
+        }
         setRect({ top: r.top, left: r.left, width: r.width, height: r.height, right: r.right });
         setWide(window.innerWidth >= 720 && window.innerWidth - r.right >= CARD_W + 40);
       });
@@ -152,7 +167,7 @@ export default function Guide({ tour, steps }) {
 
   if (!step) {
     return (
-      <button type="button" className={styles.launcher} onClick={restart} aria-label={g.launch}>
+      <button type="button" className={styles.launcher} data-place={launcherPlace} onClick={restart} aria-label={g.launch}>
         <Victor className={styles.launcherFace} viewBox="46 28 108 108" />
         <span>{g.launcher}</span>
       </button>
@@ -234,7 +249,7 @@ export default function Guide({ tour, steps }) {
               </button>
             )}
             {last ? (
-              <button type="button" className={styles.primary} onClick={finish}>
+              <button type="button" className={styles.primary} onClick={complete}>
                 {g.done}
               </button>
             ) : (

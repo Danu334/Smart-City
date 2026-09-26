@@ -242,6 +242,24 @@
   object-fit: cover;
 }
 
+/* On pages with a bottom composer (chat), phones get the button in the top bar. */
+@media (max-width: 900px) {
+  .launcher[data-place="top"] {
+    top: 7px;
+    bottom: auto;
+    right: 12px;
+    padding: 3px;
+    box-shadow: 0 4px 12px -4px rgba(16, 32, 56, 0.25);
+  }
+  .launcher[data-place="top"] span {
+    display: none;
+  }
+  .launcher[data-place="top"] .launcherFace {
+    width: 38px;
+    height: 38px;
+  }
+}
+
 /* ---------- Mobile: bottom sheet ---------- */
 @media (max-width: 600px) {
   .card,

@@ -6,6 +6,7 @@ import Composer from "@/components/chat/Composer";
 import Conversation from "@/components/chat/Conversation";
 import DocViewer from "@/components/chat/DocViewer";
 import EmptyState from "@/components/chat/EmptyState";
+import Guide from "@/components/guide/Guide";
 import { seedConversations } from "@/lib/corpus";
 import { makeId, replyTo } from "@/lib/chatReply";
 import { useI18n } from "@/lib/i18n";
@@ -15,6 +16,9 @@ import styles from "@/components/chat/Chat.module.css";
 const COLLAPSE_KEY = "sc-chat-sidebar";
 const THINK_MS = 700;
 const NONE = "";
+
+// Victor's first-visit tour: hello, history, sources, then the composer.
+const CHAT_TOUR = [{}, { target: "chat-sidebar", radius: 14 }, {}, { target: "chat-composer", radius: 22, focus: true }];
 
 export default function Chat() {
   const { t, locale } = useI18n();
@@ -215,7 +219,7 @@ export default function Chat() {
             )}
           </div>
 
-          <div className={styles.composerWrap}>
+          <div id="chat-composer" className={styles.composerWrap}>
             <Composer value={value} onChange={setDraft} onSend={send} busy={pending} />
           </div>
         </main>
@@ -231,6 +235,8 @@ export default function Chat() {
           />
         )}
       </div>
+
+      <Guide tour="chat" steps={CHAT_TOUR} launcherPlace="top" />
     </>
   );
 }

@@ -48,8 +48,8 @@
             {
               "type": "flag",
               "tone": "amber",
-              "title": "Ce nu se găsește în corpus",
-              "text": "Niciun document public din corpus nu conține repartizarea pe numere de casă: nu există o listă publicată care să spună care medic de familie deservește str. Kiev 12. Informația există doar în sistemul informațional al instituției medicale și se obține prin pașii de mai sus sau la Centrul de apel INFO CNAM."
+              "title": "Ce nu se găsește în documentele publice",
+              "text": "Niciun document public nu conține repartizarea pe numere de casă: nu există o listă publicată care să spună care medic de familie deservește str. Kiev 12. Informația există doar în sistemul informațional al instituției medicale și se obține prin pașii de mai sus sau la Centrul de apel INFO CNAM."
             }
           ],
           "citations": [
