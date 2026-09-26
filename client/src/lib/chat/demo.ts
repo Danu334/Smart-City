@@ -9,6 +9,7 @@ import type { Action, Block, Contradiction, AnswerStatus, Institution } from "@/
 export type DemoAnswer = {
   status: AnswerStatus;
   answer: string;
+  needs_documents: boolean;
   documents: { text: string; quote: string; refs: number[] }[];
   steps: { text: string; refs: number[] }[];
   institution: (Institution & { refs: number[] }) | null;
@@ -101,6 +102,7 @@ const WASTE_ANSWER: DemoAnswer = {
   answer: `**Nu există o astfel de plată și nici o cerere de depus.** Nicio sursă oficială a Primăriei sau a Î.M. Regia „Autosalubritate” nu menționează 200 de lei pe lună pentru locatarii care sortează deșeurile.
 
 Banii legați de sortare nu merg la cetățeni, ci la operatorul de sortare: Regia „Autosalubritate” îi achită sortatorului 250 lei/tonă, din resursele proprii ale întreprinderii [1]. Pentru locatari, beneficiul este că deșeurile reciclabile sunt ridicate gratuit, separat, de obicei de patru ori pe lună [2], iar la depozitul de la Țânțăreni ajunge mai puțin gunoi [1].`,
+  needs_documents: false,
   documents: [],
   steps: [
     {
@@ -230,6 +232,7 @@ const TRANSPORT_ANSWER: DemoAnswer = {
 > Anexez: copia actului de identitate, copia certificatului de încadrare în grad de dizabilitate, copia legitimației de pensionar.
 >
 > Data: **[data]** · Semnătura: **[semnătura]**`,
+  needs_documents: true,
   documents: [
     { text: "Cerere scrisă către DGAMS (modelul de mai jos)", quote: "cerere scrisă", refs: [2] },
     {
@@ -362,6 +365,7 @@ const TARIFF_ANSWER: DemoAnswer = {
 **Ce nu pot confirma:** în documente nu există o pagină cu tarifele din 2025–2026. Dacă tariful s-a schimbat după iulie 2022, sursele mele nu o arată, așa că verificați factura sau întrebați Regia.
 
 Pensionarii și familiile social vulnerabile beneficiază de compensații la plata lunară [2].`,
+  needs_documents: false,
   documents: [],
   steps: [
     {
@@ -496,6 +500,7 @@ const WATER_ANSWER: DemoAnswer = {
 - Ialoveni, str-la Valeriu Cupcea: 16:40 – 18:00 [4]
 
 Dacă adresa dvs. nu este în listă, poate fi o avarie nouă, care nu a apărut încă pe pagină. Sunați la dispeceratul Apă-Canal: **022 25-66-66** [5].`,
+  needs_documents: false,
   documents: [],
   steps: [
     {

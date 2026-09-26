@@ -92,6 +92,7 @@ When you have enough evidence, reply with the JSON answer (no more tool calls):
   - "not_found": the passages do not answer the question. Say so plainly in "answer"; do not guess.
   - "contradiction": two passages disagree on a fact that matters for the answer (e.g. different phone numbers, addresses, fees, deadlines, hours). List every such case in "contradictions" with both claims and their [n]; do not silently pick one. Still fill the rest.
 - answer: 1–3 sentences answering directly, with [n] markers inline. Do not repeat the documents, the steps or the contact details here; they are shown separately.
+- needs_documents: true if doing what the user asks requires submitting or presenting documents (an application, a permit, a certificate, a contract, a benefit, registering something), even when no passage lists them; false otherwise.
 - documents: every document the user must prepare or bring for the procedure (application form, copies of ID or deeds, certificates, plans, receipts), one per item. "text" names it in the user's language; "quote" copies its name exactly as written in the passage, in the passage's language (it is checked against the passage, and the item is dropped if it is not there); "refs" holds the [n] of that passage. Only documents for the exact procedure asked: a passage about a similar but different procedure (e.g. a permit to operate a paid car park vs. a building permit for one) does not count. Empty if the question is not about a procedure. If the user needs documents but no passage lists them, leave it empty and add "the list of required documents" to "missing".
 - steps: the ordered, practical steps to achieve the user's goal (where to go, fees, deadlines), each with the [n] of its source in "refs". Do not repeat the documents list here; refer to it ("depuneți actele de mai sus"). Empty if the question is not about doing something.
 - institution: the institution the user should contact, with every field taken verbatim from a passage (null for a field that is not in any passage) and the passages used in "refs". null if no institution is involved.
@@ -154,6 +155,7 @@ async function runSemanticSearch(args: { query?: unknown; limit?: unknown }): Pr
 type StructuredAnswer = {
   status: AnswerStatus;
   answer: string;
+  needs_documents: boolean;
   documents: { text: string; quote: string; refs: number[] }[];
   steps: { text: string; refs: number[] }[];
   institution: (Institution & { refs: number[] }) | null;
@@ -172,10 +174,11 @@ const ANSWER_FORMAT = {
     schema: {
       type: "object",
       additionalProperties: false,
-      required: ["status", "answer", "documents", "steps", "institution", "missing", "contradictions"],
+      required: ["status", "answer", "needs_documents", "documents", "steps", "institution", "missing", "contradictions"],
       properties: {
         status: { type: "string", enum: ["found", "partial", "not_found", "contradiction"] },
         answer: { type: "string" },
+        needs_documents: { type: "boolean" },
         documents: {
           type: "array",
           items: {
@@ -243,7 +246,8 @@ function parseAnswer(content: string | null | undefined): StructuredAnswer | nul
   try {
     const parsed = JSON.parse(content ?? "") as StructuredAnswer;
     if (typeof parsed?.answer !== "string" || typeof parsed?.status !== "string") return null;
-    return { ...parsed, documents: Array.isArray(parsed.documents) ? parsed.documents : [] };
+    const documents = Array.isArray(parsed.documents) ? parsed.documents : [];
+    return { ...parsed, documents, needs_documents: Boolean(parsed.needs_documents) || documents.length > 0 };
   } catch {
     return null;
   }
@@ -515,7 +519,7 @@ function toContent(answer: StructuredAnswer, hits: Hit[], lang: string): Assista
   answer = { ...answer, documents: groundedDocs };
   const missing = [...answer.missing];
   // The model gave a list, but none of it is in the passages: say the list is missing.
-  if (droppedDocs && !groundedDocs.length && !missing.some((m) => DOCS_WORD.test(m)))
+  if ((droppedDocs || answer.needs_documents) && !groundedDocs.length && !missing.some((m) => DOCS_WORD.test(m)))
     missing.push(labels.documents);
   // The resident always needs the address and phone of where to go; any the
   // passages don't back (or that the model dropped) is listed as missing.
@@ -537,8 +541,10 @@ function toContent(answer: StructuredAnswer, hits: Hit[], lang: string): Assista
 
   const blocks: Block[] = [{ type: "status", status, missing, contradictions }];
   // The documents to prepare come first and stand out: they are what people most often get wrong.
+  // Shown whenever the procedure needs documents, even with an empty list, so
+  // the resident always knows to ask for it before going.
   const documents = answer.documents.filter((d) => d.text.trim());
-  if (documents.length)
+  if (documents.length || answer.needs_documents || droppedDocs)
     blocks.push({ type: "documents", items: documents.map((d) => d.text), itemRefs: documents.map((d) => clean(d.refs)) });
   const steps = answer.steps.filter((st) => st.text.trim());
   if (steps.length)
@@ -725,6 +731,7 @@ export async function runChatAgent({
     answer = {
       status: "not_found",
       answer: text,
+      needs_documents: false,
       documents: [],
       steps: [],
       institution: null,

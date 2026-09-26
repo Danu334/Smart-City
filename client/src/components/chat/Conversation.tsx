@@ -251,6 +251,7 @@ function DocumentsList({
           <p className={styles.documentsHint}>{s.hint}</p>
         </div>
       </div>
+      {block.items.length === 0 && <p className={styles.documentsEmpty}>{s.empty}</p>}
       <ul className={styles.documentsList}>
         {block.items.map((item, i) => (
           <li key={i}>

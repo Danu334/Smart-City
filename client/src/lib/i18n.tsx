@@ -323,6 +323,7 @@ const en = {
       documents: {
         title: "Documents you need",
         hint: "Prepare these before you go.",
+        empty: "The published documents don't list them. Ask the institution below for the exact list before you go, so you don't have to come back.",
       },
       institution: {
         title: "Where to go",
@@ -677,6 +678,7 @@ const ro: Dictionary = {
       documents: {
         title: "Documente necesare",
         hint: "Pregătiți-le înainte să mergeți la instituție.",
+        empty: "Lista actelor nu apare în documentele publicate. Cereți lista exactă la instituția de mai jos înainte să mergeți, ca să nu fiți nevoit să reveniți.",
       },
       institution: {
         title: "Unde vă adresați",
@@ -1028,6 +1030,7 @@ const ru: Dictionary = {
       documents: {
         title: "Необходимые документы",
         hint: "Подготовьте их до визита в учреждение.",
+        empty: "Список документов не опубликован. Уточните точный список в учреждении ниже до визита, чтобы не пришлось приходить повторно.",
       },
       institution: {
         title: "Куда обращаться",

@@ -734,6 +734,17 @@
   font-size: 14px;
   color: var(--graphite);
 }
+.documentsEmpty {
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: var(--paper);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--amber);
+}
+.documentsList:empty {
+  display: none;
+}
 .documentsList {
   display: grid;
   gap: 8px;
