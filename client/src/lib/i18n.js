@@ -56,7 +56,7 @@ const dictionaries = {
       placeholder: "e.g. What do I need for a building permit?",
       ask: "Ask",
       chips: ["Building permit", "Local taxes", "Parking in the centre", "District office contacts"],
-      note: "Answers come only from City Hall's published corpus.",
+      note: "Answers come only from City Hall's published documents.",
     },
     pillars: [
       ["RO · RU", "Both languages first-class"],
@@ -69,7 +69,7 @@ const dictionaries = {
       title: "How an answer is made",
       steps: [
         ["You ask", "In Romanian or Russian, in your own words. You don't need to know which decision governs your case."],
-        ["We search the corpus", "Only City Hall's published decisions, regulations and procedures. Nothing from the open internet."],
+        ["We search official documents", "Only the decisions, regulations and procedures published by City Hall. No other sources from the internet."],
         ["You get the passage", "A plain-language answer, plus the document and the exact passage it rests on."],
         ["You reach the right door", "If your case needs an office visit, you get a link to the City Hall contact page that handles it."],
       ],
@@ -216,7 +216,7 @@ const dictionaries = {
       placeholder: "ex. Ce acte îmi trebuie pentru autorizația de construire?",
       ask: "Întreabă",
       chips: ["Autorizație de construire", "Taxe locale", "Parcare în centru", "Contactele preturilor"],
-      note: "Răspunsurile provin doar din corpusul public al Primăriei.",
+      note: "Răspunsurile provin doar din documentele publice ale Primăriei.",
     },
     pillars: [
       ["RO · RU", "Ambele limbi, la egalitate"],
@@ -229,7 +229,7 @@ const dictionaries = {
       title: "Cum se formează un răspuns",
       steps: [
         ["Întrebați", "În română sau rusă, cu cuvintele dvs. Nu trebuie să știți ce decizie se aplică în cazul dvs."],
-        ["Căutăm în corpus", "Doar deciziile, regulamentele și procedurile publicate de Primărie. Nimic de pe internetul larg."],
+        ["Căutăm în documentele oficiale", "Doar în deciziile, regulamentele și procedurile publicate de Primărie. Nu folosim alte surse de pe internet."],
         ["Primiți pasajul", "Un răspuns pe înțeles, cu documentul și pasajul exact pe care se bazează."],
         ["Ajungeți la ușa potrivită", "Dacă aveți nevoie de o vizită la ghișeu, primiți linkul spre pagina de contact a Primăriei care se ocupă de caz."],
       ],
@@ -376,7 +376,7 @@ const dictionaries = {
       placeholder: "напр. Какие документы нужны для разрешения на строительство?",
       ask: "Спросить",
       chips: ["Разрешение на строительство", "Местные налоги", "Парковка в центре", "Контакты претур"],
-      note: "Ответы берутся только из открытого корпуса документов Примэрии.",
+      note: "Ответы берутся только из опубликованных документов Примэрии.",
     },
     pillars: [
       ["RO · RU", "Оба языка на равных"],
@@ -389,7 +389,7 @@ const dictionaries = {
       title: "Как формируется ответ",
       steps: [
         ["Вы спрашиваете", "На румынском или русском, своими словами. Не нужно знать, какое решение касается вашего случая."],
-        ["Мы ищем в корпусе", "Только опубликованные решения, положения и процедуры Примэрии. Ничего из открытого интернета."],
+        ["Мы ищем в официальных документах", "Только в решениях, положениях и процедурах, опубликованных Примэрией. Другие источники из интернета не используются."],
         ["Вы получаете фрагмент", "Понятный ответ с указанием документа и точного фрагмента, на котором он основан."],
         ["Вы попадаете к нужной двери", "Если нужен личный визит, вы получите ссылку на контактную страницу Примэрии, которая занимается вашим вопросом."],
       ],
