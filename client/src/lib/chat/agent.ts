@@ -663,9 +663,11 @@ async function runDemoScript(script: DemoScript, lang: string, emit: Emit): Prom
   const content = toContent(variant.answer, script.hits, lang);
   if (variant.actions) content.actions = variant.actions;
   const [status, ...rest] = content.blocks;
+  const documents: Block[] = script.documents ? [{ type: "documents", items: script.documents }] : [];
   content.blocks = [
     status,
     ...script.flags,
+    ...documents,
     ...rest.map((b) => (b.type === "places" && script.placesQuery ? { ...b, query: script.placesQuery } : b)),
   ];
 

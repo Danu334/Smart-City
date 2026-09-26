@@ -29,6 +29,11 @@ export type DemoScript = {
   actions?: Action[];
   /** Show a clock check before searching, for time-aware questions. */
   clock?: boolean;
+  /**
+   * Documents shown as-is, not checked against the passages: for questions the
+   * sources don't cover, where the list is orientative (a flag should say so).
+   */
+  documents?: string[];
   /** The same answer in Russian; the Romanian one is used otherwise. */
   ru?: { answer: DemoAnswer; actions?: Action[] };
 };
@@ -563,6 +568,87 @@ const WATER_ANSWER_RU: DemoAnswer = {
   },
 };
 
+const DGLCA_ANIMALS_URL = "https://dglca.md/121#file-46ff97b6-uploads/files/s-prot-anim-sp-principal-prelungire-octombrie-2023.pdf";
+
+// Real chunks from the Qdrant index (dglca.md), trimmed to the cited part.
+// Nothing in the index covers exotic animals: the answer says so.
+const CROCODILE_HITS: Hit[] = [
+  hit({
+    n: 1,
+    id: "83293c89-2972-5f7d-8004-01c4b308e9fc",
+    docId: "87d03af549d4",
+    title: "Anunț concurs — Secția control și protecție a animalelor (DGLCA, 2023)",
+    site: "dglca.md",
+    url: DGLCA_ANIMALS_URL,
+    citeUrl: "https://dglca.md/121",
+    type: "pdf",
+    date: null,
+    text: `Secția control și protecție a animalelor
+Scopul general al funcției:
+Gestionarea domeniului privind controlul și protecția animalelor cu și fără stăpân din mun. Chișinău.
+Sarcinile de bază și atribuțiile de serviciu:
+• Promovarea și implementarea măsurilor privind managementul populației canine și animalelor de companie din raza municipiului Chișinău;
+• Monitorizarea respectării prevederilor Regulamentului animalelor de companie și fără stăpân și a Regulamentului de capturare și transportarea animalelor fără stăpân de către persoanele fizice și juridice.`,
+  }),
+  hit({
+    n: 2,
+    id: "282a3cd2-9f34-57f5-ac82-159a03a45090",
+    docId: "9d8deb33590d",
+    title: "Anunț privind Registrul municipal al animalelor de companie",
+    site: "dglca.md",
+    url: "https://dglca.md/147",
+    citeUrl: "https://dglca.md/147",
+    date: "2024-04-10",
+    text: `Cererile completate și semnate se expediază la adresa mun. Chișinău, str. Mihai Eminescu 33, sau la adresa de mail dglca@pmc.md (semnate electronic).`,
+  }),
+  hit({
+    n: 3,
+    id: "8b20c0d7-f734-5970-8955-a22197e56196",
+    docId: "9d8deb33590d",
+    title: "Anunț privind Registrul municipal al animalelor de companie",
+    site: "dglca.md",
+    url: "https://dglca.md/147",
+    citeUrl: "https://dglca.md/147",
+    date: "2024-04-10",
+    text: `ANUNȚ privind încheierea acordurilor de colaborare cu clinicile veterinare, alte entități specializate în vederea operării datelor în Registrul municipal al animalelor de companie.
+DGLCA anunță despre disponibilitatea încheierilor acordurilor cu clinicile veterinare, alte entități specializate în domeniu în vederea oferii accesului la Registrul municipal al animalelor de companie, operarea datelor în acest Registru.`,
+  }),
+];
+
+const CROCODILE_ANSWER: DemoAnswer = {
+  status: "not_found",
+  answer: `**Documentele Primăriei nu conțin o procedură pentru creșterea crocodililor, așa că nu vă pot da un răspuns confirmat.**
+
+Singura structură municipală care se ocupă de animale, Secția control și protecție a animalelor din DGLCA, are atribuții doar pentru **animalele de companie și cele fără stăpân** [1], iar Registrul municipal ține tot de animalele de companie [3]. Crocodilii sunt animale exotice și periculoase, deci competența ține de autoritățile naționale: **ANSA**, pentru partea sanitar-veterinară, și **Agenția de Mediu**, pentru speciile protejate prin Convenția CITES.`,
+  needs_documents: false,
+  documents: [],
+  steps: [
+    {
+      text: "Contactați ANSA (Agenția Națională pentru Siguranța Alimentelor) pentru autorizația sanitar-veterinară a spațiului în care vor fi ținute animalele.",
+      refs: [],
+    },
+    {
+      text: "Cereți la Agenția de Mediu permisul CITES: toate speciile de crocodili sunt protejate prin Convenția CITES, iar aducerea lor în țară fără permis este interzisă.",
+      refs: [],
+    },
+    {
+      text: "Întrebați DGLCA dacă există restricții locale pentru deținerea animalelor periculoase în Chișinău: str. Mihai Eminescu 33, dglca@pmc.md.",
+      refs: [2],
+    },
+    {
+      text: "Depuneți actele doar după ce ANSA și Agenția de Mediu v-au confirmat lista exactă, ca să nu fiți nevoit să reveniți.",
+      refs: [],
+    },
+  ],
+  institution: null,
+  missing: [
+    "Procedura și actele pentru deținerea sau creșterea animalelor exotice ori periculoase",
+    "Dacă o astfel de activitate este permisă într-o zonă locativă din Chișinău",
+    "Contactele ANSA și ale Agenției de Mediu (nu sunt în documentele Primăriei)",
+  ],
+  contradictions: [],
+};
+
 const SCRIPTS: DemoScript[] = [
   {
     // "200 lei for sorting" rumour, in any close phrasing (Romanian or Russian).
@@ -642,6 +728,39 @@ const SCRIPTS: DemoScript[] = [
       answer: WATER_ANSWER_RU,
       actions: [{ label: "Позвонить в диспетчерскую Apă-Canal", href: "tel:+37322256666", platform: "022 25-66-66" }],
     },
+  },
+  {
+    // "How do I get a permit to raise crocodiles?": a question the sources don't cover.
+    match: (q) => /(crocodil|aligator)/.test(q),
+    queries: [
+      "Există o procedură a Primăriei Chișinău pentru autorizarea creșterii crocodililor?",
+      "Ce acte sunt necesare pentru deținerea animalelor exotice sau periculoase?",
+      "Cine autorizează animalele exotice: DGLCA, ANSA sau Agenția de Mediu?",
+      "Care este adresa Direcției generale locativ-comunale și amenajare (DGLCA)?",
+    ],
+    hits: CROCODILE_HITS,
+    answer: CROCODILE_ANSWER,
+    flags: [
+      {
+        type: "flag",
+        tone: "amber",
+        title: "Lista de acte este orientativă",
+        text: "Actele de mai jos nu apar în documentele Primăriei. Sunt cele cerute de obicei pentru animale exotice; confirmați lista exactă la ANSA și la Agenția de Mediu înainte de depunere.",
+      },
+    ],
+    documents: [
+      "Cerere pentru autorizația sanitar-veterinară de funcționare (la ANSA)",
+      "Copia actului de identitate sau extrasul din Registrul de stat, dacă activitatea e pe o întreprindere",
+      "Actul care confirmă dreptul asupra spațiului (proprietate sau contract de locațiune)",
+      "Planul incintei: bazin, încălzire, împrejmuire și măsuri de siguranță pentru vecini",
+      "Permisul CITES de import și actele de proveniență legală pentru fiecare animal (la Agenția de Mediu)",
+      "Certificatul sanitar-veterinar al fiecărui animal, din țara de origine",
+      "Contract de asistență cu un medic veterinar",
+    ],
+    actions: [
+      { label: "Site-ul ANSA", href: "https://www.ansa.gov.md", platform: "Autorizația sanitar-veterinară" },
+      { label: "Site-ul Agenției de Mediu", href: "https://am.gov.md", platform: "Permisul CITES" },
+    ],
   },
 ];
 
