@@ -225,7 +225,7 @@ const dictionaries = {
       ["RO · RU", "Ambele limbi, la egalitate"],
       ["Document + pasaj", "Citat la fiecare răspuns"],
       ["Fără răspunsuri inventate", "Vă spune când lipsesc informații sau documentele se contrazic"],
-      ["Ușa potrivită", "Direcționare spre biroul competent"],
+      ["Ușa potrivită", "Vă îndrumă spre subdiviziunea competentă a Primăriei"],
     ],
     how: {
       eyebrow: "Cum funcționează",
@@ -254,7 +254,7 @@ const dictionaries = {
         ["answer", "Răspunsul", "Explicat pe scurt și pe înțeles, doar pe baza documentelor oficiale."],
         ["source", "Sursa", "Denumirea documentului, articolul și alineatul, plus data publicării."],
         ["missing", "Dacă lipsesc informații", "Vă spunem direct și nu inventăm un răspuns."],
-        ["next", "Pasul următor", "Biroul responsabil al Primăriei, cu telefon și adresă."],
+        ["next", "Pasul următor", "Subdiviziunea responsabilă a Primăriei, cu telefon și adresă."],
         ],
       },
     },
