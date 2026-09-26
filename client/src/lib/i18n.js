@@ -103,7 +103,7 @@ const dictionaries = {
     },
     audience: {
       eyebrow: "Who it's for",
-      title: "Built for both sides of the counter",
+      title: "For residents and City Hall staff",
       items: [
         ["Residents", "Understand your rights, obligations and procedures without reading hundreds of pages of decisions."],
         ["Municipal employees", "Find the governing passage in seconds and give every resident the same, consistent answer."],
@@ -234,7 +234,7 @@ const dictionaries = {
         ["Întrebați", "În română sau rusă, cu cuvintele dvs. Nu trebuie să știți ce decizie se aplică în cazul dvs."],
         ["Căutăm în documentele oficiale", "Doar în deciziile, regulamentele și procedurile publicate de Primărie. Nu folosim alte surse de pe internet."],
         ["Primiți pasajul", "Un răspuns pe înțeles, cu documentul și pasajul exact pe care se bazează."],
-        ["Ajungeți la ușa potrivită", "Dacă aveți nevoie de o vizită la ghișeu, primiți linkul spre pagina de contact a Primăriei care se ocupă de caz."],
+        ["Ajungeți la ușa potrivită", "Dacă trebuie să mergeți personal la Primărie, primiți linkul spre pagina de contact a subdiviziunii care se ocupă de caz."],
       ],
     },
     honesty: {
@@ -266,7 +266,7 @@ const dictionaries = {
     },
     audience: {
       eyebrow: "Pentru cine",
-      title: "Construit pentru ambele părți ale ghișeului",
+      title: "Pentru cetățeni și pentru angajații Primăriei",
       items: [
         ["Locuitori", "Înțelegeți-vă drepturile, obligațiile și procedurile fără să citiți sute de pagini de decizii."],
         ["Angajați municipali", "Găsiți pasajul relevant în câteva secunde și oferiți fiecărui locuitor același răspuns, consecvent."],
@@ -429,7 +429,7 @@ const dictionaries = {
     },
     audience: {
       eyebrow: "Для кого",
-      title: "Для обеих сторон окошка",
+      title: "Для жителей и сотрудников Примэрии",
       items: [
         ["Жители", "Разберитесь в своих правах, обязанностях и процедурах, не читая сотни страниц решений."],
         ["Муниципальные служащие", "Находите нужный фрагмент за секунды и давайте каждому жителю одинаковый, последовательный ответ."],
