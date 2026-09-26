@@ -9,6 +9,7 @@ import Guide from "@/components/guide/Guide";
 import SponsorCredit from "@/components/SponsorCredit";
 import { useI18n } from "@/lib/i18n";
 import { useReveal } from "@/lib/useReveal";
+import { useSession } from "@/lib/auth-client";
 import styles from "@/styles/Home.module.css";
 
 const CityScene = dynamic(() => import("@/components/three/CityScene"), { ssr: false });
@@ -43,13 +44,20 @@ function AskBox() {
   const { t } = useI18n();
   const router = useRouter();
   const [q, setQ] = useState("");
+  const [saved, setSaved] = useState(false);
   const input = useRef(null);
+  const { data: session } = useSession();
 
   const submit = (e) => {
     e.preventDefault();
     const question = q.trim();
     if (!question) return input.current?.focus();
-    router.push({ pathname: "/sign-in", query: { q: question } });
+    if (!session) return router.push({ pathname: "/sign-in", query: { q: question } });
+    // Signed in: keep the question for the chat page (coming next).
+    try {
+      sessionStorage.setItem("sc-pending-question", question);
+    } catch {}
+    setSaved(true);
   };
 
   return (
@@ -78,6 +86,11 @@ function AskBox() {
           </svg>
         </button>
       </form>
+      {saved && (
+        <p className={styles.saved} role="status">
+          {t.hero.saved}
+        </p>
+      )}
       <ul className={styles.chips}>
         {t.hero.chips.map((chip) => (
           <li key={chip}>

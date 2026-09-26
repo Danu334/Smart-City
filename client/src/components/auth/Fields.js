@@ -58,23 +58,3 @@ export function PasswordInput({ value, onChange, autoComplete, ...aria }) {
     </div>
   );
 }
-
-export function Notice({ children }) {
-  return (
-    <p className={styles.notice} role="status">
-      <svg viewBox="0 0 20 20" aria-hidden="true">
-        <circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" strokeWidth="1.6" />
-        <path d="M10 9v4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-        <circle cx="10" cy="6.5" r="1" fill="currentColor" />
-      </svg>
-      <span>{children}</span>
-    </p>
-  );
-}
-
-export const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
-
-// Focus the first invalid control after a failed submit.
-export function focusFirstInvalid(form) {
-  requestAnimationFrame(() => form?.querySelector('[aria-invalid="true"]')?.focus());
-}

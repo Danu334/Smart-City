@@ -296,22 +296,6 @@
   transform: scale(0.99);
 }
 
-.notice {
-  display: flex;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: var(--amber-wash);
-  color: var(--ink);
-  font-size: 14px;
-}
-.notice svg {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-  margin-top: 1px;
-  color: var(--amber);
-}
 
 .alt {
   margin-top: 28px;

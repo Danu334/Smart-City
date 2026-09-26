@@ -1,0 +1,111 @@
+.coach {
+  position: fixed;
+  z-index: 65;
+  right: 16px;
+  left: 16px;
+  bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 44px 14px 14px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-left: 4px solid var(--rose);
+  box-shadow: 0 2px 4px rgba(16, 32, 56, 0.06), 0 20px 48px -12px rgba(16, 32, 56, 0.28);
+  animation: coach-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.coach[data-tone="warn"] {
+  border-left-color: var(--highlight-edge);
+}
+.coach[data-beside] {
+  right: auto;
+  bottom: auto;
+  width: 320px;
+}
+/* little arrow pointing back at the field */
+.coach[data-beside]::before {
+  content: "";
+  position: absolute;
+  left: -9px;
+  top: 40px;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border-left: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  transform: rotate(45deg);
+}
+.coach[data-beside] {
+  border-left: 1px solid var(--hairline);
+  border-top: 4px solid var(--rose);
+}
+.coach[data-beside][data-tone="warn"] {
+  border-top-color: var(--highlight-edge);
+}
+
+.face {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+}
+.body {
+  min-width: 0;
+}
+.name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.short {
+  margin-top: 4px;
+  font-size: 16.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+}
+.tip {
+  margin-top: 4px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--graphite);
+}
+.close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: var(--graphite);
+}
+.close:hover {
+  background: var(--paper-sunk);
+  color: var(--ink);
+}
+.close svg {
+  width: 16px;
+  height: 16px;
+}
+
+@keyframes coach-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .coach {
+    animation: none;
+  }
+}
+
+/* The welcome tour takes priority over the coach. */
+:global(html[data-tour-open]) .coach {
+  display: none;
+}

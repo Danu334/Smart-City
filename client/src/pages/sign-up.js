@@ -1,9 +1,14 @@
-import { useRef, useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useI18n } from "@/lib/i18n";
+import { signUp, useSession } from "@/lib/auth-client";
+import { checkEmail, checkName, checkPassword, checkTerms, fromServerError } from "@/lib/validation";
 import AuthLayout from "@/components/auth/AuthLayout";
 import Guide from "@/components/guide/Guide";
-import { Field, Notice, PasswordInput, focusFirstInvalid, isEmail } from "@/components/auth/Fields";
+import Coach, { messageFor, useCoachOff } from "@/components/auth/Coach";
+import { Field, PasswordInput } from "@/components/auth/Fields";
+import { useAuthForm } from "@/components/auth/useAuthForm";
 import styles from "@/components/auth/Auth.module.css";
 
 function strength(pw) {
@@ -22,6 +27,14 @@ const SIGN_UP_TOUR = [
   { target: "su-lang" },
   { target: "su-finish" },
 ];
+
+const ORDER = ["name", "email", "password", "terms"];
+const VALIDATORS = {
+  name: checkName,
+  email: checkEmail,
+  password: (v) => checkPassword(v, { isNew: true }),
+  terms: checkTerms,
+};
 
 function Segmented({ id, name, legend, options, value, onChange }) {
   return (
@@ -42,52 +55,59 @@ function Segmented({ id, name, legend, options, value, onChange }) {
 export default function SignUp() {
   const { t, locale } = useI18n();
   const s = t.auth.signUp;
-  const e = t.auth.errors;
+  const router = useRouter();
+  const { data: session } = useSession();
+  const coachOff = useCoachOff();
 
-  const form = useRef(null);
-  const [values, setValues] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: "citizen",
-    lang: null,
-    terms: false,
+  const form = useAuthForm({
+    initial: { name: "", email: "", password: "", role: "citizen", lang: null, terms: false },
+    validators: VALIDATORS,
+    order: ORDER,
   });
-  const [errors, setErrors] = useState({});
-  const [done, setDone] = useState(false);
+  const { values, set, update, bind, capsHandlers, fieldError, coach, dismiss, busy } = form;
+
+  // Already signed in: nothing to do here.
+  useEffect(() => {
+    if (session) router.replace("/");
+  }, [session, router]);
 
   // Until the user picks one, the answer language follows the interface.
   const answerLang = values.lang ?? (locale === "ru" ? "ru" : "ro");
 
-  const update = (key, v) => {
-    setValues((prev) => ({ ...prev, [key]: v }));
-    if (errors[key]) setErrors((prev) => ({ ...prev, [key]: undefined }));
-    setDone(false);
+  const inline = (k) => {
+    const m = messageFor(t, fieldError(k));
+    return m && (coachOff ? `${m[0]} ${m[1]}` : m[0]);
   };
-  const set = (key) => (ev) => update(key, ev.target.type === "checkbox" ? ev.target.checked : ev.target.value);
 
-  const submit = (ev) => {
-    ev.preventDefault();
-    const next = {};
-    if (!values.name.trim()) next.name = e.required;
-    if (!values.email.trim()) next.email = e.required;
-    else if (!isEmail(values.email)) next.email = e.email;
-    if (!values.password) next.password = e.required;
-    else if (values.password.length < 8) next.password = e.short;
-    if (!values.terms) next.terms = e.terms;
-    setErrors(next);
-    if (Object.keys(next).length) return focusFirstInvalid(form.current);
-    setDone(true);
-  };
+  const onSubmit = form.submit(async (v, setServer) => {
+    let retryAfter;
+    try {
+      const { error } = await signUp.email(
+        {
+          name: v.name.trim(),
+          email: v.email.trim().toLowerCase(),
+          password: v.password,
+          role: v.role,
+          lang: answerLang,
+        },
+        { onError: (ctx) => (retryAfter = Number(ctx.response?.headers?.get("X-Retry-After")) || undefined) }
+      );
+      if (error) return setServer(fromServerError(error, retryAfter));
+      router.push("/");
+    } catch {
+      setServer({ field: "submit", code: "network" });
+    }
+  });
 
   const score = strength(values.password);
+  const submitError = inline("submit");
 
   return (
     <AuthLayout title={s.title}>
       <h1 className={styles.title}>{s.title}</h1>
       <p className={styles.sub}>{s.sub}</p>
 
-      <form ref={form} className={styles.form} onSubmit={submit} noValidate>
+      <form className={styles.form} onSubmit={onSubmit} noValidate>
         <Segmented
           id="su-role"
           name="role"
@@ -101,20 +121,32 @@ export default function SignUp() {
         />
 
         <div id="su-details" className={styles.group}>
-          <Field id="name" label={s.name} error={errors.name}>
-            {(aria) => (
-              <input {...aria} name="name" type="text" autoComplete="name" className={styles.input} value={values.name} onChange={set("name")} />
-            )}
-          </Field>
-
-          <Field id="email" label={t.auth.email} error={errors.email}>
+          <Field id="name" label={s.name} error={inline("name")}>
             {(aria) => (
               <input
                 {...aria}
+                {...bind("name")}
+                name="name"
+                type="text"
+                autoComplete="name"
+                className={styles.input}
+                value={values.name}
+                onChange={set("name")}
+              />
+            )}
+          </Field>
+
+          <Field id="email" label={t.auth.email} error={inline("email")}>
+            {(aria) => (
+              <input
+                {...aria}
+                {...bind("email")}
                 name="email"
                 type="email"
                 inputMode="email"
                 autoComplete="email"
+                autoCapitalize="none"
+                spellCheck={false}
                 className={styles.input}
                 value={values.email}
                 onChange={set("email")}
@@ -122,10 +154,17 @@ export default function SignUp() {
             )}
           </Field>
 
-          <Field id="password" label={t.auth.password} error={errors.password} hint={s.hint}>
+          <Field id="password" label={t.auth.password} error={inline("password")} hint={s.hint}>
             {(aria) => (
               <>
-                <PasswordInput {...aria} autoComplete="new-password" value={values.password} onChange={set("password")} />
+                <PasswordInput
+                  {...aria}
+                  {...bind("password")}
+                  {...capsHandlers}
+                  autoComplete="new-password"
+                  value={values.password}
+                  onChange={set("password")}
+                />
                 <div className={styles.meter} data-score={values.password ? score : -1} aria-hidden="true">
                   <span />
                   <span />
@@ -149,30 +188,35 @@ export default function SignUp() {
         />
 
         <div id="su-finish" className={styles.group}>
-          <div className={styles.field} data-invalid={!!errors.terms}>
+          <div className={styles.field} data-invalid={!!inline("terms")}>
             <label className={styles.check}>
               <input
+                id="terms"
                 type="checkbox"
                 checked={values.terms}
                 onChange={set("terms")}
-                aria-invalid={!!errors.terms || undefined}
-                aria-describedby={errors.terms ? "terms-error" : undefined}
+                {...bind("terms")}
+                aria-invalid={!!inline("terms") || undefined}
+                aria-describedby={inline("terms") ? "terms-error" : undefined}
               />
               <span>{s.terms}</span>
             </label>
-            {errors.terms && (
+            {inline("terms") && (
               <p id="terms-error" className={styles.error}>
-                {errors.terms}
+                {inline("terms")}
               </p>
             )}
           </div>
 
-          <button type="submit" className={styles.submit}>
-            {s.submit}
+          <button id="auth-submit" type="submit" className={styles.submit} disabled={busy} aria-busy={busy}>
+            {busy ? s.submitting : s.submit}
           </button>
+          {submitError && (
+            <p className={styles.error} role="alert">
+              {submitError}
+            </p>
+          )}
         </div>
-
-        {done && <Notice>{t.auth.notConnected}</Notice>}
       </form>
 
       <p className={styles.alt}>
@@ -182,6 +226,9 @@ export default function SignUp() {
         </Link>
       </p>
 
+      {!coachOff && coach && (
+        <Coach target={coach.target} tone={coach.tone} message={messageFor(t, coach)} onClose={dismiss} />
+      )}
       <Guide tour="signUp" steps={SIGN_UP_TOUR} />
     </AuthLayout>
   );

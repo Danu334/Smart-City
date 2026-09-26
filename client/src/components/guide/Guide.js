@@ -78,6 +78,14 @@ export default function Guide({ tour, steps }) {
     setIndex(next);
   };
 
+  // Let other overlays (the form coach) step aside while a tour is open.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (index >= 0) root.setAttribute("data-tour-open", "");
+    else root.removeAttribute("data-tour-open");
+    return () => root.removeAttribute("data-tour-open");
+  }, [index]);
+
   // On phones the card is a bottom sheet; add room below the page so even
   // the last element can scroll clear of it.
   const open = index >= 0;

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useI18n } from "@/lib/i18n";
+import { signOut, useSession } from "@/lib/auth-client";
 import Logo from "./Logo";
 import PartnerMark from "./PartnerMark";
 import LanguageSwitch from "./LanguageSwitch";
@@ -11,6 +12,41 @@ export default function Nav() {
   const { t } = useI18n();
   const { pathname } = useRouter();
   const [open, setOpen] = useState(false);
+  const { data: session } = useSession();
+  const firstName = session?.user?.name?.trim().split(/\s+/)[0];
+
+  const [leaving, setLeaving] = useState(false);
+  const leave = async () => {
+    setOpen(false);
+    setLeaving(true);
+    try {
+      await signOut();
+    } finally {
+      setLeaving(false);
+    }
+  };
+
+  // Signed in: greeting + sign out. Otherwise: sign in / sign up.
+  const account = (onNavigate) =>
+    session ? (
+      <>
+        <span className={styles.greeting} title={session.user.email}>
+          {t.nav.greeting.replace("{name}", firstName || "")}
+        </span>
+        <button type="button" className={styles.ghost} onClick={leave} disabled={leaving} aria-busy={leaving}>
+          {t.nav.signOut}
+        </button>
+      </>
+    ) : (
+      <>
+        <Link href="/sign-in" className={styles.ghost} onClick={onNavigate}>
+          {t.nav.signIn}
+        </Link>
+        <Link href="/sign-up" className={styles.solid} onClick={onNavigate}>
+          {t.nav.signUp}
+        </Link>
+      </>
+    );
 
   useEffect(() => {
     if (!open) return;
@@ -48,12 +84,7 @@ export default function Nav() {
 
         <div className={styles.actions}>
           <LanguageSwitch />
-          <Link href="/sign-in" className={styles.ghost}>
-            {t.nav.signIn}
-          </Link>
-          <Link href="/sign-up" className={styles.solid}>
-            {t.nav.signUp}
-          </Link>
+          {account()}
         </div>
 
         <button
@@ -79,14 +110,7 @@ export default function Nav() {
           ))}
         </ul>
         <LanguageSwitch />
-        <div className={styles.drawerActions}>
-          <Link href="/sign-in" className={styles.ghost} onClick={() => setOpen(false)}>
-            {t.nav.signIn}
-          </Link>
-          <Link href="/sign-up" className={styles.solid} onClick={() => setOpen(false)}>
-            {t.nav.signUp}
-          </Link>
-        </div>
+        <div className={styles.drawerActions}>{account(() => setOpen(false))}</div>
       </div>
     </header>
   );

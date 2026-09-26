@@ -1,43 +1,71 @@
-import { useRef, useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useI18n } from "@/lib/i18n";
+import { signIn, useSession } from "@/lib/auth-client";
+import { checkEmail, checkPassword, fromServerError } from "@/lib/validation";
 import AuthLayout from "@/components/auth/AuthLayout";
 import Guide from "@/components/guide/Guide";
-import { Field, Notice, PasswordInput, focusFirstInvalid, isEmail } from "@/components/auth/Fields";
+import Coach, { messageFor, useCoachOff } from "@/components/auth/Coach";
+import { Field, PasswordInput } from "@/components/auth/Fields";
+import { useAuthForm } from "@/components/auth/useAuthForm";
 import styles from "@/components/auth/Auth.module.css";
 
 const SIGN_IN_TOUR = [{}, { target: "si-details" }, { target: "si-finish" }, { target: "si-new", radius: 12 }];
 
+const ORDER = ["email", "password"];
+const VALIDATORS = {
+  email: checkEmail,
+  password: (v) => checkPassword(v, { isNew: false }),
+};
+
+// A question typed on the home page before signing in, kept for the chat.
+const PENDING_KEY = "sc-pending-question";
+
 export default function SignIn() {
   const { t } = useI18n();
   const s = t.auth.signIn;
-  const e = t.auth.errors;
-  const { query } = useRouter();
-  const pending = typeof query.q === "string" ? query.q : "";
+  const router = useRouter();
+  const pending = typeof router.query.q === "string" ? router.query.q : "";
+  const { data: session } = useSession();
+  const coachOff = useCoachOff();
 
-  const form = useRef(null);
-  const [values, setValues] = useState({ email: "", password: "", remember: true });
-  const [errors, setErrors] = useState({});
-  const [done, setDone] = useState(false);
+  const form = useAuthForm({
+    initial: { email: "", password: "", remember: true },
+    validators: VALIDATORS,
+    order: ORDER,
+  });
+  const { values, set, bind, capsHandlers, fieldError, coach, dismiss, busy, setServer } = form;
 
-  const set = (key) => (ev) => {
-    const v = ev.target.type === "checkbox" ? ev.target.checked : ev.target.value;
-    setValues((prev) => ({ ...prev, [key]: v }));
-    if (errors[key]) setErrors((prev) => ({ ...prev, [key]: undefined }));
-    setDone(false);
+  useEffect(() => {
+    if (session) router.replace("/");
+  }, [session, router]);
+
+  const inline = (k) => {
+    const m = messageFor(t, fieldError(k));
+    return m && (coachOff ? `${m[0]} ${m[1]}` : m[0]);
   };
 
-  const submit = (ev) => {
-    ev.preventDefault();
-    const next = {};
-    if (!values.email.trim()) next.email = e.required;
-    else if (!isEmail(values.email)) next.email = e.email;
-    if (!values.password) next.password = e.required;
-    setErrors(next);
-    if (Object.keys(next).length) return focusFirstInvalid(form.current);
-    setDone(true);
-  };
+  const onSubmit = form.submit(async (v, setErr) => {
+    let retryAfter;
+    try {
+      const { error } = await signIn.email(
+        { email: v.email.trim().toLowerCase(), password: v.password, rememberMe: v.remember },
+        { onError: (ctx) => (retryAfter = Number(ctx.response?.headers?.get("X-Retry-After")) || undefined) }
+      );
+      if (error) return setErr(fromServerError(error, retryAfter));
+      if (pending) {
+        try {
+          sessionStorage.setItem(PENDING_KEY, pending);
+        } catch {}
+      }
+      router.push("/");
+    } catch {
+      setErr({ field: "submit", code: "network" });
+    }
+  });
+
+  const submitError = inline("submit");
 
   return (
     <AuthLayout title={s.title}>
@@ -51,16 +79,19 @@ export default function SignIn() {
         </div>
       )}
 
-      <form ref={form} className={styles.form} onSubmit={submit} noValidate>
+      <form className={styles.form} onSubmit={onSubmit} noValidate>
         <div id="si-details" className={styles.group}>
-          <Field id="email" label={t.auth.email} error={errors.email}>
+          <Field id="email" label={t.auth.email} error={inline("email")}>
             {(aria) => (
               <input
                 {...aria}
+                {...bind("email")}
                 name="email"
                 type="email"
                 inputMode="email"
                 autoComplete="email"
+                autoCapitalize="none"
+                spellCheck={false}
                 className={styles.input}
                 value={values.email}
                 onChange={set("email")}
@@ -71,15 +102,26 @@ export default function SignIn() {
           <Field
             id="password"
             label={t.auth.password}
-            error={errors.password}
+            error={inline("password")}
             action={
-              <Link href="/sign-in" className={styles.inlineLink}>
+              <button
+                type="button"
+                className={styles.inlineLink}
+                onClick={() => setServer({ field: "password", code: "forgotSoon", info: true })}
+              >
                 {s.forgot}
-              </Link>
+              </button>
             }
           >
             {(aria) => (
-              <PasswordInput {...aria} autoComplete="current-password" value={values.password} onChange={set("password")} />
+              <PasswordInput
+                {...aria}
+                {...bind("password")}
+                {...capsHandlers}
+                autoComplete="current-password"
+                value={values.password}
+                onChange={set("password")}
+              />
             )}
           </Field>
         </div>
@@ -90,12 +132,15 @@ export default function SignIn() {
             <span>{s.remember}</span>
           </label>
 
-          <button type="submit" className={styles.submit}>
-            {s.submit}
+          <button id="auth-submit" type="submit" className={styles.submit} disabled={busy} aria-busy={busy}>
+            {busy ? s.submitting : s.submit}
           </button>
+          {submitError && (
+            <p className={styles.error} role="alert">
+              {submitError}
+            </p>
+          )}
         </div>
-
-        {done && <Notice>{t.auth.notConnected}</Notice>}
       </form>
 
       <p id="si-new" className={styles.alt}>
@@ -105,6 +150,9 @@ export default function SignIn() {
         </Link>
       </p>
 
+      {!coachOff && coach && (
+        <Coach target={coach.target} tone={coach.tone} message={messageFor(t, coach)} onClose={dismiss} />
+      )}
       <Guide tour="signIn" steps={SIGN_IN_TOUR} />
     </AuthLayout>
   );
