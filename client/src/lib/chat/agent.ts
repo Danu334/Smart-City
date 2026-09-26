@@ -559,6 +559,7 @@ async function runDemoScript(script: DemoScript, lang: string, emit: Emit): Prom
   await wait(900);
 
   const content = toContent(script.answer, script.hits, lang);
+  if (script.actions) content.actions = script.actions;
   const [status, ...rest] = content.blocks;
   content.blocks = [
     status,

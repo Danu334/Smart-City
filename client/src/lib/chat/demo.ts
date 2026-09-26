@@ -1,6 +1,6 @@
 import { normalize } from "@/lib/corpus";
 import type { Hit } from "@/lib/chat/qdrant";
-import type { Block, Contradiction, AnswerStatus, Institution } from "@/types/chat";
+import type { Action, Block, Contradiction, AnswerStatus, Institution } from "@/types/chat";
 
 // Scripted answers for the video demo. The agent replays a believable run
 // (think → search → draft) with a fixed answer grounded in real indexed
@@ -24,6 +24,7 @@ export type DemoScript = {
   flags: Extract<Block, { type: "flag" }>[];
   /** Map lookup to use instead of the address, when the address finds the wrong places. */
   placesQuery?: string;
+  actions?: Action[];
 };
 
 const hit = (h: Omit<Hit, "score" | "type"> & { type?: string }): Hit => ({
@@ -214,7 +215,7 @@ const TRANSPORT_ANSWER: DemoAnswer = {
 
 **Ce NU știu:** în documente există doar **proiectul din 2023**. Regulamentul are antetul „nr. ______ din ______ 2023” [1], iar propunerile la consultarea publică se primeau până la **06.07.2023** [3]. Nu am găsit decizia adoptată, dacă serviciul funcționează în 2026 și nici un canal oficial de programare, așa că nu vă dau un răspuns inventat.
 
-**Model orientativ de cerere** (nu este un formular oficial; regulamentul cere doar o cerere scrisă [2]):
+**Model orientativ de cerere** (nu este un formular oficial; regulamentul cere doar o cerere scrisă [2]). Îl puteți descărca completabil, în format Word, de mai jos:
 
 > Către Direcția generală asistență medicală și socială, str. București 35, mun. Chișinău
 >
@@ -294,6 +295,14 @@ const SCRIPTS: DemoScript[] = [
     flags: [],
     // The website and the address both miss on the map; the full name finds DGAMS.
     placesQuery: "Direcția generală asistență medicală și socială",
+    actions: [
+      {
+        label: "Descarcă modelul de cerere",
+        href: "/modele/cerere-transport-social.docx",
+        platform: "Word · de completat și depus la DGAMS",
+      },
+      { label: "Sunați la DGAMS", href: "tel:+37322228084", platform: "022 22 80 84" },
+    ],
   },
 ];
 

@@ -348,18 +348,20 @@ function Actions({ actions }: { actions: Action[] }) {
       <ul>
         {actions.map((action) => {
           const external = action.href.startsWith("http");
+          const file = /\.(docx|pdf)$/i.test(action.href);
           return (
             <li key={action.href}>
               <a
                 href={action.href}
                 className={styles.actionLink}
                 {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                {...(file ? { download: "" } : {})}
               >
                 <span>
                   {action.label}
                   <em>{action.platform}</em>
                 </span>
-                {external ? <ExternalIcon /> : <PhoneIcon />}
+                {file ? <DocIcon /> : external ? <ExternalIcon /> : <PhoneIcon />}
               </a>
             </li>
           );
