@@ -345,6 +345,7 @@ export default function Chat() {
 
       <div
         className={styles.shell}
+        data-app="chat"
         data-collapsed={collapsed}
         data-reader={Boolean(reader)}
         style={cssVars({ "--sidebar-w": `${width}px` })}

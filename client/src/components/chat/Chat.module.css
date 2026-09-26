@@ -7,6 +7,8 @@
   grid-template-rows: minmax(0, 1fr);
   height: 100dvh;
   overflow: hidden;
+  /* clip, unlike hidden, can't be scrolled by focus() or scrollIntoView(). */
+  overflow: clip;
   background: var(--paper);
 }
 .shell[data-collapsed="true"] {
@@ -121,6 +123,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
   overflow-x: hidden;
   margin: 0 -4px;
   padding: 0 4px;
@@ -366,6 +369,8 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  /* Reaching the end of the thread must not scroll or bounce the page. */
+  overscroll-behavior: contain;
   padding: 0 clamp(16px, 3vw, 28px);
 }
 
@@ -1181,6 +1186,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 16px 18px 60vh;
 }
 

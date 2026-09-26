@@ -57,6 +57,16 @@ body {
   overflow-x: hidden;
 }
 
+/* The chat is a one-screen app: only its panels scroll. Without this, Safari's
+   elastic scrolling drags the whole page up past the window edge (a blank
+   strip under the chat) when a panel reaches its end or the sidebar is scrolled. */
+html:has([data-app="chat"]),
+html:has([data-app="chat"]) body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 body {
   color: var(--ink);
   background: var(--paper);
