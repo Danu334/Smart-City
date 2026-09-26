@@ -560,7 +560,11 @@ async function runDemoScript(script: DemoScript, lang: string, emit: Emit): Prom
 
   const content = toContent(script.answer, script.hits, lang);
   const [status, ...rest] = content.blocks;
-  content.blocks = [status, ...script.flags, ...rest];
+  content.blocks = [
+    status,
+    ...script.flags,
+    ...rest.map((b) => (b.type === "places" && script.placesQuery ? { ...b, query: script.placesQuery } : b)),
+  ];
 
   await emit({ type: "status", phase: "draft" });
   for (let i = 0; i < content.text.length; i += 6) {

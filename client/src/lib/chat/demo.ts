@@ -22,6 +22,8 @@ export type DemoScript = {
   answer: DemoAnswer;
   /** Shown above the answer, next to the status. */
   flags: Extract<Block, { type: "flag" }>[];
+  /** Map lookup to use instead of the address, when the address finds the wrong places. */
+  placesQuery?: string;
 };
 
 const hit = (h: Omit<Hit, "score" | "docId" | "type"> & { docId: string }): Hit => ({
@@ -135,6 +137,8 @@ const SCRIPTS: DemoScript[] = [
     ],
     hits: WASTE_HITS,
     answer: WASTE_ANSWER,
+    // The address lookup lands on unrelated offices; the website finds the Regia itself.
+    placesQuery: "autosalubritate.md",
     flags: [
       {
         type: "flag",
