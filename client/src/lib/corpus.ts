@@ -1,30 +1,27 @@
-import chats from "@/data/chats.json";
 import docs from "@/data/docs.json";
-import type { Conversation, Doc, DocSection } from "@/types/chat";
+import type { Citation, Conversation, Doc, DocSection } from "@/types/chat";
 
 const DAY = 86_400_000;
 
 // JSON imports are typed loosely (string instead of the literal unions), so
-// the seed data is asserted to the app types once, here.
+// the documents are asserted to the app types once, here.
 const allDocs = docs.docs as unknown as Doc[];
 const byId = new Map(allDocs.map((doc) => [doc.id, doc]));
 
-export function getDoc(id: string): Doc | null {
-  return byId.get(id) ?? null;
+export function getDoc(id: string, fallback?: Doc | null): Doc | null {
+  return byId.get(id) ?? fallback ?? null;
+}
+
+/** A citation's document: from docs.json, or the passage the citation carries. */
+export function resolveCitationDoc(citation: Citation | null | undefined): Doc | null {
+  if (!citation) return null;
+  return getDoc(citation.docId, citation.doc);
 }
 
 export function getSection(doc: Doc | null, sectionId: string | null | undefined): DocSection | null {
   if (!doc) return null;
   return doc.sections.find((s) => s.id === sectionId) ?? doc.sections[0] ?? null;
 }
-
-// Stubs exist to give the history list some depth; they carry no saved messages.
-export const seedConversations: Conversation[] = (chats.conversations as unknown as Conversation[]).map((c) => ({
-  ...c,
-  messages: c.messages ?? [],
-}));
-
-export const SEED_CONVERSATION_ID = "medic-familie-kiev-12";
 
 /** Groups conversations into Today / This week / Earlier, newest first. */
 export type RecencyGroup = { key: "today" | "week" | "older"; label: string; items: Conversation[] };

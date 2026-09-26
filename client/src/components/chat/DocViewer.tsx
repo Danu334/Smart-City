@@ -17,7 +17,8 @@ type DocViewerProps = {
 export default function DocViewer({ docId, sectionId, citations, index, onStep, onClose }: DocViewerProps) {
   const { t } = useI18n();
   const s = t.chat.reader;
-  const doc = getDoc(docId);
+  // Search passages carry their own document on the citation.
+  const doc = getDoc(docId, citations.find((c) => c.docId === docId)?.doc);
   const heading = useRef<HTMLHeadingElement>(null);
   const sections = useRef(new Map<string, HTMLElement>());
 

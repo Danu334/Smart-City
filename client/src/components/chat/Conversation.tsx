@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import StateIcon from "@/components/StateIcon";
+import MarkdownAnswer from "@/components/chat/MarkdownAnswer";
 import PlacesPanel from "@/components/places/PlacesPanel";
 import { useI18n } from "@/lib/i18n";
-import { formatBytes, getDoc } from "@/lib/corpus";
+import { formatBytes, resolveCitationDoc } from "@/lib/corpus";
 import styles from "./Chat.module.css";
 import type {
   Action,
@@ -11,6 +13,9 @@ import type {
   Conversation as ConversationData,
   OpenCitation,
 } from "@/types/chat";
+
+/** What the assistant is doing while the answer is on its way. */
+export type StatusPhase = "think" | "search" | "tools" | "clock" | "draft";
 
 function ExternalIcon() {
   return (
@@ -55,7 +60,7 @@ function Refs({ refs, citations, onOpen, active }: MarkerProps & { refs?: number
       {refs.map((n) => {
         const citation = citations.find((c) => c.n === n);
         if (!citation) return null;
-        const doc = getDoc(citation.docId);
+        const doc = resolveCitationDoc(citation);
         return (
           <button
             key={n}
@@ -138,7 +143,7 @@ function Sources({ citations, onOpen, active }: MarkerProps) {
       </h3>
       <ul>
         {citations.map((citation) => {
-          const doc = getDoc(citation.docId);
+          const doc = resolveCitationDoc(citation);
           if (!doc) return null;
           return (
             <li key={citation.n}>
@@ -155,7 +160,8 @@ function Sources({ citations, onOpen, active }: MarkerProps) {
                 <span className={styles.sourceBody}>
                   <span className={styles.sourceTitle}>{doc.title}</span>
                   <span className={styles.sourceMeta}>
-                    {doc.issuer} · {doc.reference}
+                    {doc.issuer}
+                    {doc.reference ? ` · ${doc.reference}` : ""}
                   </span>
                   <q className={styles.sourceQuote}>{citation.quote}</q>
                 </span>
@@ -199,14 +205,47 @@ function Actions({ actions }: { actions: Action[] }) {
   );
 }
 
+/** Rotating status phrases, restarted (via key) whenever the phase changes. */
+function StatusLine({ phase }: { phase: StatusPhase }) {
+  const { t } = useI18n();
+  const list = t.chat.composer.status[phase];
+  const [i, setI] = useState(0);
+
+  useEffect(() => {
+    if (list.length < 2) return undefined;
+    const id = setInterval(() => setI((n) => (n + 1) % list.length), 2200);
+    return () => clearInterval(id);
+  }, [list.length]);
+
+  return (
+    <p className={styles.typing} aria-live="polite">
+      <span className={styles.statusDots} aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </span>
+      <span className={styles.statusText} key={i}>
+        {list[i % list.length]}
+      </span>
+    </p>
+  );
+}
+
 type ConversationProps = {
   conversation: ConversationData;
   pending: boolean;
+  statusPhase: StatusPhase | null;
   onOpenCitation: (citation: Citation, citations: Citation[], messageId: string, trigger: HTMLElement) => void;
   activeCitation: ActiveCitation;
 };
 
-export default function Conversation({ conversation, pending, onOpenCitation, activeCitation }: ConversationProps) {
+export default function Conversation({
+  conversation,
+  pending,
+  statusPhase,
+  onOpenCitation,
+  activeCitation,
+}: ConversationProps) {
   const { t } = useI18n();
 
   if (conversation.stub)
@@ -247,24 +286,30 @@ export default function Conversation({ conversation, pending, onOpenCitation, ac
 
         const citations = message.citations ?? [];
         const active = activeCitation?.messageId === message.id ? activeCitation.n : null;
+        const open: OpenCitation = (citation, el) => onOpenCitation(citation, citations, message.id, el);
+        // Live answers are Markdown in `text`; their "p" blocks only repeat it
+        // for older readers, so just the flags and maps are drawn as blocks.
+        const markdown = message.text?.trim() ?? "";
+        const blocks = markdown ? message.blocks.filter((b) => b.type === "flag" || b.type === "places") : message.blocks;
+        if (message.streaming && !markdown && !blocks.length) return null;
 
         return (
           <article key={message.id} className={styles.answer}>
             <h2 className={styles.msgWho}>{t.chat.answer.assistant}</h2>
-            {message.blocks.map((block, i) => (
-              <Block
-                key={i}
-                block={block}
-                citations={citations}
-                active={active}
-                onOpen={(citation, el) => onOpenCitation(citation, citations, message.id, el)}
-              />
-            ))}
-            <Sources
-              citations={citations}
-              active={active}
-              onOpen={(citation, el) => onOpenCitation(citation, citations, message.id, el)}
-            />
+            {blocks
+              .filter((b) => b.type === "flag")
+              .map((block, i) => (
+                <Block key={`flag-${i}`} block={block} citations={citations} active={active} onOpen={open} />
+              ))}
+            {markdown && (
+              <MarkdownAnswer text={markdown} citations={citations} active={active} onOpenCitation={open} />
+            )}
+            {blocks
+              .filter((b) => b.type !== "flag")
+              .map((block, i) => (
+                <Block key={i} block={block} citations={citations} active={active} onOpen={open} />
+              ))}
+            {!message.streaming && <Sources citations={citations} active={active} onOpen={open} />}
             <Actions actions={message.actions} />
           </article>
         );
@@ -272,16 +317,7 @@ export default function Conversation({ conversation, pending, onOpenCitation, ac
 
       {/* Only the working state is announced — a live region around the whole
           thread would re-read every message on each conversation switch. */}
-      <p className={styles.typing} aria-live="polite" hidden={!pending}>
-        {pending && (
-          <>
-            <span />
-            <span />
-            <span />
-            {t.chat.composer.thinking}
-          </>
-        )}
-      </p>
+      {pending && statusPhase && <StatusLine key={statusPhase} phase={statusPhase} />}
     </div>
   );
 }

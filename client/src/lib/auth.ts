@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { APIError } from "better-auth/api";
-import { Pool } from "pg";
+import { pool } from "./db";
 import { PRIVACY_VERSION } from "./privacy";
 
 // Origins allowed to call the auth API. On Vercel, preview and production
@@ -17,7 +17,7 @@ export const auth = betterAuth({
   baseURL,
   trustedOrigins: vercel,
   // Neon Postgres (pooled connection string with sslmode=require).
-  database: new Pool({ connectionString: process.env.DATABASE_URL, max: 5 }),
+  database: pool,
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,

@@ -16,6 +16,8 @@ export type Citation = {
   docId: string;
   sectionId: string;
   quote?: string;
+  /** Search passages aren't in docs.json, so they carry their own document. */
+  doc?: Doc;
 };
 
 export type Action = { label: string; href: string; platform?: string };
@@ -32,6 +34,10 @@ export type UserMessage = {
 export type AssistantMessage = {
   id: string;
   role: "assistant";
+  /** Markdown answer with inline [n] markers; `blocks` hold flags and maps. */
+  text?: string;
+  /** Still arriving from the server. */
+  streaming?: boolean;
   blocks: Block[];
   citations: Citation[];
   actions: Action[];

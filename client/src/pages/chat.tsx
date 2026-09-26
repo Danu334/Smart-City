@@ -7,16 +7,24 @@ import Conversation from "@/components/chat/Conversation";
 import DocViewer from "@/components/chat/DocViewer";
 import EmptyState from "@/components/chat/EmptyState";
 import Guide from "@/components/guide/Guide";
-import { seedConversations } from "@/lib/corpus";
-import { makeId, replyTo } from "@/lib/chatReply";
+import type { StatusPhase } from "@/components/chat/Conversation";
+import { useSession } from "@/lib/auth-client";
+import { fetchConversation, fetchConversations, streamChat } from "@/lib/chatApi";
+import { makeId } from "@/lib/ids";
 import { useI18n } from "@/lib/i18n";
 import { cssVars } from "@/lib/css";
-import type { Citation, ReaderState, UserMessage } from "@/types/chat";
+import type {
+  AssistantMessage,
+  Block,
+  Citation,
+  Conversation as ConversationData,
+  ReaderState,
+  UserMessage,
+} from "@/types/chat";
 import { useStoredFlag } from "@/lib/useStoredFlag";
 import styles from "@/components/chat/Chat.module.css";
 
 const COLLAPSE_KEY = "sc-chat-sidebar";
-const THINK_MS = 700;
 const NONE = "";
 
 // Victor's first-visit tour: hello, history, sources, then the composer.
@@ -26,8 +34,13 @@ export default function Chat() {
   const { t, locale } = useI18n();
   const router = useRouter();
 
-  const [conversations, setConversations] = useState(seedConversations);
+  // History lives on the server: per account, or per browser before sign-in.
+  const { data: session, isPending: sessionPending } = useSession();
+  const userId = session?.user.id ?? null;
+
+  const [conversations, setConversations] = useState<ConversationData[]>([]);
   const [pending, setPending] = useState(false);
+  const [statusPhase, setStatusPhase] = useState<StatusPhase | null>(null);
   const [collapsed, setCollapsed] = useStoredFlag(COLLAPSE_KEY, false);
   const [drawer, setDrawer] = useState(false);
   const [width, setWidth] = useState(288);
@@ -41,7 +54,9 @@ export default function Chat() {
   const [draft, setDraft] = useState<string | null>(null);
 
   const trigger = useRef<HTMLElement | null>(null);
-  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const abort = useRef<AbortController | null>(null);
+  // Whose history is on screen; undefined until the first load.
+  const loadedFor = useRef<string | null | undefined>(undefined);
 
   const urlC = typeof router.query.c === "string" ? router.query.c : null;
   const urlQ = typeof router.query.q === "string" ? router.query.q : "";
@@ -58,7 +73,47 @@ export default function Chat() {
   const value = draft ?? urlQ;
   const active = activeId ? conversations.find((c) => c.id === activeId) ?? null : null;
 
-  useEffect(() => () => timers.current.forEach(clearTimeout), []);
+  useEffect(() => () => abort.current?.abort(), []);
+
+  // Load the history list, and again after sign-in or sign-out. Signing in
+  // also moves this browser's conversations into the account (server side).
+  useEffect(() => {
+    if (sessionPending) return;
+    let cancelled = false;
+    fetchConversations()
+      .then((list) => {
+        if (cancelled) return;
+        const switched = loadedFor.current !== undefined && loadedFor.current !== userId;
+        loadedFor.current = userId;
+        setConversations((prev) => {
+          if (switched) return list;
+          // Keep threads already open here (with messages, maybe mid-answer).
+          const open = new Map(prev.filter((c) => c.messages.length).map((c) => [c.id, c]));
+          const listed = new Set(list.map((c) => c.id));
+          return [...prev.filter((c) => open.has(c.id) && !listed.has(c.id)), ...list.map((c) => open.get(c.id) ?? c)];
+        });
+      })
+      .catch((err) => console.error(err));
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, sessionPending]);
+
+  // The list comes without messages; fetch the open thread's messages.
+  const needsMessages = Boolean(activeId && active && !active.messages.length);
+  useEffect(() => {
+    if (!activeId || !needsMessages) return;
+    let cancelled = false;
+    fetchConversation(activeId)
+      .then((full) => {
+        if (cancelled) return;
+        setConversations((prev) => prev.map((c) => (c.id === full.id ? full : c)));
+      })
+      .catch((err) => console.error(err));
+    return () => {
+      cancelled = true;
+    };
+  }, [activeId, needsMessages]);
 
   /** Writes the shareable URL. Shallow, so no data fetching is re-run. */
   const go = useCallback(
@@ -91,43 +146,130 @@ export default function Chat() {
     go({});
   };
 
-  const send = (text: string, files: File[]) => {
+  const send = async (text: string, files: File[]) => {
     const stamp = new Date().toISOString();
-    const convId = activeId || makeId("c");
+    const existingId = activeId && conversations.some((c) => c.id === activeId) ? activeId : null;
     const userMsg: UserMessage = {
       id: makeId(),
       role: "user",
       text,
       attachments: files.map((f) => ({ name: f.name, size: f.size })),
     };
+    const assistantId = makeId();
+    const placeholder: AssistantMessage = {
+      id: assistantId,
+      role: "assistant",
+      text: "",
+      blocks: [],
+      citations: [],
+      actions: [],
+      streaming: true,
+    };
+    // The local id is swapped for the server's once the "meta" event arrives.
+    const track = { convId: existingId ?? makeId("c") };
+
+    const patchAssistant = (update: (m: AssistantMessage) => AssistantMessage) =>
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.messages.some((m) => m.id === assistantId)
+            ? {
+                ...c,
+                messages: c.messages.map((m) => (m.id === assistantId && m.role === "assistant" ? update(m) : m)),
+              }
+            : c,
+        ),
+      );
+
+    const fail = (message: string) =>
+      patchAssistant((m) => ({
+        ...m,
+        streaming: false,
+        blocks: [{ type: "flag", tone: "amber", title: t.chat.answer.errorTitle, text: message } satisfies Block],
+      }));
 
     setConversations((prev) =>
-      prev.some((c) => c.id === convId)
+      existingId
         ? prev.map((c) =>
-            c.id === convId
-              ? { ...c, stub: false, updatedAt: stamp, messages: [...c.messages, userMsg] }
+            c.id === existingId
+              ? { ...c, stub: false, updatedAt: stamp, messages: [...c.messages, userMsg, placeholder] }
               : c,
           )
-        : [{ id: convId, title: text, locale, updatedAt: stamp, messages: [userMsg] }, ...prev],
+        : [{ id: track.convId, title: text, locale, updatedAt: stamp, messages: [userMsg, placeholder] }, ...prev],
     );
-    setSelected(convId);
+    setSelected(track.convId);
     setDraft("");
     setPending(true);
-    go({ c: convId });
+    setStatusPhase("think");
+    go({ c: track.convId });
 
-    timers.current.push(
-      setTimeout(() => {
-        const answer = replyTo(text, t);
-        setConversations((prev) =>
-          prev.map((c) =>
-            c.id === convId
-              ? { ...c, updatedAt: new Date().toISOString(), messages: [...c.messages, answer] }
-              : c,
-          ),
-        );
+    abort.current?.abort();
+    const controller = new AbortController();
+    abort.current = controller;
+    let streamed = "";
+
+    try {
+      await streamChat({
+        conversationId: existingId,
+        message: text,
+        locale,
+        signal: controller.signal,
+        onEvent: (event) => {
+          switch (event.type) {
+            case "meta": {
+              const localId = track.convId;
+              track.convId = event.conversationId;
+              setConversations((prev) =>
+                prev.map((c) =>
+                  c.id === localId
+                    ? {
+                        ...c,
+                        id: event.conversationId,
+                        title: event.title || c.title,
+                        messages: c.messages.map((m) => (m.id === userMsg.id ? { ...m, id: event.userMessageId } : m)),
+                      }
+                    : c,
+                ),
+              );
+              setSelected(event.conversationId);
+              go({ c: event.conversationId });
+              break;
+            }
+            case "status":
+              setStatusPhase(event.phase);
+              break;
+            case "token":
+              streamed += event.text;
+              setStatusPhase(null);
+              patchAssistant((m) => ({ ...m, text: streamed }));
+              break;
+            case "citations":
+              patchAssistant((m) => ({ ...m, citations: event.citations }));
+              break;
+            case "done":
+              patchAssistant(() => ({
+                id: event.messageId,
+                role: "assistant",
+                text: event.text,
+                blocks: event.blocks,
+                citations: event.citations,
+                actions: event.actions,
+              }));
+              break;
+            case "error":
+              fail(event.message);
+              break;
+          }
+        },
+      });
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
+      fail(err instanceof Error && err.message ? err.message : t.chat.answer.errorText);
+    } finally {
+      if (abort.current === controller) {
         setPending(false);
-      }, THINK_MS),
-    );
+        setStatusPhase(null);
+      }
+    }
   };
 
   const openCitation = (citation: Citation, citations: Citation[], messageId: string, el: HTMLElement) => {
@@ -214,6 +356,7 @@ export default function Chat() {
               <Conversation
                 conversation={active}
                 pending={pending}
+                statusPhase={statusPhase}
                 onOpenCitation={openCitation}
                 activeCitation={activeCitation}
               />
