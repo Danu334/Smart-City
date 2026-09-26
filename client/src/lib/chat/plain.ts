@@ -8,6 +8,7 @@ export function assistantPlainText(m: Pick<AssistantMessage, "text" | "blocks">)
   if (m.text) parts.push(m.text);
   for (const b of m.blocks ?? []) {
     if (b.type === "steps") parts.push(b.items.map((item, i) => `${i + 1}. ${item}`).join("\n"));
+    else if (b.type === "documents") parts.push(`Documents: ${b.items.join("; ")}`);
     else if (b.type === "institution")
       parts.push(
         [b.name, b.address, b.phone && `tel. ${b.phone}`, b.email, b.website, b.hours].filter(Boolean).join(" · "),

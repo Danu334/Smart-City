@@ -320,6 +320,10 @@ const en = {
         contradiction: { title: "The documents contradict each other", text: "Two sources say different things. Both are shown, with their dates; check with the institution." },
         missingTitle: "Not found in the documents:",
       },
+      documents: {
+        title: "Documents you need",
+        hint: "Prepare these before you go.",
+      },
       institution: {
         title: "Where to go",
         address: "Address",
@@ -670,6 +674,10 @@ const ro: Dictionary = {
         contradiction: { title: "Documentele se contrazic", text: "Două surse spun lucruri diferite. Le vedeți pe amândouă, cu datele lor; verificați la instituție." },
         missingTitle: "Nu am găsit în documente:",
       },
+      documents: {
+        title: "Documente necesare",
+        hint: "Pregătiți-le înainte să mergeți la instituție.",
+      },
       institution: {
         title: "Unde vă adresați",
         address: "Adresa",
@@ -1016,6 +1024,10 @@ const ru: Dictionary = {
         not_found: { title: "Нет в документах", text: "Опубликованные документы не отвечают на этот вопрос. Ничего ниже не придумано." },
         contradiction: { title: "Документы противоречат друг другу", text: "Два источника говорят разное. Показаны оба, с датами; уточните в учреждении." },
         missingTitle: "Не найдено в документах:",
+      },
+      documents: {
+        title: "Необходимые документы",
+        hint: "Подготовьте их до визита в учреждение.",
       },
       institution: {
         title: "Куда обращаться",

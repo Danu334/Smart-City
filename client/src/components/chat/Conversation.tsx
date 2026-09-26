@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import StateIcon from "@/components/StateIcon";
 import MarkdownAnswer from "@/components/chat/MarkdownAnswer";
 import PlacesPanel from "@/components/places/PlacesPanel";
@@ -104,6 +104,8 @@ function Block({ block, citations, onOpen, active }: MarkerProps & { block: Answ
         </ol>
       </div>
     );
+
+  if (block.type === "documents") return <DocumentsList block={block} citations={citations} onOpen={onOpen} active={active} />;
 
   if (block.type === "status") return <StatusCard block={block} citations={citations} onOpen={onOpen} active={active} />;
 
@@ -222,6 +224,47 @@ function StatusCard({
         )}
       </div>
     </div>
+  );
+}
+
+/** The documents to prepare, set apart so they are hard to miss. */
+function DocumentsList({
+  block,
+  citations,
+  onOpen,
+  active,
+}: MarkerProps & { block: Extract<AnswerBlock, { type: "documents" }> }) {
+  const { t } = useI18n();
+  const s = t.chat.answer.documents;
+  const titleId = useId();
+
+  return (
+    <section className={styles.documents} aria-labelledby={titleId}>
+      <div className={styles.documentsHead}>
+        <span className={styles.documentsIcon}>
+          <DocIcon />
+        </span>
+        <div>
+          <h3 id={titleId} className={styles.documentsTitle}>
+            {s.title}
+          </h3>
+          <p className={styles.documentsHint}>{s.hint}</p>
+        </div>
+      </div>
+      <ul className={styles.documentsList}>
+        {block.items.map((item, i) => (
+          <li key={i}>
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <rect x="3.5" y="3.5" width="13" height="13" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
+            <span>
+              {item}
+              <Refs refs={block.itemRefs?.[i]} citations={citations} onOpen={onOpen} active={active} />
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

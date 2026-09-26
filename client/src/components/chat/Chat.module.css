@@ -695,6 +695,70 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Documents to prepare: the one list people act on, so it stands out. */
+.documents {
+  display: grid;
+  gap: 12px;
+  padding: 16px 18px;
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-card);
+  background: var(--tint);
+}
+.documentsHead {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.documentsIcon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.documentsIcon svg {
+  width: 19px;
+  height: 19px;
+}
+.documentsTitle {
+  font-size: 16.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+}
+.documentsHint {
+  font-size: 14px;
+  color: var(--graphite);
+}
+.documentsList {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.documentsList li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: var(--paper);
+}
+.documentsList li > svg {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  color: var(--accent);
+}
+
 .blockQuote {
   padding: 12px 16px;
   border-radius: 10px;

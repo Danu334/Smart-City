@@ -78,6 +78,7 @@ Searching:
 - The documents are mostly in Romanian (some Russian). Write semantic_search queries in Romanian, as natural full questions (e.g. "Cum pot contacta DGAURF, care este numărul de telefon?"), not keyword lists.
 - Include the full institution name next to any acronym (e.g. DGAURF — Direcția Generală Arhitectură, Urbanism și Relații Funciare).
 - First search for the answer and the procedure. Then ALWAYS run a separate search for the responsible institution's contacts, e.g. "Care este adresa și numărul de telefon al <institution full name>?".
+- If the user wants to obtain, apply for, register or request something (a permit, authorisation, certificate, contract, benefit, service), ALWAYS run a separate search for the documents it requires, e.g. "Ce acte sunt necesare pentru <procedure>?".
 - If a search does not contain what you need, search again with other wording before concluding it is missing. Try at least two different queries per missing fact.
 
 Time: you do not know the date unless you call get_current_datetime. Call it whenever the question depends on today, schedules, planned works, outages, office hours or deadlines.
@@ -90,8 +91,9 @@ When you have enough evidence, reply with the JSON answer (no more tool calls):
   - "partial": the main answer was found, but something the user needs is missing (phone, address, a step, a fee, a deadline). List each missing item in "missing".
   - "not_found": the passages do not answer the question. Say so plainly in "answer"; do not guess.
   - "contradiction": two passages disagree on a fact that matters for the answer (e.g. different phone numbers, addresses, fees, deadlines, hours). List every such case in "contradictions" with both claims and their [n]; do not silently pick one. Still fill the rest.
-- answer: 1–3 sentences answering directly, with [n] markers inline. Do not repeat the steps or the contact details here.
-- steps: the ordered, practical steps to achieve the user's goal (where to go, what documents to bring, fees, deadlines), each with the [n] of its source in "refs". Empty if the question is not about doing something.
+- answer: 1–3 sentences answering directly, with [n] markers inline. Do not repeat the documents, the steps or the contact details here; they are shown separately.
+- documents: every document the user must prepare or bring for the procedure (application form, copies of ID or deeds, certificates, plans, receipts), one per item. "text" names it in the user's language; "quote" copies its name exactly as written in the passage, in the passage's language (it is checked against the passage, and the item is dropped if it is not there); "refs" holds the [n] of that passage. Only documents for the exact procedure asked: a passage about a similar but different procedure (e.g. a permit to operate a paid car park vs. a building permit for one) does not count. Empty if the question is not about a procedure. If the user needs documents but no passage lists them, leave it empty and add "the list of required documents" to "missing".
+- steps: the ordered, practical steps to achieve the user's goal (where to go, fees, deadlines), each with the [n] of its source in "refs". Do not repeat the documents list here; refer to it ("depuneți actele de mai sus"). Empty if the question is not about doing something.
 - institution: the institution the user should contact, with every field taken verbatim from a passage (null for a field that is not in any passage) and the passages used in "refs". null if no institution is involved.
   Contact details must belong to THAT institution in the passage. Pages often list the contacts of a subdivision, directorate or another office (e.g. a transport directorate on a City Hall topic): never transfer them to a different institution. If the institution's own contacts are not in any passage, set those fields to null and list them in "missing".
 - missing: what the user needs but no passage gives, in the user's language (e.g. "numărul de telefon al DGAURF"). Empty if nothing is missing.
@@ -152,6 +154,7 @@ async function runSemanticSearch(args: { query?: unknown; limit?: unknown }): Pr
 type StructuredAnswer = {
   status: AnswerStatus;
   answer: string;
+  documents: { text: string; quote: string; refs: number[] }[];
   steps: { text: string; refs: number[] }[];
   institution: (Institution & { refs: number[] }) | null;
   missing: string[];
@@ -169,10 +172,19 @@ const ANSWER_FORMAT = {
     schema: {
       type: "object",
       additionalProperties: false,
-      required: ["status", "answer", "steps", "institution", "missing", "contradictions"],
+      required: ["status", "answer", "documents", "steps", "institution", "missing", "contradictions"],
       properties: {
         status: { type: "string", enum: ["found", "partial", "not_found", "contradiction"] },
         answer: { type: "string" },
+        documents: {
+          type: "array",
+          items: {
+            type: "object",
+            additionalProperties: false,
+            required: ["text", "quote", "refs"],
+            properties: { text: { type: "string" }, quote: { type: "string" }, refs },
+          },
+        },
         steps: {
           type: "array",
           items: {
@@ -230,7 +242,8 @@ const ANSWER_FORMAT = {
 function parseAnswer(content: string | null | undefined): StructuredAnswer | null {
   try {
     const parsed = JSON.parse(content ?? "") as StructuredAnswer;
-    return typeof parsed?.answer === "string" && typeof parsed?.status === "string" ? parsed : null;
+    if (typeof parsed?.answer !== "string" || typeof parsed?.status !== "string") return null;
+    return { ...parsed, documents: Array.isArray(parsed.documents) ? parsed.documents : [] };
   } catch {
     return null;
   }
@@ -399,6 +412,27 @@ const fold = (s: string) =>
     .replace(/ş/g, "s")
     .replace(/ţ/g, "t");
 
+const plainWords = (s: string) =>
+  fold(s)
+    .replace(/[^a-z0-9а-яё]+/g, " ")
+    .trim();
+
+/**
+ * Keeps only the documents whose quoted name is in a passage they cite. The
+ * model tends to borrow a list from a neighbouring procedure (buying the land
+ * instead of the building permit); a document the passage doesn't name is
+ * dropped. Returns how many were dropped.
+ */
+function groundDocuments(docs: StructuredAnswer["documents"], hits: Hit[]) {
+  const kept = docs.filter((d) => {
+    const quote = plainWords(d.quote || "");
+    if (quote.length < 4) return false;
+    const cited = hits.filter((h) => d.refs.includes(h.n));
+    return cited.some((h) => plainWords(h.text).includes(quote));
+  });
+  return { documents: kept, dropped: docs.length - kept.length };
+}
+
 /** Words too common to identify an institution on their own. */
 const GENERIC = new Set(
   "directia generala municipal municipiul municipiului chisinau chisinaului pentru si din de la al a ale institutia publica publice serviciul sectia departamentul oficiul centrul centru agentia intreprinderea municipala m dir gen".split(" "),
@@ -433,11 +467,12 @@ function mapQuery(inst: Institution): string | null {
 
 type Field = "address" | "phone";
 /** Missing-item labels in the reply's language (the model writes the others). */
-const FIELD_LABEL: Record<string, Record<Field, string>> = {
-  Romanian: { address: "adresa", phone: "numărul de telefon" },
-  Russian: { address: "адрес", phone: "номер телефона" },
-  English: { address: "address", phone: "phone number" },
+const FIELD_LABEL: Record<string, Record<Field | "documents", string>> = {
+  Romanian: { address: "adresa", phone: "numărul de telefon", documents: "lista actelor necesare" },
+  Russian: { address: "адрес", phone: "номер телефона", documents: "список необходимых документов" },
+  English: { address: "address", phone: "phone number", documents: "the list of required documents" },
 };
+const DOCS_WORD = /acte|document|документ/i;
 /** Whether a missing item already talks about this field, in any language. */
 const FIELD_WORD: Record<Field, RegExp> = { address: /adres|address|адрес/i, phone: /tel|phone|телефон/i };
 
@@ -455,6 +490,7 @@ function toContent(answer: StructuredAnswer, hits: Hit[], lang: string): Assista
     answer = {
       ...answer,
       answer: text || (NO_CONTACTS[lang] ?? NO_CONTACTS.Romanian)(institution?.name ?? ""),
+      documents: answer.documents.filter((d) => !repeatsRejected(d.text, rejected)),
       steps: answer.steps.filter((st) => !repeatsRejected(st.text, rejected)),
     };
   }
@@ -468,13 +504,19 @@ function toContent(answer: StructuredAnswer, hits: Hit[], lang: string): Assista
   answer = {
     ...answer,
     answer: grounded(answer.answer),
+    documents: answer.documents.map((d) => ({ ...d, text: grounded(d.text) })),
     steps: answer.steps.map((st) => ({ ...st, text: grounded(st.text) })),
     contradictions: answer.contradictions.map((c) => ({
       ...c,
       claims: c.claims.map((cl) => ({ ...cl, text: grounded(cl.text) })),
     })),
   };
+  const { documents: groundedDocs, dropped: droppedDocs } = groundDocuments(answer.documents, hits);
+  answer = { ...answer, documents: groundedDocs };
   const missing = [...answer.missing];
+  // The model gave a list, but none of it is in the passages: say the list is missing.
+  if (droppedDocs && !groundedDocs.length && !missing.some((m) => DOCS_WORD.test(m)))
+    missing.push(labels.documents);
   // The resident always needs the address and phone of where to go; any the
   // passages don't back (or that the model dropped) is listed as missing.
   if (institution?.name) {
@@ -491,9 +533,13 @@ function toContent(answer: StructuredAnswer, hits: Hit[], lang: string): Assista
 
   let status: AnswerStatus = answer.status;
   if (status === "contradiction" && !contradictions.length) status = missing.length ? "partial" : "found";
-  if (status === "found" && (missing.length || unbacked)) status = "partial";
+  if (status === "found" && (missing.length || unbacked || droppedDocs)) status = "partial";
 
   const blocks: Block[] = [{ type: "status", status, missing, contradictions }];
+  // The documents to prepare come first and stand out: they are what people most often get wrong.
+  const documents = answer.documents.filter((d) => d.text.trim());
+  if (documents.length)
+    blocks.push({ type: "documents", items: documents.map((d) => d.text), itemRefs: documents.map((d) => clean(d.refs)) });
   const steps = answer.steps.filter((st) => st.text.trim());
   if (steps.length)
     blocks.push({ type: "steps", items: steps.map((st) => st.text), itemRefs: steps.map((st) => clean(st.refs)) });
@@ -507,6 +553,7 @@ function toContent(answer: StructuredAnswer, hits: Hit[], lang: string): Assista
   // Every source the answer leans on, wherever it is cited.
   const used = new Set<number>([
     ...[...answer.answer.matchAll(/\[(\d+)\]/g)].map((m) => Number(m[1])),
+    ...documents.flatMap((d) => d.refs),
     ...steps.flatMap((st) => st.refs),
     ...(institution?.refs ?? []),
     ...contradictions.flatMap((c) => c.claims.map((cl) => cl.ref)),
@@ -675,7 +722,15 @@ export async function runChatAgent({
         : lang === "English"
           ? "I could not finish the search. Try rephrasing your question."
           : "Nu am putut finaliza căutarea. Reformulați întrebarea.";
-    answer = { status: "not_found", answer: text, steps: [], institution: null, missing: [], contradictions: [] };
+    answer = {
+      status: "not_found",
+      answer: text,
+      documents: [],
+      steps: [],
+      institution: null,
+      missing: [],
+      contradictions: [],
+    };
   }
 
   const content = toContent(answer, gatheredHits, replyLanguage(userText));

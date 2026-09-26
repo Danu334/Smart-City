@@ -24,6 +24,8 @@ export type Block =
   | { type: "quote"; text: string; refs?: number[] }
   /** `itemRefs[i]` are the sources of step i. */
   | { type: "steps"; title?: string; items: string[]; itemRefs?: number[][]; refs?: number[] }
+  /** Documents to prepare for the procedure; `itemRefs[i]` are the sources of document i. */
+  | { type: "documents"; items: string[]; itemRefs?: number[][]; refs?: number[] }
   /** The answer's state, shown first; `missing` and `contradictions` explain amber and rose. */
   | { type: "status"; status: AnswerStatus; missing?: string[]; contradictions?: Contradiction[]; refs?: number[] }
   /** Contact card for the institution to go to. */
