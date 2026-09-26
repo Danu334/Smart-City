@@ -142,3 +142,149 @@ button {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------- Scroll reveal (see lib/useReveal.js) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    --ease-out: cubic-bezier(0.2, 0.75, 0.2, 1);
+  }
+
+  /* Simple entrances */
+  .reveal-ready [data-reveal="up"],
+  .reveal-ready [data-reveal="pop"],
+  .reveal-ready [data-reveal="sheet"] {
+    opacity: 0;
+    transition: opacity 0.7s var(--ease-out), transform 0.8s var(--ease-out);
+  }
+  .reveal-ready [data-reveal="up"] {
+    transform: translateY(28px);
+  }
+  .reveal-ready [data-reveal="pop"] {
+    transform: scale(0.94);
+  }
+  .reveal-ready [data-reveal="sheet"] {
+    transform: translateX(48px);
+    transition-delay: 0.15s;
+  }
+  .reveal-ready [data-reveal][data-in] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Staggered children: slide up / slide in from the left */
+  .reveal-ready [data-reveal="stagger"] > *,
+  .reveal-ready [data-reveal="stagger-left"] > * {
+    opacity: 0;
+    transition: opacity 0.6s var(--ease-out), transform 0.7s var(--ease-out);
+    transition-delay: calc(var(--i, 0) * 110ms);
+  }
+  .reveal-ready [data-reveal="stagger"] > * {
+    transform: translateY(24px);
+  }
+  .reveal-ready [data-reveal="stagger-left"] > * {
+    transform: translateX(-48px);
+  }
+  .reveal-ready [data-reveal="stagger"][data-in] > *,
+  .reveal-ready [data-reveal="stagger-left"][data-in] > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Answer sheet: rows appear one by one, then the highlight is drawn */
+  .reveal-ready [data-reveal="sheet"] [data-reveal-list] > * {
+    opacity: 0;
+    transform: translateX(18px);
+    transition: opacity 0.5s var(--ease-out), transform 0.6s var(--ease-out);
+    transition-delay: calc(0.45s + var(--i, 0) * 120ms);
+  }
+  .reveal-ready [data-reveal="sheet"][data-in] [data-reveal-list] > * {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal-ready [data-reveal="sheet"] mark {
+    background-size: 0% 100%;
+    transition: background-size 0.9s ease-in-out 1.3s;
+  }
+  .reveal-ready [data-reveal="sheet"][data-in] mark {
+    background-size: 100% 100%;
+  }
+
+  /* Steps: dealt as a stacked deck, then slid out into the grid */
+  @media (min-width: 1025px) {
+    .reveal-ready [data-reveal="stack"] > * {
+      position: relative;
+      z-index: calc(10 - var(--i, 0));
+      transform: translateX(calc(var(--i, 0) * (-100% - 16px) + var(--i, 0) * 10px))
+        translateY(calc(var(--i, 0) * 6px)) rotate(calc(var(--i, 0) * -2.5deg));
+      opacity: 0;
+      /* the deck appears solid almost at once, then the cards are dealt */
+      transition: transform 0.9s var(--ease-out), opacity 0.12s linear;
+      transition-delay: calc(0.35s + var(--i, 0) * 140ms), 0s;
+    }
+    .reveal-ready [data-reveal="stack"][data-in] > * {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (max-width: 1024px) {
+    .reveal-ready [data-reveal="stack"] > * {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s var(--ease-out), transform 0.7s var(--ease-out);
+      transition-delay: calc(var(--i, 0) * 110ms);
+    }
+    .reveal-ready [data-reveal="stack"][data-in] > * {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Audience: two cards start stacked in the middle and spread apart */
+  .reveal-ready [data-reveal="spread"] > * {
+    opacity: 0;
+    transition: transform 0.9s var(--ease-out) 0.2s, opacity 0.4s ease;
+  }
+  @media (min-width: 601px) {
+    .reveal-ready [data-reveal="spread"] > :nth-child(1) {
+      transform: translateX(calc(50% + 8px)) rotate(-3deg);
+    }
+    .reveal-ready [data-reveal="spread"] > :nth-child(2) {
+      transform: translateX(calc(-50% - 8px)) rotate(3deg);
+    }
+  }
+  @media (max-width: 600px) {
+    .reveal-ready [data-reveal="spread"] > * {
+      transform: translateY(24px);
+      transition-delay: calc(var(--i, 0) * 110ms);
+    }
+  }
+  .reveal-ready [data-reveal="spread"][data-in] > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Bilingual: RO from the left, RU from the right, then they meet */
+  .reveal-ready [data-reveal="lang"] > * {
+    opacity: 0;
+    transition: opacity 0.6s var(--ease-out), transform 0.8s var(--ease-out);
+  }
+  .reveal-ready [data-reveal="lang"] > [lang="ro"] {
+    transform: translateX(-56px);
+  }
+  .reveal-ready [data-reveal="lang"] > [lang="ru"] {
+    transform: translateX(56px);
+  }
+  .reveal-ready [data-reveal="lang"] > svg {
+    transform: scaleY(0);
+    transform-origin: top;
+    transition-delay: 0.55s;
+  }
+  .reveal-ready [data-reveal="lang"] > :last-child {
+    transform: scale(0.6);
+    transition: opacity 0.4s ease 0.95s, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.95s;
+  }
+  .reveal-ready [data-reveal="lang"][data-in] > * {
+    opacity: 1;
+    transform: none;
+  }
+}

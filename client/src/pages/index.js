@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import Guide from "@/components/guide/Guide";
 import SponsorCredit from "@/components/SponsorCredit";
 import { useI18n } from "@/lib/i18n";
+import { useReveal } from "@/lib/useReveal";
 import styles from "@/styles/Home.module.css";
 
 const CityScene = dynamic(() => import("@/components/three/CityScene"), { ssr: false });
@@ -111,12 +112,12 @@ function AnswerSheet() {
   const { t } = useI18n();
   const sheet = t.honesty.sheet;
   return (
-    <figure className={styles.sheet}>
+    <figure className={styles.sheet} data-reveal="sheet">
       <figcaption className={styles.sheetHead}>
         <span>{sheet.title}</span>
         <span className={styles.sheetTag}>{sheet.tag}</span>
       </figcaption>
-      <dl className={styles.sheetRows}>
+      <dl className={styles.sheetRows} data-reveal-list>
         {sheet.rows.map(([key, label, value]) => (
           <div key={key} className={styles.sheetRow} data-key={key}>
             <dt>
@@ -138,6 +139,7 @@ function AnswerSheet() {
 
 export default function Home() {
   const { t } = useI18n();
+  useReveal();
 
   return (
     <>
@@ -171,7 +173,7 @@ export default function Home() {
         </section>
 
         {/* Pillars */}
-        <section className={styles.pillars} aria-label="Principles">
+        <section className={styles.pillars} aria-label="Principles" data-reveal="stagger">
           {t.pillars.map(([k, v]) => (
             <div key={k} className={styles.pillar}>
               <span className={styles.pillarKey}>{k}</span>
@@ -180,17 +182,17 @@ export default function Home() {
           ))}
         </section>
 
-        <div className={styles.sponsor}>
+        <div className={styles.sponsor} data-reveal="up">
           <SponsorCredit />
         </div>
 
         {/* How it works */}
         <section className={styles.section} aria-labelledby="how">
-          <header className={styles.sectionHead}>
+          <header className={styles.sectionHead} data-reveal="up">
             <p className={styles.eyebrow}>{t.how.eyebrow}</p>
             <h2 id="how" className={styles.h2}>{t.how.title}</h2>
           </header>
-          <ol className={styles.steps}>
+          <ol className={styles.steps} data-reveal="stack">
             {t.how.steps.map(([title, body], i) => (
               <li key={i} className={styles.step}>
                 <span className={styles.stepNum}>0{i + 1}</span>
@@ -203,12 +205,12 @@ export default function Home() {
 
         {/* Honesty states */}
         <section className={styles.section} aria-labelledby="honesty">
-          <header className={styles.sectionHead}>
+          <header className={styles.sectionHead} data-reveal="up">
             <p className={styles.eyebrow}>{t.honesty.eyebrow}</p>
             <h2 id="honesty" className={styles.h2}>{t.honesty.title}</h2>
           </header>
           <div className={styles.honesty}>
-            <ul className={styles.states}>
+            <ul className={styles.states} data-reveal="stagger-left">
               {t.honesty.cards.map(([name, badge, body], i) => {
                 const tone = STATE_TONES[i];
                 return (
@@ -234,12 +236,12 @@ export default function Home() {
         {/* Bilingual */}
         <section className={styles.section} aria-labelledby="bilingual">
           <div className={styles.bilingual}>
-            <div>
+            <div data-reveal="up">
               <p className={styles.eyebrow}>{t.bilingual.eyebrow}</p>
               <h2 id="bilingual" className={styles.h2}>{t.bilingual.title}</h2>
               <p className={styles.lead}>{t.bilingual.sub}</p>
             </div>
-            <div className={styles.langDiagram}>
+            <div className={styles.langDiagram} data-reveal="lang">
               <p className={styles.langQ} lang="ro">
                 <span className={styles.langCode}>RO</span>
                 Ce acte îmi trebuie pentru autorizația de construire?
@@ -265,11 +267,11 @@ export default function Home() {
 
         {/* Audience */}
         <section className={styles.section} aria-labelledby="audience">
-          <header className={styles.sectionHead}>
+          <header className={styles.sectionHead} data-reveal="up">
             <p className={styles.eyebrow}>{t.audience.eyebrow}</p>
             <h2 id="audience" className={styles.h2}>{t.audience.title}</h2>
           </header>
-          <div className={styles.audience}>
+          <div className={styles.audience} data-reveal="spread">
             {t.audience.items.map(([title, body], i) => (
               <article key={title} className={styles.card}>
                 <span className={styles.cardIcon} aria-hidden="true">
@@ -293,7 +295,7 @@ export default function Home() {
 
         {/* CTA */}
         <section className={styles.ctaWrap}>
-          <div className={styles.cta}>
+          <div className={styles.cta} data-reveal="pop">
             <h2 className={styles.ctaTitle}>{t.cta.title}</h2>
             <p className={styles.ctaSub}>{t.cta.sub}</p>
             <div className={styles.ctaActions}>

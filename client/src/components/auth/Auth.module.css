@@ -435,3 +435,25 @@
     padding-top: 28px;
   }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .main > *,
+  .form > * {
+    animation: rise-in 0.7s cubic-bezier(0.2, 0.75, 0.2, 1) both;
+  }
+  .main > :nth-child(2) { animation-delay: 0.06s; }
+  .main > :nth-child(3) { animation-delay: 0.12s; }
+  .form > :nth-child(1) { animation-delay: 0.2s; }
+  .form > :nth-child(2) { animation-delay: 0.28s; }
+  .form > :nth-child(3) { animation-delay: 0.36s; }
+  .form > :nth-child(4) { animation-delay: 0.44s; }
+  .form > :nth-child(5) { animation-delay: 0.52s; }
+  .main > .alt { animation-delay: 0.6s; }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+}
