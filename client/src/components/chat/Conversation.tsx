@@ -1,4 +1,5 @@
 import StateIcon from "@/components/StateIcon";
+import PlacesPanel from "@/components/places/PlacesPanel";
 import { useI18n } from "@/lib/i18n";
 import { formatBytes, getDoc } from "@/lib/corpus";
 import styles from "./Chat.module.css";
@@ -106,6 +107,8 @@ function Block({ block, citations, onOpen, active }: MarkerProps & { block: Answ
         </div>
       </div>
     );
+
+  if (block.type === "places") return <PlacesPanel query={block.query} title={block.title} compact />;
 
   if (block.type === "quote")
     return (

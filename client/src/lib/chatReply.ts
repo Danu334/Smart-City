@@ -1,6 +1,7 @@
 import { SEED_CONVERSATION_ID, normalize, seedConversations } from "@/lib/corpus";
 import type { Dictionary } from "@/lib/i18n";
 import type { AssistantMessage } from "@/types/chat";
+import { placeBlocksFor } from "@/lib/places/intents";
 
 // The only place that knows how an answer is produced. Swap the body for a
 // fetch() against the real backend when one exists; nothing else changes.
@@ -24,6 +25,18 @@ function matchesSeed(text: string): boolean {
 export function replyTo(text: string, t: Dictionary): AssistantMessage {
   if (seededAnswer && matchesSeed(text)) {
     return { ...seededAnswer, id: makeId() };
+  }
+
+  // Questions about a facility ("unde e un notar?", "https://gov.md") get the map.
+  const places = placeBlocksFor(text, t);
+  if (places.length) {
+    return {
+      id: makeId(),
+      role: "assistant",
+      blocks: [{ type: "p", text: t.places.chat.intro }, ...places],
+      citations: [],
+      actions: [],
+    };
   }
 
   return {

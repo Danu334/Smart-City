@@ -7,7 +7,9 @@ export type Block =
   | { type: "p"; text: string; refs?: number[] }
   | { type: "quote"; text: string; refs?: number[] }
   | { type: "steps"; title?: string; items: string[]; refs?: number[] }
-  | { type: "flag"; tone?: Tone; title: string; text: string; refs?: number[] };
+  | { type: "flag"; tone?: Tone; title: string; text: string; refs?: number[] }
+  /** Map + profiles for a facility name, its website, or a category ("birou notarial"). */
+  | { type: "places"; query: string; title?: string; refs?: number[] };
 
 export type Citation = {
   n: number;
