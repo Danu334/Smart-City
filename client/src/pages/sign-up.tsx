@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useI18n } from "@/lib/i18n";
 import { signUp, useSession } from "@/lib/auth-client";
+import { afterAuthPath, savePendingQuestion } from "@/lib/pendingQuestion";
 import { checkEmail, checkName, checkPassword, checkPrivacy, checkTerms, fromServerError } from "@/lib/validation";
 import AuthLayout from "@/components/auth/AuthLayout";
 import Guide from "@/components/guide/Guide";
@@ -83,6 +84,8 @@ export default function SignUp() {
   const { t, locale } = useI18n();
   const s = t.auth.signUp;
   const router = useRouter();
+  // A question asked in the chat before signing up; answered right after.
+  const pending = typeof router.query.q === "string" ? router.query.q : "";
   const { data: session } = useSession();
   const coachOff = useCoachOff();
 
@@ -93,9 +96,9 @@ export default function SignUp() {
   });
   const { values, set, update, bind, capsHandlers, fieldError, coach, dismiss, busy } = form;
 
-  // Already signed in: nothing to do here.
+  // Signed in (here or in another tab): back to the chat if a question waits.
   useEffect(() => {
-    if (session) router.replace("/");
+    if (session) router.replace(afterAuthPath());
   }, [session, router]);
 
   // Until the user picks one, the answer language follows the interface.
@@ -125,7 +128,8 @@ export default function SignUp() {
         },
       );
       if (error) return setServer(fromServerError(error, retryAfter));
-      router.push("/");
+      if (pending) savePendingQuestion(pending);
+      router.push(afterAuthPath());
     } catch {
       setServer({ field: "submit", code: "network" });
     }
@@ -138,6 +142,13 @@ export default function SignUp() {
     <AuthLayout title={s.title}>
       <h1 className={styles.title}>{s.title}</h1>
       <p className={styles.sub}>{s.sub}</p>
+
+      {pending && (
+        <div className={styles.pending}>
+          <span>{s.pending}</span>
+          <q>{pending}</q>
+        </div>
+      )}
 
       <form className={styles.form} onSubmit={onSubmit} noValidate>
         <Segmented
@@ -273,7 +284,7 @@ export default function SignUp() {
 
       <p className={styles.alt}>
         {s.alt}{" "}
-        <Link href="/sign-in" className={styles.inlineLink}>
+        <Link href={pending ? { pathname: "/sign-in", query: { q: pending } } : "/sign-in"} className={styles.inlineLink}>
           {s.altLink}
         </Link>
       </p>

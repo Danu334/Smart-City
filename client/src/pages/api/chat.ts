@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { runChatAgent, type AgentEvent } from "@/lib/chat/agent";
-import { resolveOwner } from "@/lib/chat/owner";
+import { currentUserId } from "@/lib/chat/user";
 import { addMessage, createConversation, getConversation, type AssistantContent } from "@/lib/chat/store";
 import { dictionaryFor } from "@/lib/i18n";
 import { placeBlocksFor } from "@/lib/places/intents";
@@ -40,13 +40,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const t = dictionaryFor(typeof locale === "string" ? locale : null);
 
   try {
-    const owner = await resolveOwner(req, res, { create: true });
-    if (!owner) throw new Error("no owner");
+    // Answers need an account; the browser keeps the question until sign-in.
+    const userId = await currentUserId(req);
+    if (!userId) return res.status(401).json({ error: "AUTH_REQUIRED" });
 
     const conversation =
       typeof conversationId === "string" && conversationId
-        ? await getConversation(owner, conversationId)
-        : await createConversation(owner, text.slice(0, 80), typeof locale === "string" ? locale : "ro");
+        ? await getConversation(userId, conversationId)
+        : await createConversation(userId, text.slice(0, 80), typeof locale === "string" ? locale : "ro");
     if (!conversation) return res.status(404).json({ error: "Conversation not found" });
 
     const userMessageId = await addMessage(conversation.id, { role: "user", text });

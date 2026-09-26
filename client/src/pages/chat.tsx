@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import ChatSidebar from "@/components/chat/ChatSidebar";
@@ -9,8 +9,9 @@ import EmptyState from "@/components/chat/EmptyState";
 import Guide from "@/components/guide/Guide";
 import type { StatusPhase } from "@/components/chat/Conversation";
 import { useSession } from "@/lib/auth-client";
-import { fetchConversation, fetchConversations, streamChat } from "@/lib/chatApi";
+import { ChatApiError, fetchConversation, fetchConversations, streamChat } from "@/lib/chatApi";
 import { makeId } from "@/lib/ids";
+import { savePendingQuestion, takePendingQuestion } from "@/lib/pendingQuestion";
 import { useI18n } from "@/lib/i18n";
 import { cssVars } from "@/lib/css";
 import type {
@@ -34,7 +35,8 @@ export default function Chat() {
   const { t, locale } = useI18n();
   const router = useRouter();
 
-  // History lives on the server: per account, or per browser before sign-in.
+  // History lives on the server, per account. Visitors can ask, but the
+  // answer comes after sign-in; the question waits in this tab until then.
   const { data: session, isPending: sessionPending } = useSession();
   const userId = session?.user.id ?? null;
 
@@ -74,30 +76,6 @@ export default function Chat() {
   const active = activeId ? conversations.find((c) => c.id === activeId) ?? null : null;
 
   useEffect(() => () => abort.current?.abort(), []);
-
-  // Load the history list, and again after sign-in or sign-out. Signing in
-  // also moves this browser's conversations into the account (server side).
-  useEffect(() => {
-    if (sessionPending) return;
-    let cancelled = false;
-    fetchConversations()
-      .then((list) => {
-        if (cancelled) return;
-        const switched = loadedFor.current !== undefined && loadedFor.current !== userId;
-        loadedFor.current = userId;
-        setConversations((prev) => {
-          if (switched) return list;
-          // Keep threads already open here (with messages, maybe mid-answer).
-          const open = new Map(prev.filter((c) => c.messages.length).map((c) => [c.id, c]));
-          const listed = new Set(list.map((c) => c.id));
-          return [...prev.filter((c) => open.has(c.id) && !listed.has(c.id)), ...list.map((c) => open.get(c.id) ?? c)];
-        });
-      })
-      .catch((err) => console.error(err));
-    return () => {
-      cancelled = true;
-    };
-  }, [userId, sessionPending]);
 
   // The list comes without messages; fetch the open thread's messages.
   const needsMessages = Boolean(activeId && active && !active.messages.length);
@@ -180,6 +158,12 @@ export default function Chat() {
         ),
       );
 
+    // No account: keep the question in this tab and ask to sign in.
+    const gate = () => {
+      savePendingQuestion(text);
+      patchAssistant((m) => ({ ...m, streaming: false, blocks: [{ type: "signin", question: text }] }));
+    };
+
     const fail = (message: string) =>
       patchAssistant((m) => ({
         ...m,
@@ -201,6 +185,13 @@ export default function Chat() {
     setPending(true);
     setStatusPhase("think");
     go({ c: track.convId });
+
+    if (!sessionPending && !userId) {
+      gate();
+      setPending(false);
+      setStatusPhase(null);
+      return;
+    }
 
     abort.current?.abort();
     const controller = new AbortController();
@@ -263,6 +254,7 @@ export default function Chat() {
       });
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") return;
+      if (err instanceof ChatApiError && err.status === 401) return gate();
       fail(err instanceof Error && err.message ? err.message : t.chat.answer.errorText);
     } finally {
       if (abort.current === controller) {
@@ -271,6 +263,36 @@ export default function Chat() {
       }
     }
   };
+
+  // Back from sign-in with a question waiting: ask it now, once.
+  const sendPendingQuestion = useEffectEvent(() => {
+    const question = takePendingQuestion();
+    if (question) void send(question, []);
+  });
+
+  // Load the history list, and again after sign-in or sign-out.
+  useEffect(() => {
+    if (sessionPending) return;
+    let cancelled = false;
+    fetchConversations()
+      .then((list) => {
+        if (cancelled) return;
+        const switched = loadedFor.current !== undefined && loadedFor.current !== userId;
+        loadedFor.current = userId;
+        setConversations((prev) => {
+          if (switched) return list;
+          // Keep threads already open here (with messages, maybe mid-answer).
+          const open = new Map(prev.filter((c) => c.messages.length).map((c) => [c.id, c]));
+          const listed = new Set(list.map((c) => c.id));
+          return [...prev.filter((c) => open.has(c.id) && !listed.has(c.id)), ...list.map((c) => open.get(c.id) ?? c)];
+        });
+        if (userId) sendPendingQuestion();
+      })
+      .catch((err) => console.error(err));
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, sessionPending]);
 
   const openCitation = (citation: Citation, citations: Citation[], messageId: string, el: HTMLElement) => {
     trigger.current = el;

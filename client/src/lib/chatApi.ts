@@ -1,15 +1,26 @@
 import type { ChatEvent } from "@/pages/api/chat";
 import type { Conversation } from "@/types/chat";
 
-// Browser side of /api/chat and /api/conversations. The server keeps history
-// per account, or per browser (guest cookie) before sign-in.
+// Browser side of /api/chat and /api/conversations. History is kept per
+// account; visitors get a 401 from /api/chat and are asked to sign in.
 
-async function errorFrom(res: Response): Promise<Error> {
+/** A failed request, with the HTTP status (401 = sign in first). */
+export class ChatApiError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+  ) {
+    super(message);
+  }
+}
+
+async function errorFrom(res: Response): Promise<ChatApiError> {
+  let message = `HTTP ${res.status}`;
   try {
     const body = await res.json();
-    if (typeof body?.error === "string") return new Error(body.error);
+    if (typeof body?.error === "string") message = body.error;
   } catch {}
-  return new Error(`HTTP ${res.status}`);
+  return new ChatApiError(message, res.status);
 }
 
 /** POST a question and feed each server-sent event to `onEvent`. */

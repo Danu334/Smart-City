@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useI18n } from "@/lib/i18n";
 import { signIn, useSession } from "@/lib/auth-client";
+import { afterAuthPath, savePendingQuestion } from "@/lib/pendingQuestion";
 import { checkEmail, checkPassword, fromServerError } from "@/lib/validation";
 import AuthLayout from "@/components/auth/AuthLayout";
 import Guide from "@/components/guide/Guide";
@@ -22,8 +23,6 @@ const VALIDATORS: Validators<SignInValues> = {
   password: (v) => checkPassword(v, { isNew: false }),
 };
 
-// A question typed on the home page before signing in, kept for the chat.
-const PENDING_KEY = "sc-pending-question";
 
 export default function SignIn() {
   const { t } = useI18n();
@@ -40,8 +39,9 @@ export default function SignIn() {
   });
   const { values, set, bind, capsHandlers, fieldError, coach, dismiss, busy, setServer } = form;
 
+  // Signed in (here or in another tab): back to the chat if a question waits.
   useEffect(() => {
-    if (session) router.replace("/");
+    if (session) router.replace(afterAuthPath());
   }, [session, router]);
 
   const inline = (k: string) => {
@@ -61,12 +61,8 @@ export default function SignIn() {
         },
       );
       if (error) return setErr(fromServerError(error, retryAfter));
-      if (pending) {
-        try {
-          sessionStorage.setItem(PENDING_KEY, pending);
-        } catch {}
-      }
-      router.push("/");
+      if (pending) savePendingQuestion(pending);
+      router.push(afterAuthPath());
     } catch {
       setErr({ field: "submit", code: "network" });
     }
@@ -155,7 +151,7 @@ export default function SignIn() {
 
       <p id="si-new" className={styles.alt}>
         {s.alt}{" "}
-        <Link href="/sign-up" className={styles.inlineLink}>
+        <Link href={pending ? { pathname: "/sign-up", query: { q: pending } } : "/sign-up"} className={styles.inlineLink}>
           {s.altLink}
         </Link>
       </p>
