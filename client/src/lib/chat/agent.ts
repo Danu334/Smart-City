@@ -5,6 +5,7 @@ import type {
 } from "openai/resources/chat/completions";
 import { searchChunks, type Hit } from "@/lib/chat/qdrant";
 import { hitsToCitations } from "@/lib/chat/format";
+import { findDemoScript, type DemoScript } from "@/lib/chat/demo";
 import { messagePlainText } from "@/lib/chat/plain";
 import type { AssistantContent } from "@/lib/chat/store";
 import type { AnswerStatus, Block, Citation, Contradiction, Institution, Message } from "@/types/chat";
@@ -343,7 +344,8 @@ function addressIn(address: string, street: string, foldedCorpus: string): boole
     .match(/\b\d+[a-z]?\b/)?.[0];
   let at = foldedCorpus.indexOf(first);
   while (at >= 0) {
-    const around = foldedCorpus.slice(at, at + street.length + 40);
+    // Start a little early: street names can open with a number ("27 Martie 1918").
+    const around = foldedCorpus.slice(Math.max(0, at - 12), at + street.length + 40);
     if (around.includes(street) && (!number || new RegExp(`\\b${number}\\b`).test(around))) return true;
     at = foldedCorpus.indexOf(first, at + 1);
   }
@@ -544,6 +546,31 @@ function historyToMessages(history: Message[]): ChatCompletionMessageParam[] {
   );
 }
 
+/** Replays a scripted demo answer through the same events and checks as a live one. */
+async function runDemoScript(script: DemoScript, lang: string, emit: Emit): Promise<AssistantContent> {
+  const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  await emit({ type: "status", phase: "think", detail: "round 1" });
+  await wait(1400);
+  for (const query of script.queries) {
+    await emit({ type: "status", phase: "search", detail: query });
+    await wait(1500);
+  }
+  await emit({ type: "status", phase: "tools", detail: "round 3" });
+  await wait(900);
+
+  const content = toContent(script.answer, script.hits, lang);
+  const [status, ...rest] = content.blocks;
+  content.blocks = [status, ...script.flags, ...rest];
+
+  await emit({ type: "status", phase: "draft" });
+  for (let i = 0; i < content.text.length; i += 6) {
+    await emit({ type: "token", text: content.text.slice(i, i + 6) });
+    await wait(18);
+  }
+  await emit({ type: "citations", citations: content.citations });
+  return content;
+}
+
 /**
  * Agent loop: the model searches until it returns a structured answer (or the
  * round cap is hit). Emits status, token and citations events on the way.
@@ -557,6 +584,9 @@ export async function runChatAgent({
   userText: string;
   emit: Emit;
 }): Promise<AssistantContent> {
+  const demo = findDemoScript(userText);
+  if (demo) return runDemoScript(demo, replyLanguage(userText), emit);
+
   const messages: ChatCompletionMessageParam[] = [
     { role: "system", content: SYSTEM_PROMPT },
     ...historyToMessages(history),
