@@ -100,6 +100,10 @@
   .heroContent > :nth-child(3) { animation-delay: 0.18s; }
   .heroContent > :nth-child(4) { animation-delay: 0.28s; }
   .heroContent > :nth-child(5) { animation-delay: 0.38s; }
+  /* wait for the loading screen's curtain before rising in */
+  :global(.is-loading) .heroContent > * {
+    animation-play-state: paused;
+  }
 }
 
 .pulse {

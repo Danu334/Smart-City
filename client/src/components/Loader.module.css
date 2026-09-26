@@ -1,0 +1,229 @@
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background:
+    radial-gradient(80% 60% at 50% 35%, rgba(255, 255, 255, 0.12), transparent 70%),
+    linear-gradient(160deg, #0d5bb3 0%, #0b4f9c 45%, #083e7c 100%);
+  transition: transform 0.75s cubic-bezier(0.7, 0, 0.2, 1);
+}
+.loader::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(60% 60% at 50% 45%, #000, transparent);
+  -webkit-mask-image: radial-gradient(60% 60% at 50% 45%, #000, transparent);
+  pointer-events: none;
+}
+/* Curtain: the whole panel slides up to reveal the page. */
+.loader[data-phase="leaving"] {
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+.center {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 16px;
+}
+
+/* ---------- Animated mark: the page draws itself, a passage is marked ---------- */
+.mark {
+  width: 112px;
+  height: 112px;
+  overflow: visible;
+}
+.page,
+.fold {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  stroke-dasharray: 260;
+  stroke-dashoffset: 260;
+  animation: draw 0.9s cubic-bezier(0.6, 0, 0.3, 1) 0.1s forwards;
+}
+.fold {
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation-delay: 0.55s;
+  animation-duration: 0.35s;
+}
+.row {
+  stroke: rgba(255, 255, 255, 0.7);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  transform-box: fill-box;
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation: grow 0.4s ease-out var(--d) forwards;
+}
+.marker {
+  fill: #ffd200;
+  opacity: 0.9;
+  transform-box: fill-box;
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation: grow 0.45s ease-in-out 1.05s forwards;
+}
+.dot {
+  fill: #ffd200;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0);
+  animation: pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 1.2s forwards;
+}
+.dotInner {
+  fill: #0b4f9c;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0);
+  animation: pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 1.32s forwards;
+}
+
+.name {
+  margin-top: 22px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(30px, 5vw, 40px);
+  letter-spacing: -0.02em;
+  opacity: 0;
+  animation: rise 0.7s cubic-bezier(0.2, 0.75, 0.2, 1) 0.35s forwards;
+}
+.tag {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 10px;
+  margin-top: 8px;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.78);
+  opacity: 0;
+  animation: rise 0.7s cubic-bezier(0.2, 0.75, 0.2, 1) 0.5s forwards;
+}
+.sep {
+  color: #ffd200;
+}
+
+/* ---------- Bottom: progress + sponsor ---------- */
+.bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: max(28px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 0 16px;
+}
+.progress {
+  width: min(220px, 60vw);
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.18);
+  overflow: hidden;
+}
+.progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #ffd200;
+  transform-origin: left;
+  transform: scaleX(0);
+  animation: fill 1.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.loader[data-phase="leaving"] .progress span {
+  transform: scaleX(1);
+  animation: none;
+}
+.partner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.75);
+  opacity: 0;
+  animation: rise 0.6s ease 0.7s forwards;
+}
+.partner img {
+  height: 30px;
+  width: auto;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes grow {
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes pop {
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fill {
+  0% {
+    transform: scaleX(0);
+  }
+  70% {
+    transform: scaleX(0.85);
+  }
+  100% {
+    transform: scaleX(0.95);
+  }
+}
+
+/* Reduced motion: show the finished mark, fade out instead of sliding. */
+@media (prefers-reduced-motion: reduce) {
+  .page,
+  .fold,
+  .row,
+  .marker,
+  .dot,
+  .dotInner,
+  .name,
+  .tag,
+  .partner,
+  .progress span {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+    stroke-dashoffset: 0;
+  }
+  .loader {
+    transition: opacity 0.25s linear;
+  }
+  .loader[data-phase="leaving"] {
+    transform: none;
+    opacity: 0;
+  }
+}

@@ -288,3 +288,11 @@ button {
     transform: none;
   }
 }
+
+/* ---------- Loading screen (components/Loader.js) ---------- */
+.skip-loader [data-loader] {
+  display: none;
+}
+.is-loading body {
+  overflow: hidden;
+}

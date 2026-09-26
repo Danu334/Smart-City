@@ -41,12 +41,19 @@ export default function Guide({ tour, steps }) {
   const total = steps.length;
 
   useEffect(() => {
-    const id = setTimeout(() => {
+    let id;
+    const start = () => {
+      // Wait until the loading screen has lifted.
+      if (document.documentElement.classList.contains("is-loading")) {
+        id = setTimeout(start, 300);
+        return;
+      }
       const off = read(localStorage, OFF_KEY) === "1";
       const seen = read(sessionStorage, seenKey(tour)) === "1";
       setReady(true);
       if (!off && !seen) setIndex(0);
-    }, 600);
+    };
+    id = setTimeout(start, 600);
     return () => clearTimeout(id);
   }, [tour]);
 
