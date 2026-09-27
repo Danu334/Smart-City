@@ -26,6 +26,22 @@ create table if not exists chat_message (
 
 create index if not exists chat_message_conversation_idx on chat_message (conversation_id, created_at);
 
+-- Ratings of answers (1 = sad … 5 = happy). Visitors can rate too: then
+-- user_id is null and message_id is the id their browser was given.
+create table if not exists chat_feedback (
+  id         text primary key,
+  message_id text not null,
+  user_id    text references "user"(id) on delete set null,
+  rating     smallint not null check (rating between 1 and 5),
+  reason     text,
+  question   text,
+  answer     text,
+  locale     text,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists chat_feedback_created_idx on chat_feedback (created_at desc);
+
 -- Upgrade from the first version, which also kept anonymous guest chats.
 delete from chat_conversation where user_id is null;
 alter table chat_conversation drop constraint if exists chat_conversation_owner;

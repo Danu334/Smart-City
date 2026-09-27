@@ -306,6 +306,15 @@ const en = {
       sources: "Sources",
       citation: "Reference",
       nextSteps: "Continue here",
+      feedback: {
+        question: "How helpful was this answer?",
+        ratings: ["Sad", "A little sad", "Neutral", "A little happy", "Happy"],
+        reasonLabel: "What went wrong? Tell us so we can fix it.",
+        reasonPlaceholder: "For example: the address was wrong, the answer didn't match my question…",
+        submit: "Send feedback",
+        thanks: "Thank you for your feedback!",
+        error: "Couldn't send your feedback. Please try again.",
+      },
       stubTitle: "Kept as history only",
       stubText:
         "This conversation sits in the demo history to show how the list behaves. Its messages were not saved.",
@@ -661,6 +670,15 @@ const ro: Dictionary = {
       sources: "Surse",
       citation: "Referința",
       nextSteps: "Continuați aici",
+      feedback: {
+        question: "Cât de util a fost acest răspuns?",
+        ratings: ["Trist", "Puțin trist", "Neutru", "Puțin mulțumit", "Mulțumit"],
+        reasonLabel: "Ce nu a mers bine? Spuneți-ne ca să putem corecta.",
+        reasonPlaceholder: "De exemplu: adresa era greșită, răspunsul nu corespundea întrebării…",
+        submit: "Trimite feedback",
+        thanks: "Vă mulțumim pentru feedback!",
+        error: "Feedbackul nu a putut fi trimis. Încercați din nou.",
+      },
       stubTitle: "Păstrată doar în istoric",
       stubText:
         "Această conversație apare în istoricul demonstrativ pentru a arăta cum se comportă lista. Mesajele ei nu au fost salvate.",
@@ -1013,6 +1031,15 @@ const ru: Dictionary = {
       sources: "Источники",
       citation: "Ссылка",
       nextSteps: "Продолжите здесь",
+      feedback: {
+        question: "Насколько полезен этот ответ?",
+        ratings: ["Грустно", "Немного грустно", "Нейтрально", "Немного радостно", "Радостно"],
+        reasonLabel: "Что пошло не так? Расскажите, чтобы мы могли исправить.",
+        reasonPlaceholder: "Например: адрес был неверным, ответ не соответствовал вопросу…",
+        submit: "Отправить отзыв",
+        thanks: "Спасибо за ваш отзыв!",
+        error: "Не удалось отправить отзыв. Попробуйте ещё раз.",
+      },
       stubTitle: "Только в истории",
       stubText:
         "Этот разговор есть в демонстрационной истории, чтобы показать поведение списка. Его сообщения не сохранялись.",

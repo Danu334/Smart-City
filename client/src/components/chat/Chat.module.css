@@ -957,6 +957,104 @@
   background: var(--accent-wash);
 }
 
+/* Feedback */
+.feedback {
+  display: grid;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hairline);
+}
+.feedbackQuestion {
+  font-size: 14px;
+  color: var(--ash);
+}
+.feedbackFaces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.feedbackFace {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--hairline-strong);
+  background: var(--paper-raised);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s, transform 0.15s;
+}
+.feedbackFace:hover:not(:disabled) {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+.feedbackFace[aria-checked="true"] {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+  box-shadow: 0 0 0 3px var(--accent-wash);
+}
+.feedbackFace:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.feedbackForm {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--rose-wash);
+}
+.feedbackForm label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.feedbackForm textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border-radius: 9px;
+  border: 1px solid var(--hairline-strong);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  resize: vertical;
+}
+.feedbackForm textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-wash);
+}
+.feedbackSubmit {
+  justify-self: start;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.feedbackSubmit:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+.feedbackSubmit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.feedbackThanks {
+  padding-top: 14px;
+  border-top: 1px solid var(--hairline);
+  font-size: 14px;
+  color: var(--ash);
+}
+.feedbackError {
+  font-size: 14px;
+  color: var(--rose);
+}
+
 /* Typing */
 .typing[hidden] {
   display: none;

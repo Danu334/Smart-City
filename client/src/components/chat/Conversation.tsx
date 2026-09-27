@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from "react";
 import StateIcon from "@/components/StateIcon";
+import Feedback from "@/components/chat/Feedback";
 import MarkdownAnswer from "@/components/chat/MarkdownAnswer";
 import PlacesPanel from "@/components/places/PlacesPanel";
 import { useI18n } from "@/lib/i18n";
@@ -476,7 +477,7 @@ export default function Conversation({
 
   return (
     <div className={styles.thread}>
-      {conversation.messages.map((message) => {
+      {conversation.messages.map((message, index) => {
         if (message.role === "user")
           return (
             <article key={message.id} className={styles.userMsg}>
@@ -523,6 +524,13 @@ export default function Conversation({
               ))}
             {!message.streaming && <Sources citations={citations} active={active} onOpen={open} />}
             <Actions actions={message.actions} />
+            {!message.streaming && (
+              <Feedback
+                messageId={message.id}
+                question={conversation.messages[index - 1]?.text ?? ""}
+                answer={markdown}
+              />
+            )}
           </article>
         );
       })}
