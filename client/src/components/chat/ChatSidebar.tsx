@@ -19,6 +19,21 @@ function PlusIcon() {
   );
 }
 
+function TrashIcon() {
+  return (
+    <svg viewBox="0 0 20 20" aria-hidden="true">
+      <path
+        d="M4.5 6h11M8 6V4.5h4V6M6 6l.7 9.2a1.3 1.3 0 001.3 1.3h4a1.3 1.3 0 001.3-1.3L14 6M8.7 9v4.5M11.3 9v4.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function PanelIcon() {
   return (
     <svg viewBox="0 0 20 20" aria-hidden="true">
@@ -33,6 +48,8 @@ type ChatSidebarProps = {
   activeId: string | null;
   onSelect: (id: string) => void;
   onNew: () => void;
+  /** Removes a conversation; rejects if it couldn't be deleted. */
+  onDelete: (id: string) => Promise<void>;
   /** Desktop: narrowed to a rail. */
   collapsed: boolean;
   onToggleCollapse: () => void;
@@ -48,6 +65,7 @@ export default function ChatSidebar({
   activeId,
   onSelect,
   onNew,
+  onDelete,
   collapsed,
   onToggleCollapse,
   open,
@@ -58,6 +76,23 @@ export default function ChatSidebar({
   const s = t.chat.sidebar;
   const [filter, setFilter] = useState("");
   const dragging = useRef(false);
+  // The conversation asking "Delete?", and whether its deletion is running or failed.
+  const [confirming, setConfirming] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState<"idle" | "busy" | "failed">("idle");
+
+  const ask = (id: string | null) => {
+    setConfirming(id);
+    setDeleting("idle");
+  };
+  const remove = async (id: string) => {
+    setDeleting("busy");
+    try {
+      await onDelete(id);
+      ask(null);
+    } catch {
+      setDeleting("failed");
+    }
+  };
 
   const groups = useMemo(() => {
     const q = normalize(filter.trim());
@@ -128,15 +163,47 @@ export default function ChatSidebar({
               <h2 className={styles.groupLabel}>{group.label}</h2>
               <ul>
                 {group.items.map((c) => (
-                  <li key={c.id}>
-                    <button
-                      type="button"
-                      className={styles.historyItem}
-                      aria-current={c.id === activeId ? "true" : undefined}
-                      onClick={() => onSelect(c.id)}
-                    >
-                      <span>{c.title}</span>
-                    </button>
+                  <li key={c.id} className={styles.historyRow}>
+                    {confirming === c.id ? (
+                      <div className={styles.historyConfirm} role="group" aria-label={s.deleteConfirm}>
+                        <p>{deleting === "failed" ? s.deleteFailed : s.deleteConfirm}</p>
+                        <div>
+                          <button
+                            type="button"
+                            className={styles.historyDelete}
+                            onClick={() => remove(c.id)}
+                            disabled={deleting === "busy"}
+                            aria-busy={deleting === "busy"}
+                            autoFocus
+                          >
+                            {s.deleteYes}
+                          </button>
+                          <button type="button" className={styles.historyCancel} onClick={() => ask(null)}>
+                            {s.deleteNo}
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          className={styles.historyItem}
+                          aria-current={c.id === activeId ? "true" : undefined}
+                          onClick={() => onSelect(c.id)}
+                        >
+                          <span>{c.title}</span>
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.historyTrash}
+                          onClick={() => ask(c.id)}
+                          title={s.deleteChat}
+                        >
+                          <span className="visually-hidden">{`${s.deleteChat}: ${c.title}`}</span>
+                          <TrashIcon />
+                        </button>
+                      </>
+                    )}
                   </li>
                 ))}
               </ul>

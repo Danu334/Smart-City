@@ -70,6 +70,12 @@ export async function createConversation(userId: string, title: string, locale: 
   return toConversation(rows[0]);
 }
 
+/** Deletes one of the user's conversations with its messages. False if it isn't theirs. */
+export async function deleteConversation(userId: string, id: string): Promise<boolean> {
+  const { rowCount } = await pool.query(`delete from chat_conversation where id = $1 and user_id = $2`, [id, userId]);
+  return (rowCount ?? 0) > 0;
+}
+
 /** Appends a message and bumps the conversation to the top of the list. */
 export async function addMessage(
   conversationId: string,

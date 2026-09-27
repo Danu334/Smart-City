@@ -94,6 +94,12 @@ export async function fetchConversation(id: string): Promise<Conversation> {
   return data.conversation;
 }
 
+/** Deletes a saved conversation; one that is already gone counts as deleted. */
+export async function deleteConversation(id: string): Promise<void> {
+  const res = await fetch(`/api/conversations/${encodeURIComponent(id)}`, { method: "DELETE" });
+  if (!res.ok && res.status !== 404) throw await errorFrom(res);
+}
+
 /** Saves a visitor's conversations to the account they just signed in to. */
 export async function importConversations(conversations: Conversation[], locale: string): Promise<number> {
   const res = await fetch("/api/conversations", {

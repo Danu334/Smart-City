@@ -172,6 +172,78 @@
   background: var(--tint);
   color: var(--ink);
 }
+.historyRow {
+  position: relative;
+}
+.historyRow .historyItem {
+  padding-right: 36px;
+}
+.historyTrash {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  color: var(--ash);
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity 0.15s, color 0.15s, background-color 0.15s;
+}
+.historyTrash svg {
+  width: 17px;
+  height: 17px;
+}
+.historyRow:hover .historyTrash,
+.historyRow:focus-within .historyTrash,
+.historyItem[aria-current="true"] + .historyTrash {
+  opacity: 1;
+}
+.historyTrash:hover,
+.historyTrash:focus-visible {
+  color: var(--rose);
+  background: var(--rose-wash);
+}
+/* No hover on touch screens: keep the button visible. */
+@media (hover: none) {
+  .historyTrash {
+    opacity: 1;
+  }
+}
+.historyConfirm {
+  display: grid;
+  gap: 8px;
+  padding: 9px 10px;
+  border-radius: 9px;
+  background: var(--rose-wash);
+  font-size: 13.5px;
+  color: var(--ink);
+}
+.historyConfirm div {
+  display: flex;
+  gap: 6px;
+}
+.historyDelete,
+.historyCancel {
+  padding: 5px 11px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.historyDelete {
+  background: var(--rose);
+  color: #fff;
+}
+.historyDelete:disabled {
+  opacity: 0.6;
+}
+.historyCancel {
+  border: 1px solid var(--hairline-strong);
+  background: var(--paper-raised);
+  color: var(--ink);
+}
 .historyItem[aria-current="true"] {
   background: var(--paper-raised);
   color: var(--ink);

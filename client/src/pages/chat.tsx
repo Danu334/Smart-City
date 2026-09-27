@@ -10,7 +10,7 @@ import Guide from "@/components/guide/Guide";
 import AccountNudge, { nudgeDismissed } from "@/components/chat/AccountNudge";
 import type { StatusPhase } from "@/components/chat/Conversation";
 import { useSession } from "@/lib/auth-client";
-import { fetchConversation, fetchConversations, importConversations, streamChat } from "@/lib/chatApi";
+import { deleteConversation, fetchConversation, fetchConversations, importConversations, streamChat } from "@/lib/chatApi";
 import { makeId } from "@/lib/ids";
 import { messagePlainText } from "@/lib/chat/plain";
 import { saveGuestChats, takeGuestChats } from "@/lib/guestChats";
@@ -126,6 +126,16 @@ export default function Chat() {
     setDraft("");
     setDrawer(false);
     go({});
+  };
+
+  // Signed in: deleted on the server first. A visitor's chat only lives here.
+  const removeConversation = async (id: string) => {
+    if (userId) await deleteConversation(id);
+    if (id === activeId) {
+      if (pending) abort.current?.abort();
+      newConversation();
+    }
+    setConversations((prev) => prev.filter((c) => c.id !== id));
   };
 
   const send = async (text: string, files: File[]) => {
@@ -355,6 +365,7 @@ export default function Chat() {
           activeId={activeId}
           onSelect={openConversation}
           onNew={newConversation}
+          onDelete={removeConversation}
           collapsed={collapsed}
           onToggleCollapse={() => (drawer ? setDrawer(false) : setCollapsed(!collapsed))}
           open={drawer}
