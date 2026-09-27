@@ -35,7 +35,7 @@ export type DemoScript = {
    */
   documents?: string[];
   /** The same answer in Russian; the Romanian one is used otherwise. */
-  ru?: { answer: DemoAnswer; actions?: Action[] };
+  ru?: { answer: DemoAnswer; actions?: Action[]; hits?: Hit[] };
 };
 
 const hit = (h: Omit<Hit, "score" | "type"> & { type?: string }): Hit => ({
@@ -488,6 +488,49 @@ Departamentul dispecerat: 0(22) 25 – 66 – 66, 857 – 777`,
   }),
 ];
 
+// The same passages in Russian, for the Russian answer. Street names stay as
+// on the source so they can be matched against the original page.
+const RU_SITE = "www.acc.md · перевод с румынского";
+const WATER_RU_TEXT: Record<number, { title: string; text: string }> = {
+  1: {
+    title: "Отключения — Плановые отключения — АО «Apă-Canal Chișinău»",
+    text: `25.09.26 13:18
+С 09:00 до 21:00, в четверг, 1 октября 2026 года, без воды останутся потребители по адресам: str. Mateevici 87, 66/1, 103, bd. B. Bodoni 1
+В связи с выполнением плановых работ АО «Apă-Canal Chişinău». Просим всех потребителей, затронутых отключением, обеспечить минимальный запас воды для питья и бытовых нужд на время перерыва в подаче воды.
+23.09.26 10:49
+В связи с выполнением плановых работ на водопроводе АО «Apă-Canal Chişinău» вынуждено прекратить подачу питьевой воды с 09:00 понедельника, 28 сентября 2026 года, до 15:00 вторника, 29 сентября 2026 года. Без воды останутся потребители по адресам: str. Doina 189/...-203/.., str. Ankara 6, str. Ceucari 7 (бетонный завод), коммуна Грэтиешть, с. Хулбоака`,
+  },
+  2: {
+    title: "Отключения — Низкое давление — АО «Apă-Canal Chișinău»",
+    text: `22.09.26 16:14
+Потребители на следующих улицах: str. Petrarilor 4, 4/1, 6, 8, 8/1, str. Drumul Viilor 26, 28, 28/1, 28/2, 30/2.
+В понедельник, 28 сентября 2026 года, и во вторник, 29 сентября, с 9:00 до 21:00 возможно отключение электроэнергии, в результате чего вода будет подаваться с низким давлением, в связи с работами И.К.П. «Premier Energy Distribution».
+22.09.26 16:00
+str. I. Neculce 10, 12/1
+В понедельник, 28 сентября 2026 года, с 9:00 до 16:00 возможно отключение электроэнергии, в результате чего вода будет подаваться с низким давлением.`,
+  },
+  3: {
+    title: "Отключения — Аварии на водопроводе — АО «Apă-Canal Chișinău»",
+    text: `Номер карточки | Адрес аварии | Авария | Обнаружено | Затронутые улицы | Отключено | Подключено
+Буюкань | 33311 | str. Vasile Lupu | 59/2 < Cor | Утечка из-под асфальта | 25.09.2026 | Lupu, Cornului, Ghioceilor | 25.09.2026 15:00 | 25.09.2026 15:30`,
+  },
+  4: {
+    title: "Отключения — Аварии на водопроводе — АО «Apă-Canal Chișinău»",
+    text: `Номер карточки | Адрес аварии | Авария | Обнаружено | Затронутые улицы | Отключено | Подключено
+Яловень | 33343 | str-la 1 Valeriu Cupcea | 9 | Утечка из колодца | 25.09.2026 | Ial. Str-La Cupcea | 25.09.2026 16:40 | 25.09.2026 18:00`,
+  },
+  5: {
+    title: "Контакты — АО «Apă-Canal Chișinău»",
+    text: `Контактные данные
+Адрес: Strada Albişoara 38, Chișinău, MD-2005
+Режим работы: понедельник – четверг: 08:00 – 17:00; пятница: 08:00 – 15:45; обеденный перерыв: 12:00 – 12:45
+E-mail: acc@acc.md
+Начальник диспетчерского департамента: 0(22) 256 – 899
+Диспетчерский департамент: 0(22) 25 – 66 – 66, 857 – 777`,
+  },
+};
+const WATER_HITS_RU: Hit[] = WATER_HITS.map((h) => ({ ...h, site: RU_SITE, ...WATER_RU_TEXT[h.n] }));
+
 const WATER_ANSWER: DemoAnswer = {
   status: "found",
   answer: `**Nu știu la ce adresă este blocul dvs., așa că vă arăt toate sistările anunțate de S.A. „Apă-Canal Chișinău”** (pagina „Deconectări”, actualizată pe 25.09.2026). Verificați dacă strada dvs. apare mai jos.
@@ -726,6 +769,7 @@ const SCRIPTS: DemoScript[] = [
     actions: [{ label: "Sunați la dispeceratul Apă-Canal", href: "tel:+37322256666", platform: "022 25-66-66" }],
     ru: {
       answer: WATER_ANSWER_RU,
+      hits: WATER_HITS_RU,
       actions: [{ label: "Позвонить в диспетчерскую Apă-Canal", href: "tel:+37322256666", platform: "022 25-66-66" }],
     },
   },

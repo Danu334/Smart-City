@@ -660,7 +660,8 @@ async function runDemoScript(script: DemoScript, lang: string, emit: Emit): Prom
   await wait(900);
 
   const variant = lang === "Russian" && script.ru ? script.ru : script;
-  const content = toContent(variant.answer, script.hits, lang);
+  const hits = (lang === "Russian" && script.ru?.hits) || script.hits;
+  const content = toContent(variant.answer, hits, lang);
   if (variant.actions) content.actions = variant.actions;
   const [status, ...rest] = content.blocks;
   const documents: Block[] = script.documents ? [{ type: "documents", items: script.documents }] : [];
