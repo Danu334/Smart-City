@@ -5,7 +5,6 @@ import type {
 } from "openai/resources/chat/completions";
 import { searchChunks, type Hit } from "@/lib/chat/qdrant";
 import { hitsToCitations } from "@/lib/chat/format";
-import { findDemoScript, type DemoScript } from "@/lib/chat/demo";
 import { messagePlainText } from "@/lib/chat/plain";
 import type { AssistantContent } from "@/lib/chat/store";
 import type { AnswerStatus, Block, Citation, Contradiction, Institution, Message } from "@/types/chat";
@@ -643,44 +642,6 @@ function historyToMessages(history: Message[]): ChatCompletionMessageParam[] {
   );
 }
 
-/** Replays a scripted demo answer through the same events and checks as a live one. */
-async function runDemoScript(script: DemoScript, lang: string, emit: Emit): Promise<AssistantContent> {
-  const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
-  await emit({ type: "status", phase: "think", detail: "round 1" });
-  await wait(1400);
-  if (script.clock) {
-    await emit({ type: "status", phase: "clock" });
-    await wait(900);
-  }
-  for (const query of script.queries) {
-    await emit({ type: "status", phase: "search", detail: query });
-    await wait(1500);
-  }
-  await emit({ type: "status", phase: "tools", detail: "round 3" });
-  await wait(900);
-
-  const variant = lang === "Russian" && script.ru ? script.ru : script;
-  const hits = (lang === "Russian" && script.ru?.hits) || script.hits;
-  const content = toContent(variant.answer, hits, lang);
-  if (variant.actions) content.actions = variant.actions;
-  const [status, ...rest] = content.blocks;
-  const documents: Block[] = script.documents ? [{ type: "documents", items: script.documents }] : [];
-  content.blocks = [
-    status,
-    ...script.flags,
-    ...documents,
-    ...rest.map((b) => (b.type === "places" && script.placesQuery ? { ...b, query: script.placesQuery } : b)),
-  ];
-
-  await emit({ type: "status", phase: "draft" });
-  for (let i = 0; i < content.text.length; i += 6) {
-    await emit({ type: "token", text: content.text.slice(i, i + 6) });
-    await wait(18);
-  }
-  await emit({ type: "citations", citations: content.citations });
-  return content;
-}
-
 /**
  * Agent loop: the model searches until it returns a structured answer (or the
  * round cap is hit). Emits status, token and citations events on the way.
@@ -694,9 +655,6 @@ export async function runChatAgent({
   userText: string;
   emit: Emit;
 }): Promise<AssistantContent> {
-  const demo = findDemoScript(userText);
-  if (demo) return runDemoScript(demo, replyLanguage(userText), emit);
-
   const messages: ChatCompletionMessageParam[] = [
     { role: "system", content: SYSTEM_PROMPT },
     ...historyToMessages(history),
