@@ -5,6 +5,7 @@ import MarkdownAnswer from "@/components/chat/MarkdownAnswer";
 import PlacesPanel from "@/components/places/PlacesPanel";
 import { useI18n } from "@/lib/i18n";
 import { formatBytes, resolveCitationDoc } from "@/lib/corpus";
+import { useStoredChecks } from "@/lib/useStoredChecks";
 import styles from "./Chat.module.css";
 import type {
   Action,
@@ -47,6 +48,14 @@ function DocIcon() {
     <svg viewBox="0 0 20 20" aria-hidden="true">
       <rect x="4.5" y="2.5" width="11" height="15" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
       <path d="M7.5 7h5M7.5 10h5M7.5 13h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
+      <path d="M5 10.5l3.2 3.2L15 7" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -228,7 +237,14 @@ function StatusCard({
   );
 }
 
-/** The documents to prepare, set apart so they are hard to miss. */
+/** A short, stable key for a list of documents, so its ticks survive a reload. */
+function listKey(items: string[]): string {
+  let h = 5381;
+  for (const ch of items.join("␟")) h = ((h << 5) + h + ch.charCodeAt(0)) | 0;
+  return `sc-docs-${(h >>> 0).toString(36)}`;
+}
+
+/** The documents to prepare, set apart so they are hard to miss. Each can be ticked off as it is gathered. */
 function DocumentsList({
   block,
   citations,
@@ -238,6 +254,9 @@ function DocumentsList({
   const { t } = useI18n();
   const s = t.chat.answer.documents;
   const titleId = useId();
+  const [checked, toggle, clear] = useStoredChecks(listKey(block.items));
+  const total = block.items.length;
+  const done = block.items.filter((_, i) => checked.has(i)).length;
 
   return (
     <section className={styles.documents} aria-labelledby={titleId}>
@@ -252,20 +271,36 @@ function DocumentsList({
           <p className={styles.documentsHint}>{s.hint}</p>
         </div>
       </div>
-      {block.items.length === 0 && <p className={styles.documentsEmpty}>{s.empty}</p>}
+      {total === 0 && <p className={styles.documentsEmpty}>{s.empty}</p>}
       <ol className={styles.documentsList}>
-        {block.items.map((item, i) => (
-          <li key={i}>
-            <span className={styles.documentsNum} aria-hidden="true">
-              {i + 1}
-            </span>
-            <span>
-              {item}
+        {block.items.map((item, i) => {
+          const on = checked.has(i);
+          return (
+            <li key={i} data-done={on || undefined}>
+              <label className={styles.documentsCheck}>
+                <input type="checkbox" checked={on} onChange={(e) => toggle(i, e.target.checked)} />
+                <span className={styles.documentsNum} aria-hidden="true">
+                  {on ? <CheckIcon /> : i + 1}
+                </span>
+                <span className={styles.documentsText}>{item}</span>
+              </label>
               <Refs refs={block.itemRefs?.[i]} citations={citations} onOpen={onOpen} active={active} />
-            </span>
-          </li>
-        ))}
+            </li>
+          );
+        })}
       </ol>
+      {total > 0 && (
+        <div className={styles.documentsProgress}>
+          <span aria-live="polite">
+            {(done === total ? s.allReady : s.progress).replace("{done}", String(done)).replace("{total}", String(total))}
+          </span>
+          {done > 0 && (
+            <button type="button" className={styles.documentsReset} onClick={clear}>
+              {s.reset}
+            </button>
+          )}
+        </div>
+      )}
     </section>
   );
 }

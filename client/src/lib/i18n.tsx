@@ -404,6 +404,9 @@ const en = {
         title: "Documents you need",
         hint: "Prepare these before you go.",
         empty: "The published documents don't list them. Ask the institution below for the exact list before you go, so you don't have to come back.",
+        progress: "{done} of {total} ready · tick each one as you gather it",
+        allReady: "All {total} ready. You can go.",
+        reset: "Untick all",
       },
       institution: {
         title: "Where to go",
@@ -836,6 +839,9 @@ const ro: Dictionary = {
         title: "Documente necesare",
         hint: "Pregătiți-le înainte să mergeți la instituție.",
         empty: "Lista actelor nu apare în documentele publicate. Cereți lista exactă la instituția de mai jos înainte să mergeți, ca să nu fiți nevoit să reveniți.",
+        progress: "{done} din {total} pregătite · bifați fiecare act pe măsură ce îl aveți",
+        allReady: "Toate cele {total} sunt pregătite. Puteți merge.",
+        reset: "Debifați tot",
       },
       institution: {
         title: "Unde vă adresați",
@@ -1265,6 +1271,9 @@ const ru: Dictionary = {
         title: "Необходимые документы",
         hint: "Подготовьте их до визита в учреждение.",
         empty: "Список документов не опубликован. Уточните точный список в учреждении ниже до визита, чтобы не пришлось приходить повторно.",
+        progress: "Готово {done} из {total} · отмечайте каждый документ, когда он у вас есть",
+        allReady: "Все {total} готовы. Можно идти.",
+        reset: "Снять все отметки",
       },
       institution: {
         title: "Куда обращаться",
