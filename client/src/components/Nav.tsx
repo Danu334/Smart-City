@@ -14,6 +14,22 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
   const firstName = session?.user?.name?.trim().split(/\s+/)[0];
+  const userId = session?.user?.id;
+
+  // Only the team (ADMIN_EMAILS, checked on the server) sees the feedback link.
+  const [adminFor, setAdminFor] = useState<string | null>(null);
+  useEffect(() => {
+    if (!userId) return;
+    let live = true;
+    fetch("/api/me")
+      .then((res) => (res.ok ? res.json() : { feedbackAdmin: false }))
+      .then((me: { feedbackAdmin?: boolean }) => live && setAdminFor(me.feedbackAdmin ? userId : null))
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, [userId]);
+  const isAdmin = !!userId && adminFor === userId;
 
   const [leaving, setLeaving] = useState(false);
   const leave = async () => {
@@ -59,6 +75,7 @@ export default function Nav() {
     ["/", t.nav.home],
     ["/about", t.nav.about],
     ["/faq", t.nav.faq],
+    ...(isAdmin ? [["/feedback", t.nav.feedback]] : []),
   ];
 
   return (
