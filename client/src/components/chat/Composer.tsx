@@ -145,7 +145,7 @@ export default function Composer({ value, onChange, onSend, busy }: ComposerProp
         </button>
       </div>
 
-      <p className={styles.composerHint}>{dragging ? s.dropHere : s.attachHint}</p>
+      {dragging && <p className={styles.composerHint}>{s.dropHere}</p>}
     </form>
   );
 }
