@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { fromNodeHeaders } from "better-auth/node";
 import { auth } from "@/lib/auth";
 import { isFeedbackAdmin } from "@/lib/chat/feedback";
-import { hasPawCursor } from "@/lib/paw";
 
 /** What the signed-in user may see beyond the chat (the nav asks). */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -13,10 +12,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const session = await auth.api.getSession({ headers: fromNodeHeaders(req.headers) });
     res.setHeader("Cache-Control", "private, no-store");
-    const email = session?.user.email;
-    res.status(200).json({ feedbackAdmin: isFeedbackAdmin(email), pawCursor: hasPawCursor(email) });
+    res.status(200).json({ feedbackAdmin: isFeedbackAdmin(session?.user.email) });
   } catch (err) {
     console.error("[api/me]", err);
-    res.status(500).json({ feedbackAdmin: false, pawCursor: false });
+    res.status(500).json({ feedbackAdmin: false });
   }
 }
