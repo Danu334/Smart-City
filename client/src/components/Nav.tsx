@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useI18n } from "@/lib/i18n";
 import { signOut, useSession } from "@/lib/auth-client";
+import { useMe } from "@/lib/useMe";
 import Logo from "./Logo";
 import PartnerMark from "./PartnerMark";
 import LanguageSwitch from "./LanguageSwitch";
@@ -14,22 +15,8 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
   const firstName = session?.user?.name?.trim().split(/\s+/)[0];
-  const userId = session?.user?.id;
-
   // Only the team (ADMIN_EMAILS, checked on the server) sees the feedback link.
-  const [adminFor, setAdminFor] = useState<string | null>(null);
-  useEffect(() => {
-    if (!userId) return;
-    let live = true;
-    fetch("/api/me")
-      .then((res) => (res.ok ? res.json() : { feedbackAdmin: false }))
-      .then((me: { feedbackAdmin?: boolean }) => live && setAdminFor(me.feedbackAdmin ? userId : null))
-      .catch(() => {});
-    return () => {
-      live = false;
-    };
-  }, [userId]);
-  const isAdmin = !!userId && adminFor === userId;
+  const isAdmin = !!useMe()?.feedbackAdmin;
 
   const [leaving, setLeaving] = useState(false);
   const leave = async () => {

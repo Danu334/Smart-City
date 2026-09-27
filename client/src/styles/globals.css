@@ -47,6 +47,13 @@
   margin: 0;
 }
 
+/* Cat-paw cursor, only for the owners' accounts (components/PawCursor.tsx). */
+html.paw-cursor,
+html.paw-cursor * {
+  cursor: url("/cursors/paw.png") 2 2, auto !important;
+  cursor: image-set(url("/cursors/paw.png") 1x, url("/cursors/paw@2x.png") 2x) 2 2, auto !important;
+}
+
 html {
   scroll-behavior: smooth;
 }
