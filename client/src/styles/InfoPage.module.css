@@ -1,0 +1,207 @@
+/* About us and FAQ: the Privacy page's reading layout, plus sources, accordions and a closing call to action. */
+
+.page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(40px, 7vw, 72px) var(--gutter) 80px;
+  color: var(--ink);
+}
+.head {
+  padding-bottom: 24px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--hairline);
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(30px, 4vw, 40px);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.intro {
+  margin-top: 18px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--graphite);
+}
+.section {
+  padding: 24px 0 4px;
+  font-size: 16.5px;
+  line-height: 1.65;
+}
+.section p + p {
+  margin-top: 10px;
+}
+.h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 21px;
+  margin-bottom: 10px;
+}
+.section ul {
+  display: grid;
+  gap: 8px;
+  padding-left: 22px;
+}
+.section li::marker {
+  color: var(--accent);
+}
+.sub {
+  color: var(--graphite);
+}
+
+/* Sources */
+.groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.group {
+  padding: 16px 18px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-card);
+  background: var(--paper-raised);
+  box-shadow: var(--shadow-card);
+}
+.groupTitle {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+.section .hosts {
+  display: grid;
+  gap: 4px;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.hosts a {
+  color: var(--accent);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.hosts a:hover {
+  text-decoration: underline;
+}
+
+/* FAQ */
+.faqGroup {
+  padding-top: 28px;
+}
+.faqList {
+  border-top: 1px solid var(--hairline);
+}
+.item {
+  border-bottom: 1px solid var(--hairline);
+}
+.q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 2px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.4;
+  cursor: pointer;
+  list-style: none;
+}
+.q::-webkit-details-marker {
+  display: none;
+}
+.q:hover {
+  color: var(--accent);
+}
+.q:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.chevron {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--ash);
+  transition: transform 0.2s ease;
+}
+.item[open] .chevron {
+  transform: rotate(180deg);
+  color: var(--accent);
+}
+.a {
+  padding: 0 2px 18px;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--graphite);
+  max-width: 64ch;
+}
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+}
+
+/* Closing call to action */
+.cta {
+  margin-top: 48px;
+  padding: 28px;
+  border-radius: var(--radius-card);
+  background: var(--tint);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+}
+.ctaTitle {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 21px;
+}
+.ctaSub {
+  margin-top: 4px;
+  color: var(--graphite);
+}
+.ctaLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.solid,
+.ghost {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: var(--radius-input);
+  font-weight: 600;
+  text-decoration: none;
+}
+.solid {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.solid:hover {
+  background: var(--accent-hover);
+}
+.ghost {
+  border: 1px solid var(--hairline-strong);
+  color: var(--ink);
+  background: var(--paper);
+}
+.ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}

@@ -13,6 +13,9 @@ type SheetRow = [key: SheetKey, label: string, value: string];
 /** Policy section: heading, paragraphs, bullet points. */
 type PolicySection = [heading: string, paragraphs: string[], bullets: string[]];
 
+/** FAQ group: heading, then [question, answer] pairs. */
+type FaqGroup = [heading: string, items: [question: string, answer: string][]];
+
 const en = {
   nav: {
     home: "Home",
@@ -83,6 +86,50 @@ const en = {
     consentLink: "Privacy policy",
     signInNote: "By signing in, you confirm you have read the {link}.",
     signInLink: "Privacy policy",
+  },
+  about: {
+    title: "About us",
+    eyebrow: "About the project",
+    intro: "Smart City is a municipal assistant that answers questions about Chișinău's public services using only documents published by City Hall and its institutions. Every answer shows the document and the passage it comes from, so you can check it yourself.",
+    sections: [
+      ["Why we built it", ["The information residents need (procedures, required documents, contacts, schedules) is spread across dozens of websites of City Hall, its directorates and municipal enterprises. Finding the right page takes time, and a generic chatbot can give an answer that sounds right but is incomplete or out of date."], []],
+      ["What the assistant does", [], ["Answers in Romanian or Russian, in plain language.", "Cites the document and the passage behind every fact; press a number like [1] to open it.", "Lists the documents to prepare and the steps to follow, when the passages give them.", "Shows the institution to go to, with the address and phone found in the documents, and where it is on the map.", "Says plainly what is missing from the documents, and shows both sides when two documents disagree."]],
+      ["How we keep answers honest", ["The assistant does not answer from memory. It searches the published documents first, then writes the answer only from the passages it found. Before an answer reaches you, phone numbers, email addresses, street addresses and document names are checked against those passages, and anything not found there is removed and marked as missing."], []],
+      ["Who built it", ["Smart City was built by Sandu, Igor, Erika, Daniel and Iacob, an independent team, for the Smart City challenge launched by Chișinău City Hall. It is not an official City Hall service, and its answers are not legal advice. For decisions that matter, confirm with the institution shown in the answer."], []],
+    ] as PolicySection[],
+    sources: {
+      title: "Where the information comes from",
+      sub: "The public websites of City Hall's institutions and municipal enterprises, as listed in the challenge. Each answer shows the publication date of the passages it uses.",
+      groups: ["Administration and sectors", "Urbanism and housing", "Utilities and environment", "Transport", "Social services and health", "Education and youth"],
+    },
+    cta: { title: "Have a question?", sub: "Ask in your own words. No account needed.", button: "Ask the assistant", faq: "Read the FAQ" },
+  },
+  faq: {
+    title: "Frequently asked questions",
+    intro: "Short answers about how the assistant works, where its answers come from and what happens with your data.",
+    groups: [
+      ["About the assistant", [
+        ["What is Smart City?", "A municipal assistant that answers questions about Chișinău's public services (permits, taxes, utilities, transport, schools, social help) using only documents published by City Hall and its institutions."],
+        ["Is it an official City Hall service?", "No. It is an independent project built for City Hall's Smart City challenge. Its answers are not legal advice; for important decisions, confirm with the institution shown in the answer."],
+        ["Which languages can I use?", "Romanian and Russian, and the interface is also available in English. The answer comes back in the language of your question, even when the source document is in the other language."],
+        ["Can I submit an application or pay a fee here?", "No. The assistant explains what to do, which documents to prepare and where to go. The application itself is submitted to the institution, in person or on its own website."],
+        ["Is it useful for municipal employees too?", "Yes. Employees can find the passage that governs a case quickly and give residents the same, consistent answer, with the source to show."],
+      ]],
+      ["Answers and sources", [
+        ["Where do the answers come from?", "From the public websites of City Hall, its directorates, sector praeturas and municipal enterprises, such as Apă-Canal, Autosalubritate, the Electric Transport Authority or DGAURF. The full list is on the About us page."],
+        ["How do I check an answer?", "Every fact has a small number like [1]. Press it and the source document opens with the passage the answer relies on, plus a link to the original page."],
+        ["What if the documents don't have the answer?", "The assistant says so plainly instead of guessing, lists exactly what is missing (for example a phone number or the list of documents) and points you to the institution that can help."],
+        ["What if two documents disagree?", "You see both versions side by side, each with its source and publication date, so you can tell which is more recent. The assistant does not silently pick one."],
+        ["How up to date is the information?", "As up to date as the published documents. Each passage shows its publication date. Fees, schedules and deadlines can change, so check them with the institution before you go."],
+        ["Can the assistant make mistakes?", "Yes, like any automatic system. That is why every answer shows its sources. If something looks wrong, open the passage and rate the answer, so the team can see it."],
+      ]],
+      ["Account and data", [
+        ["Do I need an account?", "No. You can ask questions without one. With an account, your conversations are saved and you can come back to them from any device."],
+        ["What happens with my questions?", "To write an answer, your question is sent to OpenAI. With an account, the conversation is saved in your account; without one, it stays only in the open page. The Privacy policy explains the details."],
+        ["How can I rate an answer?", "Under every answer there are five faces, from sad to happy. If you pick a sad one, you're asked what went wrong. The team reads every rating to improve the assistant."],
+      ]],
+    ] as FaqGroup[],
+    more: { title: "Didn't find your question?", sub: "Ask the assistant directly.", button: "Ask the assistant" },
   },
   places: {
     title: "Map of institutions and services",
@@ -472,6 +519,50 @@ const ro: Dictionary = {
     signInNote: "Prin autentificare, confirmați că ați citit {link}.",
     signInLink: "Politica de confidențialitate",
   },
+  about: {
+    title: "Despre noi",
+    eyebrow: "Despre proiect",
+    intro: "Smart City este un asistent municipal care răspunde la întrebări despre serviciile publice din Chișinău folosind doar documentele publicate de Primărie și de instituțiile ei. Fiecare răspuns arată documentul și pasajul din care provine, ca să-l puteți verifica singur.",
+    sections: [
+      ["De ce l-am creat", ["Informațiile de care au nevoie locuitorii (proceduri, acte necesare, contacte, orare) sunt împrăștiate pe zeci de site-uri ale Primăriei, ale direcțiilor și ale întreprinderilor municipale. Găsirea paginii potrivite durează, iar un chatbot obișnuit poate da un răspuns care sună bine, dar e incomplet sau depășit."], []],
+      ["Ce face asistentul", [], ["Răspunde în română sau în rusă, pe înțelesul tuturor.", "Citează documentul și pasajul pe care se sprijină fiecare informație; apăsați un număr precum [1] ca să-l deschideți.", "Enumeră actele de pregătit și pașii de urmat, atunci când pasajele le conțin.", "Arată instituția la care să mergeți, cu adresa și telefonul găsite în documente, și locul ei pe hartă.", "Spune deschis ce lipsește din documente și arată ambele variante atunci când două documente se contrazic."]],
+      ["Cum păstrăm răspunsurile corecte", ["Asistentul nu răspunde din memorie. Mai întâi caută în documentele publicate, apoi scrie răspunsul doar din pasajele găsite. Înainte ca răspunsul să ajungă la dvs., numerele de telefon, adresele de e-mail, adresele poștale și denumirile actelor sunt verificate în acele pasaje; ce nu se regăsește acolo este eliminat și marcat ca lipsă."], []],
+      ["Cine l-a realizat", ["Smart City a fost realizat de Sandu, Igor, Erika, Daniel și Iacob, o echipă independentă, pentru provocarea Smart City lansată de Primăria municipiului Chișinău. Nu este un serviciu oficial al Primăriei, iar răspunsurile nu reprezintă consultanță juridică. Pentru decizii importante, confirmați la instituția indicată în răspuns."], []],
+    ],
+    sources: {
+      title: "De unde provin informațiile",
+      sub: "Site-urile publice ale instituțiilor Primăriei și ale întreprinderilor municipale, din lista provocării. Fiecare răspuns arată data publicării pasajelor folosite.",
+      groups: ["Administrație și sectoare", "Urbanism și locuințe", "Utilități și mediu", "Transport", "Servicii sociale și sănătate", "Educație și tineret"],
+    },
+    cta: { title: "Aveți o întrebare?", sub: "Întrebați cu propriile cuvinte. Nu aveți nevoie de cont.", button: "Întrebați asistentul", faq: "Citiți întrebările frecvente" },
+  },
+  faq: {
+    title: "Întrebări frecvente",
+    intro: "Răspunsuri scurte despre cum funcționează asistentul, de unde provin răspunsurile și ce se întâmplă cu datele dvs.",
+    groups: [
+      ["Despre asistent", [
+        ["Ce este Smart City?", "Un asistent municipal care răspunde la întrebări despre serviciile publice din Chișinău (autorizații, taxe, utilități, transport, școli, ajutor social) folosind doar documentele publicate de Primărie și de instituțiile ei."],
+        ["Este un serviciu oficial al Primăriei?", "Nu. Este un proiect independent, realizat pentru provocarea Smart City a Primăriei. Răspunsurile nu reprezintă consultanță juridică; pentru decizii importante, confirmați la instituția indicată în răspuns."],
+        ["În ce limbi pot scrie?", "În română și în rusă, iar interfața este disponibilă și în engleză. Răspunsul vine în limba întrebării, chiar dacă documentul-sursă este scris în cealaltă limbă."],
+        ["Pot depune o cerere sau plăti o taxă aici?", "Nu. Asistentul explică ce aveți de făcut, ce acte să pregătiți și unde să mergeți. Cererea propriu-zisă se depune la instituție, la ghișeu sau pe site-ul ei."],
+        ["Este util și pentru angajații municipali?", "Da. Angajații găsesc rapid pasajul care reglementează un caz și le pot da tuturor locuitorilor același răspuns, cu sursa la vedere."],
+      ]],
+      ["Răspunsuri și surse", [
+        ["De unde provin răspunsurile?", "De pe site-urile publice ale Primăriei, ale direcțiilor, preturilor de sector și întreprinderilor municipale, precum Apă-Canal, Autosalubritate, Regia Transport Electric sau DGAURF. Lista completă este pe pagina Despre noi."],
+        ["Cum verific un răspuns?", "Fiecare informație are un număr mic, de exemplu [1]. Apăsați-l și se deschide documentul-sursă cu pasajul pe care se sprijină răspunsul, plus linkul spre pagina originală."],
+        ["Ce se întâmplă dacă documentele nu conțin răspunsul?", "Asistentul vă spune deschis, în loc să ghicească, enumeră exact ce lipsește (de exemplu un număr de telefon sau lista actelor) și vă îndrumă spre instituția care vă poate ajuta."],
+        ["Ce se întâmplă dacă două documente se contrazic?", "Vedeți ambele variante alăturat, fiecare cu sursa și data publicării, ca să știți care este mai recentă. Asistentul nu alege una pe ascuns."],
+        ["Cât de actuale sunt informațiile?", "Atât de actuale cât sunt documentele publicate. Fiecare pasaj își arată data publicării. Taxele, orarele și termenele se pot schimba, așa că verificați-le la instituție înainte să mergeți."],
+        ["Poate greși asistentul?", "Da, ca orice sistem automat. De aceea fiecare răspuns își arată sursele. Dacă ceva pare greșit, deschideți pasajul și evaluați răspunsul, ca echipa să vadă problema."],
+      ]],
+      ["Cont și date", [
+        ["Am nevoie de cont?", "Nu. Puteți pune întrebări și fără cont. Cu un cont, conversațiile se salvează și puteți reveni la ele de pe orice dispozitiv."],
+        ["Ce se întâmplă cu întrebările mele?", "Pentru a scrie răspunsul, întrebarea este trimisă către OpenAI. Cu un cont, conversația se salvează în contul dvs.; fără cont, rămâne doar pe pagina deschisă. Detaliile sunt în Politica de confidențialitate."],
+        ["Cum evaluez un răspuns?", "Sub fiecare răspuns sunt cinci fețe, de la trist la vesel. Dacă alegeți una tristă, vi se cere să spuneți ce n-a fost bine. Echipa citește fiecare evaluare ca să îmbunătățească asistentul."],
+      ]],
+    ],
+    more: { title: "Nu ați găsit întrebarea?", sub: "Întrebați direct asistentul.", button: "Întrebați asistentul" },
+  },
   places: {
     title: "Harta instituțiilor și serviciilor",
     sub: "Scrieți numele unei instituții, adresa site-ului ei sau un tip de serviciu, de exemplu „birou notarial”. Vă arătăm unde se află și cum îl contactați.",
@@ -856,6 +947,50 @@ const ru: Dictionary = {
     consentLink: "Политикой конфиденциальности",
     signInNote: "Входя, вы подтверждаете, что ознакомились с {link}.",
     signInLink: "Политикой конфиденциальности",
+  },
+  about: {
+    title: "О нас",
+    eyebrow: "О проекте",
+    intro: "Smart City — муниципальный помощник, который отвечает на вопросы о городских услугах Кишинэу, опираясь только на документы, опубликованные Примэрией и её учреждениями. Каждый ответ показывает документ и фрагмент, на котором он основан, чтобы вы могли проверить его сами.",
+    sections: [
+      ["Зачем мы его создали", ["Нужная жителям информация (процедуры, необходимые документы, контакты, графики) разбросана по десяткам сайтов Примэрии, её управлений и муниципальных предприятий. Найти нужную страницу непросто, а обычный чат-бот может дать ответ, который звучит убедительно, но неполон или устарел."], []],
+      ["Что делает помощник", [], ["Отвечает на румынском или русском языке, простыми словами.", "Указывает документ и фрагмент, на котором основан каждый факт; нажмите на номер вроде [1], чтобы его открыть.", "Перечисляет документы, которые нужно подготовить, и шаги, если они есть во фрагментах.", "Показывает учреждение, куда обращаться, с адресом и телефоном из документов, и его место на карте.", "Прямо говорит, чего нет в документах, и показывает обе версии, если два документа противоречат друг другу."]],
+      ["Как мы следим за точностью ответов", ["Помощник не отвечает по памяти. Сначала он ищет в опубликованных документах, затем пишет ответ только по найденным фрагментам. Прежде чем ответ дойдёт до вас, номера телефонов, адреса эл. почты, почтовые адреса и названия документов сверяются с этими фрагментами; всё, чего там нет, удаляется и отмечается как отсутствующее."], []],
+      ["Кто его создал", ["Smart City создали Sandu, Igor, Erika, Daniel и Iacob — независимая команда — для конкурса Smart City, объявленного Примэрией муниципия Кишинэу. Это не официальный сервис Примэрии, и его ответы не являются юридической консультацией. Для важных решений уточняйте информацию в учреждении, указанном в ответе."], []],
+    ],
+    sources: {
+      title: "Откуда берётся информация",
+      sub: "Публичные сайты учреждений Примэрии и муниципальных предприятий из списка конкурса. Каждый ответ показывает дату публикации использованных фрагментов.",
+      groups: ["Администрация и секторы", "Градостроительство и жильё", "Коммунальные услуги и экология", "Транспорт", "Социальные услуги и здравоохранение", "Образование и молодёжь"],
+    },
+    cta: { title: "Есть вопрос?", sub: "Спросите своими словами. Аккаунт не нужен.", button: "Спросить помощника", faq: "Частые вопросы" },
+  },
+  faq: {
+    title: "Частые вопросы",
+    intro: "Короткие ответы о том, как работает помощник, откуда берутся ответы и что происходит с вашими данными.",
+    groups: [
+      ["О помощнике", [
+        ["Что такое Smart City?", "Муниципальный помощник, который отвечает на вопросы о городских услугах Кишинэу (разрешения, налоги, коммунальные услуги, транспорт, школы, социальная помощь), опираясь только на документы, опубликованные Примэрией и её учреждениями."],
+        ["Это официальный сервис Примэрии?", "Нет. Это независимый проект, созданный для конкурса Smart City Примэрии. Ответы не являются юридической консультацией; для важных решений уточняйте информацию в учреждении, указанном в ответе."],
+        ["На каких языках можно писать?", "На румынском и русском, а интерфейс доступен также на английском. Ответ приходит на языке вопроса, даже если исходный документ написан на другом языке."],
+        ["Можно ли здесь подать заявление или оплатить сбор?", "Нет. Помощник объясняет, что нужно сделать, какие документы подготовить и куда обратиться. Само заявление подаётся в учреждение — лично или на его сайте."],
+        ["Полезен ли он муниципальным служащим?", "Да. Служащие быстро находят фрагмент, который регулирует конкретный случай, и дают всем жителям одинаковый ответ со ссылкой на источник."],
+      ]],
+      ["Ответы и источники", [
+        ["Откуда берутся ответы?", "С публичных сайтов Примэрии, её управлений, претур секторов и муниципальных предприятий, таких как Apă-Canal, Autosalubritate, Регия электротранспорта или DGAURF. Полный список — на странице «О нас»."],
+        ["Как проверить ответ?", "У каждого факта есть небольшой номер, например [1]. Нажмите на него — откроется исходный документ с фрагментом, на котором основан ответ, и ссылка на оригинальную страницу."],
+        ["Что, если в документах нет ответа?", "Помощник прямо об этом скажет, а не будет гадать, перечислит, чего именно не хватает (например, номера телефона или списка документов), и подскажет, какое учреждение может помочь."],
+        ["Что, если два документа противоречат друг другу?", "Вы увидите обе версии рядом, каждую с источником и датой публикации, чтобы понять, какая новее. Помощник не выбирает одну из них молча."],
+        ["Насколько актуальна информация?", "Настолько, насколько актуальны опубликованные документы. У каждого фрагмента указана дата публикации. Сборы, графики и сроки могут меняться, поэтому уточняйте их в учреждении перед визитом."],
+        ["Может ли помощник ошибаться?", "Да, как любая автоматическая система. Поэтому каждый ответ показывает свои источники. Если что-то кажется неверным, откройте фрагмент и оцените ответ, чтобы команда это увидела."],
+      ]],
+      ["Аккаунт и данные", [
+        ["Нужен ли аккаунт?", "Нет. Задавать вопросы можно и без него. С аккаунтом разговоры сохраняются, и к ним можно вернуться с любого устройства."],
+        ["Что происходит с моими вопросами?", "Чтобы написать ответ, вопрос передаётся в OpenAI. С аккаунтом разговор сохраняется в вашем аккаунте; без него он остаётся только на открытой странице. Подробности — в Политике конфиденциальности."],
+        ["Как оценить ответ?", "Под каждым ответом есть пять смайликов — от грустного до весёлого. Если выбрать грустный, вас попросят написать, что было не так. Команда читает каждую оценку, чтобы улучшать помощника."],
+      ]],
+    ],
+    more: { title: "Не нашли свой вопрос?", sub: "Спросите помощника напрямую.", button: "Спросить помощника" },
   },
   places: {
     title: "Карта учреждений и услуг",
