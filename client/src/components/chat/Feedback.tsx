@@ -3,7 +3,7 @@ import { useI18n } from "@/lib/i18n";
 import styles from "./Chat.module.css";
 
 // Rating 1 (sad) … 5 (happy); shown happiest first.
-const FACES = ["😢", "🙁", "😐", "🙂", "😄"];
+export const FACES = ["😢", "🙁", "😐", "🙂", "😄"];
 const ORDER = [5, 4, 3, 2, 1];
 /** Ratings at or below this must say what went wrong. */
 const NEEDS_REASON = 2;
